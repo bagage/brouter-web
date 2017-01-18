@@ -14,6 +14,7 @@ var remember = require('gulp-remember');
 var inject = require('gulp-inject');
 var gulpif = require('gulp-if');
 var gutil = require('gulp-util');
+var i18n = require('gulp-html-i18n');
 
 var debug = false;
 
@@ -38,6 +39,18 @@ var paths = {
   dest: 'dist',
   destName: 'brouter-web'
 };
+
+gulp.task('build:localize', function() {
+  var dest  = './public';
+  var index = './index.html';
+
+  return gulp.src(index)
+    .pipe(i18n({
+      langDir: './lang',
+      trace: true
+    }))
+    .pipe(gulp.dest(dest));
+});
 
 // libs that require loading before config.js
 gulp.task('scripts_config', ['clean'], function() {
