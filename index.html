@@ -198,6 +198,18 @@
 
 
     <div id="sidebar">
+            <table id="datatable" class="table mini cell-border hover stripe"></table>
+            <form>
+                <label for="profile_upload">Custom routing profile</label>
+                <textarea class="form-control" type="text" id="profile_upload" spellcheck="false" wrap="off" placeholder="Write your custom profile here."></textarea>
+                <div id="profile_message"></div>
+                <div class="form-group" id="profile_buttons">
+                     <button id="clear" type="button" class="btn btn-sm"><span class="fa fa-eraser"></span> Clear</button>
+                     <button id="upload" type="button" class="btn btn-sm" data-uploading-text="Uploading…"><span class="fa fa-cloud-upload"></span> Upload</button>
+                     <a href="http://brouter.de/brouter/costfunctions.html" target="_blank" class="btn btn-sm btn-info pull-right"><span class="fa fa-question"></span> Help</a>
+                </div>
+            </form>
+
             <ul id="tab" class="nav nav-tabs" role="tablist">
             </ul>
             <div class="tab-content">
@@ -206,7 +218,6 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tab_data">
-                    <table id="datatable" class="table mini cell-border hover stripe"></table>
                 </div>
             </div>
     </div>

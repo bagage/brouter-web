@@ -62,12 +62,14 @@ BR.TrackMessages = L.Class.extend({
 
         this._table = $('#datatable').DataTable({
             destroy: true,
+            fixedHeader: true,
             data: data,
             columns: columns,
             paging: false,
             searching: false,
             info: false,
             scrollX: true,
+            scrollY: true,
             order: []
         });
 

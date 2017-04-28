@@ -25,7 +25,10 @@
     "leaflet.locatecontrol": "^0.60.0",
     "font-awesome": "^4.7.0",
     "bootstrap-select": "hugdx/bootstrap-select#patch-1",
-    "leaflet-sidebar": "^0.1.9"
+    "leaflet-sidebar": "^0.1.9",
+    "autosize": "^3.0.20",
+    "datatables.net-fixedheader": "^3.1.2",
+    "datatables.net-fixedheader-bs": "^3.1.2"
   },
   "overrides": {
     "leaflet": {
@@ -98,6 +101,9 @@
         "css/font-awesome.css",
         "fonts/*"
       ]
+    },
+    "autosize": {
+      "main": "dist/autosize.js"
     }
   }
 }
