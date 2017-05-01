@@ -5,6 +5,7 @@ BR.Profile = L.Class.extend({
         L.DomUtil.get('upload').onclick = L.bind(this._upload, this);
         L.DomUtil.get('clear').onclick = L.bind(this.clear, this);
         this.ele = L.DomUtil.get('profile_upload');
+        autosize(this.ele);
         this.message = new BR.Message('profile_message', {
             alert: true
         });
