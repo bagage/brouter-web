@@ -327,7 +327,7 @@
         $('.collapse').on('hidden.bs.collapse', onHide)
                       .on('shown.bs.collapse', onShow)
                       .each(function() {
-                            if (this.id && BR.Util.localStorageAvailable() && localStorage[this.id] === 'true' ) {
+                            if (!(this.id && BR.Util.localStorageAvailable() && localStorage[this.id] === 'true' )) {
                                 $(this).collapse('hide');
                             }
                       });
