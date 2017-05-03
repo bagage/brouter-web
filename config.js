@@ -12,7 +12,7 @@
     // TODO not included in permalink (better replace permalink with hash plugin)
     //BR.conf.transit = params.has('transit') && (params.get('transit') === 'true');
 
-    if (hostname === 'brouter.de' || hostname === 'h2096617.stratoserver.net') {
+    if (hostname === 'brouter.damsy.net' || hostname === 'brouter.de' || hostname === 'h2096617.stratoserver.net') {
 
         // online service (brouter.de) configuration
 
