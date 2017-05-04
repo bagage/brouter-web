@@ -14,6 +14,12 @@ var remember = require('gulp-remember');
 var inject = require('gulp-inject');
 var gulpif = require('gulp-if');
 var gutil = require('gulp-util');
+var zip = require('gulp-zip');
+var bump = require('gulp-bump');
+var semver = require('semver');
+var git = require('gulp-git');
+var replace = require('gulp-replace');
+var release = require('gulp-github-release');
 
 var debug = false;
 
@@ -143,3 +149,77 @@ gulp.task('debug', function() {
   debug = true;
   gulp.start('default');
 });
+
+var pkg = require('./package.json');
+var tags = {patch: 'patch', minor: 'minor', major: 'major'};
+var nextVersion;
+
+gulp.task('release:init', function(cb) {
+  var tag = gutil.env.tag;
+  if (!tag) {
+    cb(gutil.colors.red('--tag is required'));
+  }
+  if (['major', 'minor', 'patch'].indexOf(tag) < 0) {
+    cb(gutil.colors.red('--tag must be major, minor or patch'));
+  }
+  git.status({args: '--porcelain', quiet: true}, function(err, stdout) {
+    if (err) throw err;
+    if (stdout.length > 0) {
+      cb(gutil.colors.red('Repository is not clean. Please commit or stash your pending modification'));
+    }
+  });
+  nextVersion = semver.inc(pkg.version, tag);
+  cb();
+});
+
+gulp.task('bump', ['bump:json', 'bump:html']);
+
+gulp.task('bump:json', ['release:init'], function() {
+  gutil.log(gutil.colors.green('Bump to '+nextVersion));
+  return(gulp.src(['./package.json', './bower.json'])
+  .pipe(bump({version: nextVersion}))
+  .pipe(gulp.dest('./')));
+});
+
+gulp.task('bump:html', ['release:init'], function() {
+  return(gulp.src('./index.html')
+  .pipe(replace(/<sup class="version">(.*)<\/sup>/, '<sup class="version">'+nextVersion+'</sup>'))
+  .pipe(gulp.dest('.')));
+});
+
+gulp.task('release:commit', ['bump'], function() {
+  gulp.src(['./index.html', './package.json', './bower.json'])
+  .pipe(git.commit('release: '+nextVersion));
+});
+
+gulp.task('release:tag', ['release:commit'], function() {
+  return(git.tag(nextVersion, '', function(err) {
+    if (err) throw err;
+  }));
+});
+
+gulp.task('release:push', ['release:tag'], function() {
+  git.push('origin', 'master', {args: '--tags'}, function(err) {
+    if (err) throw err;
+  });
+});
+
+gulp.task('release:zip', ['release:tag', 'default'], function() {
+  gutil.log(gutil.colors.green('Build brouter-web.'+nextVersion+'.zip'));
+  return(gulp.src(['dist/**', 'index.html', 'config.js', 'kexs.js.template'], {'base': '.'})
+  .pipe(zip('brouter-web.'+nextVersion+'.zip'))
+  .pipe(gulp.dest('.')));
+});
+
+gulp.task('release:publish', ['release:zip'], function() {
+  gulp.src('./brouter-web.'+nextVersion+'.zip')
+  .pipe(release({
+    tag: nextVersion,
+    owner: 'RoPP',
+    repo: 'brouter-web',
+    manifeste: pkg,
+  }))
+});
+
+gulp.task('release', ['release:init', 'bump', 'release:commit', 'release:tag',
+                      'release:push', 'release:zip', 'release:publish']);
