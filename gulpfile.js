@@ -229,7 +229,7 @@ gulp.task('release:publish', ['release:zip'], function() {
   .pipe(release({
     tag: nextVersion,
     token: ghToken,
-    owner: 'RoPP',
+    owner: 'bagage',
     repo: 'brouter-web',
     manifeste: pkg,
   }))
