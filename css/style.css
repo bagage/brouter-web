@@ -5,7 +5,7 @@ html, body, #map {
 /* This is important so that bootstrap-select list goes over leaflet buttons
 Since the list is in navbar and leaflet buttons within map, we create a
 stacking context on their common ancestor */
-body, #content {
+body {
     position: relative;
     z-index: 1;
 }
@@ -30,12 +30,9 @@ body, #content {
     flex-direction: row;
 }
 
-#content {
-    -webkit-box-flex: 1;
-    -moz-box-flex: 1;
-    -webkit-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
+/*sidebar is at 2000, and we want list to get over it*/
+.navbar-full {
+    z-index: 2050;
 }
 
 footer {
