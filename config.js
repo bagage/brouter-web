@@ -57,7 +57,7 @@
         // local web server with the profiles in a subdirectory or allowing file access
         // in the Browser (security!), see
         // https://github.com/mrdoob/three.js/wiki/How-to-run-things-locally
-        //BR.conf.profilesUrl = 'http://localhost:8000/profiles2/';
+        BR.conf.profilesUrl = 'http://localhost:8000/profiles2/';
         //BR.conf.profilesUrl = 'file://YOUR_PATH_TO/profiles2/';
     }
 
