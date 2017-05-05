@@ -16,7 +16,8 @@ BR.Profile = L.Class.extend({
 
         evt.preventDefault();
         this.ele.value = null;
-        this.ele.defaultValue = this.ele.value;
+        this.ele.defaultValue = null;
+        autosize.update(this.ele);
 
         this.fire('clear');
         button.blur();
@@ -44,11 +45,13 @@ BR.Profile = L.Class.extend({
                     if (!this.profileName || this.profileName === profileName) {
                         ele.value = profileText;
                         ele.defaultValue = ele.value;
+                        autosize.update(this.ele);
                     }
                 }, this));
             } else {
                 ele.value = this.cache[profileName];
                 ele.defaultValue = ele.value;
+                autosize.update(this.ele);
             }
         }
     },
