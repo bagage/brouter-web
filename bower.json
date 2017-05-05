@@ -1,6 +1,6 @@
 {
   "name": "brouter-web",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "main": "dist/**/*",
   "ignore": [
     "**/.*",
