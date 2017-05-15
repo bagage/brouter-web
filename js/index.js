@@ -311,12 +311,12 @@
 
         var onHide = function() {
             if (this.id && BR.Util.localStorageAvailable()) {
-                localStorage[this.id] = 'true';
+                localStorage.removeItem(this.id);
             }
         };
         var onShow = function() {
             if (this.id && BR.Util.localStorageAvailable()) {
-                localStorage.removeItem(this.id);
+                localStorage[this.id] = 'true';
             }
         };
         var toggleSidebar = function (event) {
@@ -330,11 +330,11 @@
         $('.collapse').on('hidden.bs.collapse', onHide)
                       .on('shown.bs.collapse', onShow)
                       .each(function() {
-                            if (!(this.id && BR.Util.localStorageAvailable() && localStorage[this.id] === 'true' )) {
-                                $(this).collapse('hide');
+                            if (this.id && BR.Util.localStorageAvailable() && localStorage[this.id] === 'true') {
+                                $(this).collapse('show');
                             }
                       });
-        if (BR.Util.localStorageAvailable() && localStorage[sidebar.id] !== 'true') {
+        if (BR.Util.localStorageAvailable() && localStorage[sidebar.id] === 'true') {
             toggleSidebar();
         }
     }
