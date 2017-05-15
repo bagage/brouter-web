@@ -30,6 +30,33 @@ body {
     flex-direction: row;
 }
 
+.modal {
+    z-index: 2100;
+    text-align: center;
+    padding: 0!important;
+}
+
+.modal:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -4px;
+}
+
+#message {
+    position: absolute;
+    left: 45%;
+    top: 45%;
+    z-index: 3000;
+}
+
+.modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+}
+
 /*sidebar is at 2000, and we want list to get over it*/
 .navbar-full {
     z-index: 2050;
@@ -91,14 +118,6 @@ footer {
 
 .routing-draw-enabled {
     cursor: crosshair;
-}
-
-#message {
-    position: absolute;
-    left: 446px; /* 400 + 10 + 26 + 10 */
-    top: 0px;
-    margin-top: 10px;
-    z-index: 3000;
 }
 
 /* track messages (data tab) */

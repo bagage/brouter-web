@@ -4,7 +4,7 @@ BR.Message = L.Class.extend({
         // Bootstrap data-api's auto-initialization doesn't work in Controls because of stopPropagation
         alert: false
     },
-    
+
     initialize: function (id, options) {
         L.setOptions(this, options);
         this.id = id;
