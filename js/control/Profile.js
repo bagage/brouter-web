@@ -4,8 +4,8 @@ BR.Profile = L.Class.extend({
     initialize: function () {
         L.DomUtil.get('upload').onclick = L.bind(this._upload, this);
         L.DomUtil.get('clear').onclick = L.bind(this.clear, this);
-        this.ele = L.DomUtil.get('profile_upload');
-        autosize(this.ele);
+        this.profile_textarea = L.DomUtil.get('profile_upload');
+        autosize(this.profile_textarea);
         this.message = new BR.Message('profile_message', {
             alert: true
         });
@@ -15,9 +15,9 @@ BR.Profile = L.Class.extend({
         var button = evt.target || evt.srcElement;
 
         evt.preventDefault();
-        this.ele.value = null;
-        this.ele.defaultValue = null;
-        autosize.update(this.ele);
+        this.profile_textarea.value = null;
+        this.profile_textarea.defaultValue = null;
+        autosize.update(this.profile_textarea);
 
         this.fire('clear');
         button.blur();
@@ -26,11 +26,11 @@ BR.Profile = L.Class.extend({
     update: function(options) {
         var profileName = options.profile,
             profileUrl,
-            ele = this.ele,
-            dirty = ele.defaultValue !== ele.value;
+            profile_textarea = this.profile_textarea,
+            dirty = profile_textarea.defaultValue !== profile_textarea.value;
 
         this.profileName = profileName;
-        if (profileName && BR.conf.profilesUrl && (!ele.value || !dirty)) {
+        if (profileName && BR.conf.profilesUrl && (!profile_textarea.value || !dirty)) {
             if (!(profileName in this.cache)) {
                 profileUrl = BR.conf.profilesUrl + profileName + '.brf';
                 BR.Util.get(profileUrl, L.bind(function(err, profileText) {
@@ -43,22 +43,22 @@ BR.Profile = L.Class.extend({
 
                     // don't set when option has changed while loading
                     if (!this.profileName || this.profileName === profileName) {
-                        ele.value = profileText;
-                        ele.defaultValue = ele.value;
-                        autosize.update(this.ele);
+                        profile_textarea.value = profileText;
+                        profile_textarea.defaultValue = profile_textarea.value;
+                        autosize.update(this.profile_textarea);
                     }
                 }, this));
             } else {
-                ele.value = this.cache[profileName];
-                ele.defaultValue = ele.value;
-                autosize.update(this.ele);
+                profile_textarea.value = this.cache[profileName];
+                profile_textarea.defaultValue = profile_textarea.value;
+                autosize.update(this.profile_textarea);
             }
         }
     },
 
     _upload: function(evt) {
         var button = evt.target || evt.srcElement,
-            profile = this.ele.value;
+            profile = this.profile_textarea.value;
 
         this.message.hide();
         $(button).button('uploading');

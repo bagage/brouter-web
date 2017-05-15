@@ -33,9 +33,9 @@ BR.RoutingOptions = BR.Control.extend({
         });
 
         // disable custom option if it has no value yet (default value is "Custom")
-        var custom = L.DomUtil.get('profile').children[0];
-        if (custom.value === "Custom") {
-            custom.disabled = true;
+        var option_custom = L.DomUtil.get('profile').children[0];
+        if (option_custom.value === "Custom") {
+            option_custom.disabled = true;
         }
         $('.selectpicker').selectpicker('refresh')
     },
@@ -68,19 +68,24 @@ BR.RoutingOptions = BR.Control.extend({
     },
 
     setCustomProfile: function(profile, noUpdate) {
-        var profiles_grp,
-            option;
+        var profiles_list,
+            option_custom;
 
-        profiles_grp = L.DomUtil.get('profile');
-        option = profiles_grp.children[0]
-        option.value = profile;
-        option.disabled = !profile;
+        profiles_list = L.DomUtil.get('profile');
+        option_custom = profiles_list.children[0]
+        option_custom.value = profile ? profile : "Custom";
+        option_custom.disabled = !profile;
 
         $('#profile').find('option:selected').each(function(index) {
             $(this).prop('selected', false);
         });
 
-        option.selected = !!profile;
+        option_custom.selected = !!profile;
+
+        // if custom option is deselected, then we should select the second one instead
+        if (!option_custom.selected) {
+            profiles_list.children[1].selected = true;
+        }
 
         if (!noUpdate) {
             this.fire('update', {options: this.getOptions()});
@@ -88,12 +93,12 @@ BR.RoutingOptions = BR.Control.extend({
     },
 
     getCustomProfile: function() {
-        var profiles_grp = L.DomUtil.get('profile'),
-            option = profiles_grp.children[0],
+        var profiles_list = L.DomUtil.get('profile'),
+            option_custom = profiles_list.children[0],
             profile = null;
 
-        if (!option.disabled) {
-            profile = option.value;
+        if (option_custom.value !== "Custom") {
+            profile = option_custom.value;
         }
         return profile;
     },
