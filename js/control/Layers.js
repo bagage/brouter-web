@@ -59,16 +59,10 @@ BR.Layers = L.Class.extend({
             }
         });
 
-        addLayer = L.easyButton(
-            'fa-plus-square',
-            function () {
-                $('#custom_layers').modal();
-            },
-            'Add or remove custom layers',
-            {
-                position: 'topright'
-            }
-            ).addTo(map);
+        document.getElementsByClassName('leaflet-control-layers-list')[0].innerHTML += '<button id="leaflet-control-layers-manage" type="button">[+] Manage custom layers</button>';
+        $('#leaflet-control-layers-manage').on('click', function() {
+            $('#custom_layers').modal();
+        });
     },
 
     _remove: function(evt) {

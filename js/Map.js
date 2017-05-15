@@ -112,6 +112,7 @@ BR.Map = {
         }
 
         layersControl = L.control.layers(baseLayers, overlays).addTo(map);
+        new BR.Layers().init(map, layersControl, baseLayers, overlays);
 
         L.control.locate({
             icon: 'fa fa-location-arrow',
@@ -119,8 +120,6 @@ BR.Map = {
         }).addTo(map);
 
         L.control.scale().addTo(map);
-
-        new BR.Layers().init(map, layersControl, baseLayers, overlays);
 
         // expose map instance for console debugging
         BR.debug = BR.debug || {};
