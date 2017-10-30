@@ -26,7 +26,8 @@
     "font-awesome": "^4.7.0",
     "bootstrap-select": "hugdx/bootstrap-select#patch-1",
     "leaflet-sidebar": "^0.1.9",
-    "autosize": "^3.0.20"
+    "autosize": "^3.0.20",
+    "leaflet-omnivore": "^0.3.4"
   },
   "overrides": {
     "leaflet": {
@@ -39,6 +40,11 @@
     "leaflet-plugins": {
       "main": [
         "layer/tile/Bing.js"
+      ]
+    },
+    "leaflet-omnivore": {
+      "main": [
+        "leaflet-omnivore.js"
       ]
     },
     "leaflet-routing": {
@@ -99,7 +105,7 @@
       ]
     },
     "autosize": {
-      "main":  "dist/autosize.js"
+      "main": "dist/autosize.js"
     }
   }
 }

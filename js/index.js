@@ -337,6 +337,39 @@
         if (BR.Util.localStorageAvailable() && localStorage[sidebar.id] === 'true') {
             toggleSidebar();
         }
+
+        var dropZone = document.getElementById('map');
+        dropZone.ondrop = function(e) {
+            e.preventDefault();
+            this.className = 'upload-drop-zone';
+            // try to parse file as gpx or similar
+            for (var i=0; i < e.dataTransfer.files.length; i++) {
+                var file = e.dataTransfer.files[i];
+                var reader = new FileReader();
+                reader.onload = function(e){
+                    var layer = omnivore.gpx.parse(e.target.result);                    
+                    // layer.Feature()
+                    
+                    routing.clear()
+                    routing.setWaypoints([4.959113,45.077598])
+                }
+                reader.readAsText(e.dataTransfer.files[i]);
+
+                map.eachLayer(function(layer){
+                    console.log(layer);
+                });
+            }
+        }
+
+        dropZone.ondragover = function() {
+            this.className = 'upload-drop-zone drop';
+            return false;
+        }
+
+        dropZone.ondragleave = function() {
+            this.className = 'upload-drop-zone';
+            return false;
+        }
     }
 
     mapContext = BR.Map.initMap();
