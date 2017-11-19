@@ -86,6 +86,7 @@ BR.RoutingOptions = BR.Control.extend({
         if (!option_custom.selected) {
             profiles_list.children[1].selected = true;
         }
+        this.refreshUI();
 
         if (!noUpdate) {
             this.fire('update', {options: this.getOptions()});

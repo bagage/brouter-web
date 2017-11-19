@@ -25,14 +25,25 @@ BR.Profile = L.Class.extend({
 
     update: function(options) {
         var profileName = options.profile,
-            profileUrl,
             profile_textarea = this.profile_textarea,
             dirty = profile_textarea.defaultValue !== profile_textarea.value;
-
+        
         this.profileName = profileName;
-        if (profileName && BR.conf.profilesUrl && (!profile_textarea.value || !dirty)) {
+        if (profileName && !(profile_textarea.value && dirty)) {
             if (!(profileName in this.cache)) {
-                profileUrl = BR.conf.profilesUrl + profileName + '.brf';
+                var mustUpload, profileUrl;
+                if (BR.conf.profilesExtra.includes(profileName)) {
+                    profileUrl = BR.conf.profilesExtraUrl + profileName + '.brf';                    
+                    mustUpload = true;
+                } else if (BR.conf.profiles.includes(profileName)) {
+                    profileUrl = BR.conf.profilesUrl + profileName + '.brf';
+                    mustUpload = false;
+                } else {
+                    new Error('This profile "' + profileName + '" is unknown');
+                    return;
+                }
+
+                // try to download the profile from the server
                 BR.Util.get(profileUrl, L.bind(function(err, profileText) {
                     if (err) {
                         console.warn('Error getting profile from "' + profileUrl + '": ' + err);
@@ -46,6 +57,9 @@ BR.Profile = L.Class.extend({
                         profile_textarea.value = profileText;
                         profile_textarea.defaultValue = profile_textarea.value;
                         autosize.update(this.profile_textarea);
+                        if (mustUpload) {
+                            $('#upload').click();
+                        }
                     }
                 }, this));
             } else {
