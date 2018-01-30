@@ -31,6 +31,7 @@ var paths = {
     '!**/*.min.js',
     '!**/url-search-params/**/*.js'
   ]).concat([
+    'js/Browser.js',
     'js/Util.js',
     'js/Map.js',
     'js/router/BRouter.js',
@@ -219,7 +220,7 @@ gulp.task('release:push', ['release:tag'], function() {
 
 gulp.task('release:zip', ['release:tag', 'default'], function() {
   gutil.log(gutil.colors.green('Build brouter-web.'+nextVersion+'.zip'));
-  return(gulp.src(['dist/**', 'index.html', 'config.js', 'kexs.js.template'], {'base': '.'})
+  return(gulp.src(['dist/**', 'index.html', 'config.template.js', 'keys.template.js'], {'base': '.'})
   .pipe(zip('brouter-web.'+nextVersion+'.zip'))
   .pipe(gulp.dest('.')));
 });

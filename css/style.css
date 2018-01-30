@@ -5,7 +5,7 @@ html, body, #map {
 /* This is important so that bootstrap-select list goes over leaflet buttons
 Since the list is in navbar and leaflet buttons within map, we create a
 stacking context on their common ancestor */
-body {
+body, #content {
     position: relative;
     z-index: 1;
 }
@@ -76,9 +76,21 @@ footer {
     flex-grow: 1;
     margin: 0;
     padding: 0;
+    text-align: center;
 }
 #stats li {
     margin: 0 1rem;
+    display: inline-block;
+}
+
+.stats-label {
+    word-break: break-all;
+    font-weight: bold;
+}
+.stats-label abbr[title],
+#distance {
+    text-decoration: none;
+    border-bottom: 1px dotted #818a91;
 }
 
 #elevation-chart {
@@ -118,6 +130,14 @@ footer {
 
 .routing-draw-enabled {
     cursor: crosshair;
+}
+
+#message {
+    position: absolute;
+    left: 446px; /* 400 + 10 + 26 + 10 */
+    top: 0px;
+    margin-top: 10px;
+    z-index: 3000;
 }
 
 /* track messages (data tab) */
@@ -167,7 +187,7 @@ https://css-tricks.com/svg-line-animation-works/
 /* invert track and selection styles to get partial gradient for "selection" */
 .slider.slider-vertical .slider-track {
     width: 8px;
-    margin-left: -4px;
+    margin-left: 1px;
     background-image: linear-gradient(to right, #f0f0f0 0%, #e9e9e9 100%);
     box-shadow: inset -1px -0px 1px rgba(55, 55, 55, 0.3), inset 1px 0px 1px rgba(230, 230, 230, 1);
 }
@@ -185,10 +205,10 @@ https://css-tricks.com/svg-line-animation-works/
 
 .slider.slider-vertical .slider-tick,
 .slider.slider-vertical .slider-handle {
-    margin-left: -6px;
     cursor: ns-resize;
     box-sizing: border-box;
     background: none;
+    outline: none;
 
     /* bootstrap .btn-default */
     background-image: linear-gradient(to bottom,#fff 0,#e0e0e0 100%);
@@ -202,11 +222,6 @@ https://css-tricks.com/svg-line-animation-works/
 .fa.active, .btn.active, .btn.active:hover, .btn.active:focus {
     /* use same color as leaflet-locatecontrol */
     color: #2074B6;
-}
-
-.stats-label {
-    word-break: break-all;
-    font-weight: bold;
 }
 
 /* smaller tab height */
@@ -241,4 +256,41 @@ table.dataTable.display tbody tr:hover,
 table.dataTable.display tbody tr.odd:hover,
 table.dataTable.display tbody tr.even:hover {
     background-color: rgba(255,255,0,0.2);
+}
+
+/* 
+ * No-go areas
+ */
+
+.nogo-delete-marker {
+    text-align: center;
+    line-height: 16px;
+    font-size: 11px;
+    border-radius: 8px;
+}
+.leaflet-touch .nogo-delete-marker {
+    border-radius: 12px;
+    line-height: 24px;
+}
+
+/* tooltip */
+
+.editing-tooltip,
+.editing-tooltip-create {
+    color: #fff;
+    background-color: rgba(0,0,0,0.7);
+    /* for direction arrows that inherit */
+    border-color: rgba(0,0,0,0.7);
+    /* no border but still set a color for direction arrows */
+    border-width: 0px;
+}
+.editing-tooltip-create {
+    /* no (invisible) direction arrow for cursor tooltip */
+    border-color: transparent;
+}
+.leaflet-tooltip-bottom:before {
+	  border-bottom-color: inherit;
+}
+.leaflet-tooltip-right:before {
+    border-right-color: inherit;
 }

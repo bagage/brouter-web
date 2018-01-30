@@ -19,7 +19,8 @@
         BR.conf.profiles = [
             'trekking',
             'fastbike',
-            'car-test',
+            'car-eco',
+            'car-fast',
             'safety',
             'shortest',
             'trekking-ignore-cr',
@@ -48,7 +49,8 @@
             'fastbike',
             'shortest',
             'moped',
-            'car-test'
+            'car-eco',
+            'car-fast'
         ];
 
         BR.conf.host = 'http://0.0.0.0:17777';
@@ -82,11 +84,13 @@
 
     BR.conf.routingStyles = {
         trailer: {
+            weight: 5,
             dashArray: [10, 10],
             opacity: 0.6,
             color: 'magenta'
         },
         track: {
+            weight: 5,
             color: 'magenta',
             opacity: BR.conf.defaultOpacity
         },

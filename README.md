@@ -3,7 +3,7 @@ brouter-web
 
 Web client (by [@nrenner](https://github.com/nrenner)) for the BRouter routing engine (by [@abrensch](https://github.com/abrensch)). *Work in progress*.
 
-**New web client available mobile-ready to test on [brouter.damsy.net](brouter.damsy.net]).
+**New web client available mobile-ready to test on [brouter.damsy.net](http://brouter.damsy.net).
 Feedbacks are appreciated, do not hesitate to create issues about it!**
 
 BRouter online service (provided by [@abrensch](https://github.com/abrensch)):  
@@ -53,13 +53,14 @@ e.g. for Linux (replace ``~/opt/`` with your preferred install dir and ``1_4_1``
 
      * build the distributable files required for runtime (only for development state), see section [Build](#build)
 
-2. configure URL to ``profiles2`` directory  
-set ``BR.conf.profilesUrl`` in [config.js](config.js), e.g. uncomment:
+2. copy ``config.template.js`` to ``config.js``
+3. configure URL to ``profiles2`` directory  
+set ``BR.conf.profilesUrl`` in config.js, e.g. uncomment:
 
         BR.conf.profilesUrl = 'http://localhost:8000/profiles2/';
 
-3. add your API keys (optional)  
-copy ``keys.js.template`` to ``keys.js`` and edit to add your keys
+4. add your API keys (optional)  
+copy ``keys.template.js`` to ``keys.js`` and edit to add your keys
 
 ### Run
 
@@ -110,8 +111,8 @@ Copyright (c) 2013, Turistforeningen, Hans Kristian Flaatten. All rights reserve
 Copyright (c) 2013 Felix Bache; [MIT License](https://github.com/MrMufflon/Leaflet.Elevation/blob/master/LICENSE)
 * [D3.js](https://github.com/mbostock/d3)  
 Copyright (c) 2013, Michael Bostock. All rights reserved.; [3-clause BSD License](https://github.com/mbostock/d3/blob/master/LICENSE)
-* [Leaflet.draw](https://github.com/Leaflet/Leaflet.draw)  
-Copyright 2012 Jacob Toye; [MIT License](https://github.com/Leaflet/Leaflet.draw/blob/master/MIT-LICENCE.txt)
+* [Leaflet.Editable](https://github.com/Leaflet/Leaflet.Editable)  
+Yohan Boniface; WTFPL licence
 * [Leaflet Control Geocoder](https://github.com/perliedman/leaflet-control-geocoder)  
 Copyright (c) 2012 [sa3m](https://github.com/sa3m), Copyright (c) 2013 Per Liedman; [2-clause BSD License](https://github.com/perliedman/leaflet-control-geocoder/blob/master/LICENSE)
 * [leaflet-plugins](https://github.com/shramov/leaflet-plugins)  

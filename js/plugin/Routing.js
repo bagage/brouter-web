@@ -57,12 +57,12 @@ BR.Routing = L.Routing.extend({
             var latLng = e.latlng;
             if (latLng._feature) {
                 this._mouseMarker._feature = latLng._feature;
-                latLng._feature.fire('mousemove', e);
+                latLng._feature.fire('mousemove', e, true);
             }
         }, this._edit));
         var mouseoutHandler = function(e) {
             if (this._mouseMarker._feature) {
-                this._mouseMarker._feature.fire('mouseout', e);
+                this._mouseMarker._feature.fire('mouseout', e, true);
                 this._mouseMarker._feature = null;
             }
         };
@@ -294,5 +294,9 @@ BR.Routing = L.Routing.extend({
     } else {
         L.Routing.prototype._keyupListener.call(this, e);
     }
+  }
+  
+  ,isDrawing: function () {
+      return this._draw._enabled;
   }
 });

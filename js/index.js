@@ -8,6 +8,14 @@
 
     var mapContext;
 
+    function verifyTouchStyle(mapContext) {
+        // revert touch style (large icons) when touch screen detection is available and negative
+        // see https://github.com/nrenner/brouter-web/issues/69
+        if (L.Browser.touch && BR.Browser.touchScreenDetectable && !BR.Browser.touchScreen) {
+            L.DomUtil.removeClass(mapContext.map.getContainer(), 'leaflet-touch');
+        }
+    }
+
     function initApp(mapContext) {
         var map = mapContext.map,
             layersControl = mapContext.layersControl,
@@ -227,6 +235,8 @@
         map.addControl(sidebar);
 
         nogos.addTo(map);
+        nogos.preventRoutePointOnCreate(routing);
+
         map.addControl(new BR.OpacitySlider({
             callback: L.bind(routing.setOpacity, routing)
         }));
@@ -340,6 +350,7 @@
     }
 
     mapContext = BR.Map.initMap();
+    verifyTouchStyle(mapContext);
     initApp(mapContext);
 
 })();
