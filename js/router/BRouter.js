@@ -147,18 +147,21 @@ L.BRouter = L.Class.extend({
 
     uploadProfile: function(profileId, profileText, cb) {
         var url = L.BRouter.URL_PROFILE_UPLOAD;
-            xhr = new XMLHttpRequest();
+        var xhr = new XMLHttpRequest();
 
         // reuse existing profile file
         if (profileId) {
             url += '/' + profileId;
         }
 
+        console.log("Upload profile to", url)
+
         xhr.open('POST', url, true);
         xhr.onload = L.bind(this._handleProfileResponse, this, xhr, cb);
         xhr.onerror = function(evt) {
             var xhr = this;
-            cb('Upload error: ' + xhr.statusText);
+            cb('Upload of ' + profileId + ' profile failed: ' + xhr.statusText);
+            console.error(xhr)
         };
 
         // send profile text only, as text/plain;charset=UTF-8

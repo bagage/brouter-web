@@ -26,17 +26,26 @@ BR.Profile = L.Class.extend({
     update: function(options) {
         var profileName = options.profile,
             profile_textarea = this.profile_textarea,
-            dirty = profile_textarea.defaultValue !== profile_textarea.value;
+            profile_was_customized = (profile_textarea.value && profile_textarea.defaultValue && profile_textarea.defaultValue !== profile_textarea.value);
         
         this.profileName = profileName;
-        if (profileName && !(profile_textarea.value && dirty)) {
+        if (profileName && !profile_was_customized) {
             if (!(profileName in this.cache)) {
+                console.log("Profile", profileName, "is not available in cache, trying to download it…")
                 var mustUpload, profileUrl;
                 if (BR.conf.profilesExtra.includes(profileName)) {
+                    if (BR.conf.profilesExtraUrl === undefined) {
+                        console.error('profilesExtraUrl is not defined in config.js');
+                        return;
+                    }
                     profileUrl = BR.conf.profilesExtraUrl + profileName + '.brf';                    
                     mustUpload = true;
                 } else if (BR.conf.profiles.includes(profileName)) {
                     profileUrl = BR.conf.profilesUrl + profileName + '.brf';
+                    if (BR.conf.profilesUrl === undefined) {
+                        console.error('profilesUrl is not defined in config.js');
+                        return;
+                    }
                     mustUpload = false;
                 } else {
                     new Error('This profile "' + profileName + '" is unknown');
@@ -44,9 +53,10 @@ BR.Profile = L.Class.extend({
                 }
 
                 // try to download the profile from the server
+                console.log("Downloading profile from", profileUrl)
                 BR.Util.get(profileUrl, L.bind(function(err, profileText) {
                     if (err) {
-                        console.warn('Error getting profile from "' + profileUrl + '": ' + err);
+                        console.warn('Error getting profile from"' + profileUrl + '": ' + err);
                         return;
                     }
 
@@ -58,15 +68,21 @@ BR.Profile = L.Class.extend({
                         profile_textarea.defaultValue = profile_textarea.value;
                         autosize.update(this.profile_textarea);
                         if (mustUpload) {
+                            console.log("Uploading profile…")
                             $('#upload').click();
                         }
                     }
                 }, this));
             } else {
+                console.log("Profile", profileName, "found in case, using it")
                 profile_textarea.value = this.cache[profileName];
                 profile_textarea.defaultValue = profile_textarea.value;
                 autosize.update(this.profile_textarea);
             }
+        } else if (profileName) {
+            console.log("No need to download", profileName, ": user customized profile")
+        } else {
+            console.log("No need to download profile, none is set yet")
         }
     },
 
