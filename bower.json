@@ -1,6 +1,6 @@
 {
   "name": "brouter-web",
-  "version": "99.2.0",
+  "version": "99.2.1",
   "main": [
     "dist/brouter-web.css",
     "dist/brouter-web.js"
