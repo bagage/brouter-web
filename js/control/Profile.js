@@ -48,7 +48,7 @@ BR.Profile = L.Class.extend({
                     }
                     mustUpload = false;
                 } else {
-                    new Error('This profile "' + profileName + '" is unknown');
+                    console.error('This profile "' + profileName + '" is unknown');
                     return;
                 }
 
@@ -57,6 +57,7 @@ BR.Profile = L.Class.extend({
                 BR.Util.get(profileUrl, L.bind(function(err, profileText) {
                     if (err) {
                         console.warn('Error getting profile from"' + profileUrl + '": ' + err);
+                        BR.message.showError(new Error('Cannot download profile "' + profileName + '"'))
                         return;
                     }
 
