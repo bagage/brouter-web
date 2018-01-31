@@ -53,7 +53,7 @@ L.BRouter = L.Class.extend({
             params.format = format;
         } else {
             // do not put values in URL if this is the default value (format===null)
-            if (params.profile === BR.conf.profiles[0])
+            if (params.profile === Object.values(BR.conf.profiles)[0])
                 delete params.profile;
             if (params.alternativeidx == 0)
                 delete params.alternativeidx;

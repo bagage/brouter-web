@@ -6,10 +6,10 @@ BR.RoutingOptions = BR.Control.extend({
         // build option list from config
         var profiles = BR.conf.profiles;
         var profiles_list = L.DomUtil.get('profile');
-        for (var i = 0; i < profiles.length; i++) {
+        for (var p in profiles) {
             var option = document.createElement("option");
-            option.value = profiles[i];
-            option.text = profiles[i];
+            option.value = profiles[p];
+            option.text = (Object.values(BR.conf.profilesExtra).includes(profiles[p]) ? "* " : "") +  p;
             profiles_list.appendChild(option);
         }
         // <custom> profile is empty at start, select next one

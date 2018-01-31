@@ -33,14 +33,14 @@ BR.Profile = L.Class.extend({
             if (!(profileName in this.cache)) {
                 console.log("Profile", profileName, "is not available in cache, trying to download it…")
                 var mustUpload, profileUrl;
-                if (BR.conf.profilesExtra.includes(profileName)) {
+                if (Object.values(BR.conf.profilesExtra).includes(profileName)) {
                     if (BR.conf.profilesExtraUrl === undefined) {
                         console.error('profilesExtraUrl is not defined in config.js');
                         return;
                     }
                     profileUrl = BR.conf.profilesExtraUrl + profileName + '.brf';                    
                     mustUpload = true;
-                } else if (BR.conf.profiles.includes(profileName)) {
+                } else if (Object.values(BR.conf.profiles).includes(profileName)) {
                     profileUrl = BR.conf.profilesUrl + profileName + '.brf';
                     if (BR.conf.profilesUrl === undefined) {
                         console.error('profilesUrl is not defined in config.js');

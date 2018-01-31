@@ -16,26 +16,26 @@
 
         // online service (brouter.de) configuration
 
-        BR.conf.profiles = [
-            'trekking',
-            'fastbike',
-            'car-eco',
-            'car-fast',
-            'safety',
-            'shortest',
-            'trekking-ignore-cr',
-            'trekking-steep',
-            'trekking-noferries',
-            'trekking-nosteps',
-            'moped',
-            'rail',
-            'river',
-            'vm-forum-liegerad-schnell',
-            'vm-forum-velomobil-schnell',
-            'fastbike-lowtraffic',
-            'fastbike-asia-pacific',
-            'hiking-beta'
-        ];
+        BR.conf.profilesBase = {
+            'Trekking': 'trekking',
+            'Fastbike': 'fastbike',
+            'Car eco': 'car-eco',
+            'Car fast': 'car-fast',
+            'Safety': 'safety',
+            'Shortest': 'shortest',
+            'Trekking ignore CR': 'trekking-ignore-cr',
+            'Trekking steep': 'trekking-steep',
+            'Trekking noferries': 'trekking-noferries',
+            'Trekking nosteps': 'trekking-nosteps',
+            'Moped': 'moped',
+            'Rail': 'rail',
+            'River': 'river',
+            'Vm forum liegerad schnell': 'vm-forum-liegerad-schnell',
+            'Vm forum velomobil schnell': 'vm-forum-velomobil-schnell',
+            'Fastbike lowtraffic': 'fastbike-lowtraffic',
+            'Fastbike asia pacific': 'fastbike-asia-pacific',
+            'Hiking (beta)': 'hiking-beta'
+        };
 
         BR.conf.host = 'http://h2096617.stratoserver.net:443';
         BR.conf.profilesUrl = 'http://brouter.de/brouter/profiles2/';
@@ -44,14 +44,14 @@
 
         // desktop configuration
 
-        BR.conf.profiles = [
-            'trekking',
-            'fastbike',
-            'shortest',
-            'moped',
-            'car-eco',
-            'car-fast'
-        ];
+        BR.conf.profilesBase = {
+            'Trekking': 'trekking',
+            'Fastbike': 'fastbike',
+            'Shortest': 'shortest',
+            'Moped': 'moped',
+            'Car eco': 'car-eco',
+            'Car fast': 'car-fast'
+        };
 
         BR.conf.host = 'http://0.0.0.0:17777';
 
@@ -62,6 +62,12 @@
         BR.conf.profilesUrl = 'http://localhost:8000/profiles2/';
         //BR.conf.profilesUrl = 'file://YOUR_PATH_TO/profiles2/';
     }
+
+    BR.conf.profilesExtra =  {
+
+    };
+    BR.conf.profiles = { ...BR.conf.profilesBase, ...BR.conf.profilesExtra };
+    BR.conf.profilesExtraUrl = 'http://localhost:8000/profiles_custom/';
 
     // Removes default base layers when 'true'. Useful for only having custom layers (see below).
     BR.conf.clearBaseLayers = false;
@@ -108,17 +114,17 @@
     // transit (intermodal routing) demo config
     if (BR.conf.transit) {
 
-        BR.conf.profiles = [
-            '../im/bike',
-            '../im/foot',
-            '../im/like-bike',
-            '../im/like-foot',
-            'trekking',
-            'fastbike',
-            'shortest',
-            'moped',
-            'car-test'
-        ];
+        BR.conf.profiles = {
+            'Bike': '../im/bike',
+            'Foot': '../im/foot',
+            'Like bike': '../im/like-bike',
+            'Like foot': '../im/like-foot',
+            'Trekking': 'trekking',
+            'Fastbike': 'fastbike',
+            'Shortest': 'shortest',
+            'Moped': 'moped',
+            'Car (test)': 'car-test'
+        }:
 
     }
 })();
