@@ -113,4 +113,4 @@ BR.RoutingOptions = BR.Control.extend({
     }
 });
 
-BR.RoutingOptions.include(L.Mixin.Events);
+BR.RoutingOptions.include(L.Evented.prototype);
