@@ -16,7 +16,7 @@
 
         // online service (brouter.de) configuration
 
-        BR.conf.profilesBase = {
+        BR.conf.profiles = {
             'Trekking': 'trekking',
             'Fastbike': 'fastbike',
             'Car eco': 'car-eco',
@@ -44,7 +44,7 @@
 
         // desktop configuration
 
-        BR.conf.profilesBase = {
+        BR.conf.profiles = {
             'Trekking': 'trekking',
             'Fastbike': 'fastbike',
             'Shortest': 'shortest',
@@ -66,7 +66,7 @@
     BR.conf.profilesExtra =  {
 
     };
-    BR.conf.profiles = { ...BR.conf.profilesBase, ...BR.conf.profilesExtra };
+    for (var custom in BR.conf.profilesExtra) { BR.conf.profiles[custom] = BR.conf.profilesExtra[custom]; }
     BR.conf.profilesExtraUrl = 'http://localhost:8000/profiles_custom/';
 
     // Removes default base layers when 'true'. Useful for only having custom layers (see below).
