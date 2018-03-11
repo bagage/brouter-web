@@ -10,7 +10,7 @@ BR.RoutingOptions = BR.Control.extend({
             if (profiles.hasOwnProperty(p)) {
                 var option = document.createElement("option");
                 option.value = profiles[p];
-                option.text = (Object.values(BR.conf.profilesExtra).includes(profiles[p]) ? "* " : "") +  p;
+                option.text = (Object.values(BR.conf.profilesExtra).includes(profiles[p]) ? "* " : "") + document.l10n.formatValues(option.value);//  p;
                 profiles_list.appendChild(option);
             }
         }

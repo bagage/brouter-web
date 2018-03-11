@@ -7,12 +7,16 @@
 
     <title>BRouter web client</title>
 
+    <meta name="defaultLanguage" content="en">
+    <meta name="availableLanguages" content="en, fr">
+    <link rel="localization" href="locales/html.{locale}.ftl">
+    <script defer src="node_modules/l20n/dist/web/l20n.js"></script>
     <link rel="stylesheet" href="dist/brouter-web.css" />
 </head>
 <body class="flexcolumn">
     <nav class="navbar navbar-full navbar-dark bg-inverse">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#" data-toggle="modal" data-target="#about">BRouter-Web <sup class="version">99.3.1</sup>(development)</a>
+            <a class="navbar-brand" href="#" data-l10n-id="version" data-toggle="modal" data-target="#about">BRouter-Web <sup class="version">99.3.1</sup>(development)</a>
             <button class="navbar-toggler hidden-md-up" type="button" data-toggle="collapse" data-target="#collapsingNavbar" aria-controls="collapsingNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="fa fa-bars"></span>
             </button>
@@ -20,26 +24,26 @@
         <div class="collapse navbar-toggleable-sm" id="collapsingNavbar">
             <div class="nav navbar-nav">
                 <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" data-l10n-id="download">
                         <span class="fa fa-lg fa-cloud-download"></span>&nbsp;Download</a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" id="dl-gpx" href="#" disabled>GPX</a>
                         <a class="dropdown-item" id="dl-kml" href="#" disabled>KML</a>
                         <a class="dropdown-item" id="dl-geojson" href="#" disabled>GeoJSON</a>
-                        <a class="dropdown-item" id="dl-csv" href="#" disabled>data CSV</a>
+                        <a class="dropdown-item" id="dl-csv" href="#" disabled>CSV</a>
                     </div>
                 </div>
                 <form class="navbar-form">
                     <div class="form-group">
                         <select class="selectpicker show-tick" id="profile-alternative" multiple>
                             <optgroup label="Profile" data-max-options="1" data-icon="fa-bicycle" id="profile">
-                                <option>Custom</option>
+                                <option data-l10n-id="custom">Custom</option>
                             </optgroup>
                             <optgroup label="Alternative" data-max-options="1" data-icon="fa-random" id="alternative">
-                                <option value="0" selected>Original</option>
-                                <option value="1">1st alternative</option>
-                                <option value="2">2nd alternative</option>
-                                <option value="3">3rd alternative</option>
+                                <option data-l10n-id="option_original" value="0" selected>Original</option>
+                                <option data-l10n-id="option_1st_alternative" value="1">1st alternative</option>
+                                <option data-l10n-id="option_2nd_alternative" value="2">2nd alternative</option>
+                                <option data-l10n-id="option_3rd_alternative" value="3">3rd alternative</option>
                             </optgroup>
                         </select>
                     </div>
@@ -56,35 +60,35 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title">Credits</h4>
+                    <h4 data-l10n-id="credits" class="modal-title">Credits</h4>
                 </div>
                 <div class="modal-body">
                     <dl>
-                        <dt>Map data</dt>
-                        <dd>
+                        <dt data-l10n-id="map_data">Map data</dt>
+                        <dd data-l10n-id="credits_osm_contributors">
                             &copy; <a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
                             under <a target="_blank" href="https://opendatacommons.org/licenses/odbl/">ODbL</a>
                         </dd>
-                        <dt>OpenstreetMap.de tiles</dt>
+                        <dt data-l10n-id="credits_osm.de">OpenstreetMap.de tiles</dt>
                         <dd><a target="_blank" href="https://openstreetmap.de/karte.html">openstreetmap.de</a></dd>
-                        <dt>OpenTopoMap tiles</dt>
-                        <dd>
+                        <dt data-l10n-id="credits_opentopomap">OpenTopoMap tiles</dt>
+                        <dd data-l10n-id="credits_opentopomap2">
                             &copy; <a target="_blank" href="https://opentopomap.org">OpenTopoMap</a>
                             under <a target="_blank" href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>
                             <a target="_blank" href="http://viewfinderpanoramas.org">SRTM</a>
                         </dd>
-                        <dt>Thunderforest tiles</dt>
-                        <dd>
+                        <dt data-l10n-id="credits_thunderforst">Thunderforest tiles</dt>
+                        <dd data-l10n-id="credits_thunderforst2">
                             &copy; <a target="_blank" href="https://www.thunderforest.com">Thunderforest</a>
                             under <a target="_blank" href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a>
                         </dd>
-                        <dt>Waymarked Trails tiles</dt>
-                        <dd>
+                        <dt data-l10n-id="credits_waymarked">Waymarked Trails tiles</dt>
+                        <dd data-l10n-id="credits_waymarked2">
                             &copy; <a target="_blank" href="https://cycling.waymarkedtrails.org">Waymarked Trails</a>
                             under <a target="_blank" href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.en">CC-BY-SA 3.0 DE</a>
                         </dd>
                         <dt>BRouter</dt>
-                        <dd>
+                        <dd data-l10n-id="credits_brouter2">
                             <a target="_blank" href="http://brouter.de/brouter">BRouter</a> &copy; Arndt Brenschede
                         </dd>
                     </dl>
@@ -101,15 +105,15 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title">Customize layers</h4>
+                    <h4 data-l10n-id="customize_layers" class="modal-title">Customize layers</h4>
                 </div>
                 <div class="modal-body">
-                    <input class="form-control" type="text" id="layer_name" spellcheck="true" wrap="off" placeholder="Custom layer name. (ex: OpenStreetMap)"></input>
-                    <input class="form-control" type="text" id="layer_url" spellcheck="false" wrap="off" placeholder="Custom layer URL. (ex: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png)"></input>
+                    <input class="form-control" data-l10n-id="layer_name" type="text" id="layer_name" spellcheck="true" wrap="off" placeholder="Custom layer name. (ex: OpenStreetMap)"></input>
+                    <input class="form-control" type="text" id="layer_url" data-l10n-id="layer_url" spellcheck="false" wrap="off" placeholder="Custom layer URL. (ex: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png)"></input>
 
-                    <button type="button" id="custom_layers_add_base" class="btn btn-success">Add base layer</button>
-                    <button type="button" id="custom_layers_add_overlay" class="btn btn-success">Add overlay</button>
-                    <button type="button" id="custom_layers_remove" class="btn btn-danger">Remove selection</button>
+                    <button type="button" id="custom_layers_add_base" data-l10n-id="add_base_layer" class="btn btn-success">Add base layer</button>
+                    <button type="button" id="custom_layers_add_overlay" data-l10n-id="add_overlay" class="btn btn-success">Add overlay</button>
+                    <button type="button" id="custom_layers_remove" data-l10n-id="remove_selection" class="btn btn-danger">Remove selection</button>
                     <table id="custom_layers_table"></table>
                 </div>
             </div>
@@ -124,12 +128,12 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title">About</h4>
+                    <h4 class="modal-title" data-l10n-id="about">About</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Online service of the BRouter routing engine. For the offline Android app and more information
+                    <p data-l10n-id="brouter_description">Online service of the BRouter routing engine. For the offline Android app and more information
                         see <a href="http://brouter.de/" target="_blank">brouter.de</a>.</p>
-                    <p>
+                    <p data-l10n-id="brouter_description2">
                         <i>Contact:</i><br>
                         <ul>
                             <li>General discussions/questions, support:<br>
@@ -149,12 +153,12 @@
                             </li>
                         </ul>
                     </p>
-                    <p>
+                    <p data-l10n-id="brouter_data">
                         <i>Data:</i><br>
                         This is based on <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a>. It is usually updated once a week when a new Planet file is available,
                         see dates of <a href="http://brouter.de/brouter/segments4/" target="_blank">data files</a>.
                     </p>
-                    <p>
+                    <p data-l10n-id="credits2">
                          <i><a href="https://github.com/nrenner/brouter-web#credits-and-licenses" target="_blank">Credits</a></i>,
                          <i><a href="https://github.com/nrenner/brouter-web/blob/master/CHANGELOG.md" target="_blank">Changelog</a></i> and
                          <i><a href="https://github.com/nrenner/brouter-web#readme" target="_blank">more info</a></i> on the client.
@@ -170,14 +174,14 @@
 
     <div id="sidebar">
             <form>
-                <label for="profile_upload">Custom routing profile</label>
+                <label for="profile_upload" data-l10n-id="custom_profile">Custom routing profile</label>
                 <div class="form-group" id="profile_buttons">
-                     <button id="clear" type="button" class="btn btn-sm"><span class="fa fa-eraser"></span> Clear</button>
-                     <button id="upload" type="button" class="btn btn-sm" data-uploading-text="Uploading…"><span class="fa fa-cloud-upload"></span> Upload</button>
-                     <a href="http://brouter.de/brouter/costfunctions.html" target="_blank" class="btn btn-sm btn-info pull-right"><span class="fa fa-question"></span> Help</a>
+                     <button id="clear" type="button" class="btn btn-sm" data-l10n-id="clear"><span class="fa fa-eraser"></span> Clear</button>
+                     <button id="upload" type="button" class="btn btn-sm" data-l10n-id="upload" data-uploading-text="Uploading…"><span class="fa fa-cloud-upload"></span> Upload</button>
+                     <a href="http://brouter.de/brouter/costfunctions.html" data-l10n-id="help" target="_blank" class="btn btn-sm btn-info pull-right"><span class="fa fa-question"></span> Help</a>
                 </div>
                 <div id="profile_message"></div>
-                <textarea class="form-control" type="text" id="profile_upload" spellcheck="false" wrap="off" placeholder="Write your custom profile here."></textarea>
+                <textarea class="form-control" type="text" data-l10n-id="profile_input" id="profile_upload" spellcheck="false" wrap="off" placeholder="Write your custom profile here."></textarea>
             </form>
 
             <ul id="tab" class="nav nav-tabs" role="tablist">
@@ -199,31 +203,31 @@
         <div class="flexrow">
             <ul id="stats">
                 <li>
-                    <div class="text-muted small hidden-sm-down">Distance</div>
+                    <div data-l10n-id="distance" class="text-muted small hidden-sm-down">Distance</div>
                     <p class="stats-label"><span id="distance">0</span> <abbr title="kilometer">km</abbr></p>
                 </li>
                 <li hidden>
-                    <div class="text-muted small hidden-sm-down">Travel time</div>
+                    <div data-l10n-id="travel_time" class="text-muted small hidden-sm-down">Travel time</div>
                     <p class="stats-label"><span id="totaltime">0</span> <abbr title="minutes">min</abbr></p>
                 </li>
                 <li hidden>
-                    <div class="text-muted small hidden-sm-down">Total Energy (per 100km)</div>
+                    <div data-l10n-id="total_energy" class="text-muted small hidden-sm-down">Total Energy (per 100km)</div>
                     <p class="stats-label"><span id="totalenergy">0 (0)</span> <abbr title="kilowatt hour">kWh</abbr></p>
                 </li>
                 <li>
-                    <div class="text-muted small hidden-sm-down">Ascend (Plain ascend)</div>
+                    <div data-l10n-id="ascend" class="text-muted small hidden-sm-down">Ascend (Plain ascend)</div>
                     <p class="stats-label"><span id="ascend">0 (0)</span> <abbr title="meter">m</abbr></p>
                 </li>
                 <li>
-                    <div class="text-muted small hidden-sm-down">Cost (Mean cost factor)</div>
+                    <div data-l10n-id="cost" class="text-muted small hidden-sm-down">Cost (Mean cost factor)</div>
                     <p class="stats-label"><span id="cost">- (-)</span></p>
                 </li>
             </ul>
-            <button id="sidebar-btn" class="btn btn-secondary btn-sm" type="button" aria-label="Toggle sidebar">
+            <button data-l10n-id="toggle_sidebar" id="sidebar-btn" class="btn btn-secondary btn-sm" type="button" aria-label="Toggle sidebar">
                 <span class="fa fa-compress"></span>
             </button>
 
-            <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" data-target="#elevation-chart" aria-controls="elevation-chart" id="elevation-btn" aria-expanded="false" aria-label="Toggle elevation chart">
+            <button data-l10n-id="toggle_chart" class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" data-target="#elevation-chart" aria-controls="elevation-chart" id="elevation-btn" aria-expanded="false" aria-label="Toggle elevation chart">
                 <span class="fa fa-area-chart"></span>
             </button>
         </div>
