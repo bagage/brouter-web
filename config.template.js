@@ -51,6 +51,10 @@
             'Moped': 'moped',
             'Car eco': 'car-eco',
             'Car fast': 'car-fast'
+            'Vm forum liegerad schnell': 'vm-forum-liegerad-schnell',
+            'Vm forum velomobil schnell': 'vm-forum-velomobil-schnell',
+            'Fastbike lowtraffic': 'fastbike-lowtraffic',
+            'Fastbike asia pacific': 'fastbike-asia-pacific',
         };
 
         BR.conf.host = 'http://0.0.0.0:17777';

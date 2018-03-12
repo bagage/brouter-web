@@ -2,10 +2,11 @@ BR.Profile = L.Evented.extend({
     cache: {},
 
     initialize: function () {
+        var textArea = L.DomUtil.get('profile_upload');
+        this.editor = CodeMirror.fromTextArea(textArea, {});
+
         L.DomUtil.get('upload').onclick = L.bind(this._upload, this);
         L.DomUtil.get('clear').onclick = L.bind(this.clear, this);
-        this.profile_textarea = L.DomUtil.get('profile_upload');
-        autosize(this.profile_textarea);
         this.message = new BR.Message('profile_message', {
             alert: true
         });
@@ -15,9 +16,7 @@ BR.Profile = L.Evented.extend({
         var button = evt.target || evt.srcElement;
 
         evt.preventDefault();
-        this.profile_textarea.value = null;
-        this.profile_textarea.defaultValue = null;
-        autosize.update(this.profile_textarea);
+        this._setValue("");
 
         this.fire('clear');
         button.blur();
@@ -25,11 +24,12 @@ BR.Profile = L.Evented.extend({
 
     update: function(options) {
         var profileName = options.profile,
-            profile_textarea = this.profile_textarea,
-            profile_was_customized = (profile_textarea.value && profile_textarea.defaultValue && profile_textarea.defaultValue !== profile_textarea.value);
-        
+            profileUrl,
+            empty = !this.editor.getValue(),
+            clean = this.editor.isClean();
+
         this.profileName = profileName;
-        if (profileName && !profile_was_customized) {
+        if (profileName && (empty || clean)) {
             if (!(profileName in this.cache)) {
                 console.log("Profile", profileName, "is not available in cache, trying to download it…")
                 var mustUpload, profileUrl;
@@ -40,7 +40,7 @@ BR.Profile = L.Evented.extend({
                     }
                     profileUrl = BR.conf.profilesExtraUrl + profileName + '.brf';                    
                     mustUpload = true;
-                } else if (Object.values(BR.conf.profiles).includes(profileName)) {
+                } else if (BR.conf.profilesUrl && Object.values(BR.conf.profiles).includes(profileName)) {
                     profileUrl = BR.conf.profilesUrl + profileName + '.brf';
                     if (BR.conf.profilesUrl === undefined) {
                         console.error('profilesUrl is not defined in config.js');
@@ -65,9 +65,7 @@ BR.Profile = L.Evented.extend({
 
                     // don't set when option has changed while loading
                     if (!this.profileName || this.profileName === profileName) {
-                        profile_textarea.value = profileText;
-                        profile_textarea.defaultValue = profile_textarea.value;
-                        autosize.update(this.profile_textarea);
+                        this._setValue(profileText);
                         if (mustUpload) {
                             console.log("Uploading profile…")
                             $('#upload').click();
@@ -76,9 +74,7 @@ BR.Profile = L.Evented.extend({
                 }, this));
             } else {
                 console.log("Profile", profileName, "found in case, using it")
-                profile_textarea.value = this.cache[profileName];
-                profile_textarea.defaultValue = profile_textarea.value;
-                autosize.update(this.profile_textarea);
+                this._setValue(this.cache[profileName]);
             }
         } else if (profileName) {
             console.log("No need to download", profileName, ": user customized profile")
@@ -87,9 +83,13 @@ BR.Profile = L.Evented.extend({
         }
     },
 
+    show: function() {
+        this.editor.refresh();
+    },
+
     _upload: function(evt) {
         var button = evt.target || evt.srcElement,
-            profile = this.profile_textarea.value;
+            profile = this.editor.getValue();
 
         this.message.hide();
         $(button).button('uploading');
@@ -102,5 +102,10 @@ BR.Profile = L.Evented.extend({
                 $(button).blur();
             }
         });
+    },
+    
+    _setValue: function(profileText) {
+        this.editor.setValue(profileText);
+        this.editor.markClean();
     }
 });
