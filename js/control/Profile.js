@@ -27,9 +27,11 @@ BR.Profile = L.Evented.extend({
             profileUrl,
             empty = !this.editor.getValue(),
             clean = this.editor.isClean();
-
+            profileWasCustomized = (!empty && !clean 
+                && (!(profileName in this.cache) || this.editor.getValue() !== this.cache[profileName]));
+        
         this.profileName = profileName;
-        if (profileName && (empty || clean)) {
+        if (profileName && !profileWasCustomized) {
             if (!(profileName in this.cache)) {
                 console.log("Profile", profileName, "is not available in cache, trying to download it…")
                 var mustUpload, profileUrl;
@@ -61,8 +63,9 @@ BR.Profile = L.Evented.extend({
                         return;
                     }
 
-                    this.cache[profileName] = profileText;
-
+                    if (!mustUpload) {
+                       this.cache[profileName] = profileText;
+                    }
                     // don't set when option has changed while loading
                     if (!this.profileName || this.profileName === profileName) {
                         this._setValue(profileText);
@@ -73,7 +76,7 @@ BR.Profile = L.Evented.extend({
                     }
                 }, this));
             } else {
-                console.log("Profile", profileName, "found in case, using it")
+                console.log("Profile", profileName, "found in cache, using it")
                 this._setValue(this.cache[profileName]);
             }
         } else if (profileName) {

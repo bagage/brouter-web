@@ -22,11 +22,6 @@ BR.RoutingOptions = BR.Control.extend({
     },
 
     refreshUI: function() {
-        var profile = $('#profile option:selected'),
-            alternative = $('#alternative option:selected');
-
-        $('#stat-profile').html(profile.text() + ' (' + alternative.text() +')');
-
         // we do not allow to select more than one profile and/or alternative at a time
         // so we disable the current selected items
         $('#profile-alternative').find('option:disabled').each(function(index) {
@@ -37,9 +32,9 @@ BR.RoutingOptions = BR.Control.extend({
         });
 
         // disable custom option if it has no value yet (default value is "Custom")
-        var option_custom = L.DomUtil.get('profile').children[0];
-        if (option_custom.value === "Custom") {
-            option_custom.disabled = true;
+        var custom = L.DomUtil.get('profile').children[0];
+        if (custom.value === "Custom") {
+            custom.disabled = true;
         }
         $('.selectpicker').selectpicker('refresh')
     },
@@ -72,8 +67,8 @@ BR.RoutingOptions = BR.Control.extend({
     },
 
     setCustomProfile: function(profile, noUpdate) {
-        var profiles_list,
-            option_custom;
+        var profiles_grp,
+            option;
 
         profiles_grp = L.DomUtil.get('profile');
         option = profiles_grp.children[0];
@@ -89,13 +84,7 @@ BR.RoutingOptions = BR.Control.extend({
             profiles_grp.children[1].selected = true;
         }
 
-        option_custom.selected = !!profile;
-
-        // if custom option is deselected, then we should select the second one instead
-        if (!option_custom.selected) {
-            profiles_list.children[1].selected = true;
-        }
-        this.refreshUI();
+        option.selected = !!profile;
 
         if (!noUpdate) {
             this.fire('update', {options: this.getOptions()});
@@ -103,8 +92,8 @@ BR.RoutingOptions = BR.Control.extend({
     },
 
     getCustomProfile: function() {
-        var profiles_list = L.DomUtil.get('profile'),
-            option_custom = profiles_list.children[0],
+        var profiles_grp = L.DomUtil.get('profile'),
+            option = profiles_grp.children[0],
             profile = null;
 
         if (option.value !== "Custom") {
