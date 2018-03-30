@@ -90,6 +90,10 @@ BR.Profile = L.Evented.extend({
         this.editor.refresh();
     },
 
+    onResize: function() {
+        this.editor.refresh();
+    },
+
     _upload: function(evt) {
         var button = evt.target || evt.srcElement,
             profile = this.editor.getValue();
