@@ -38,6 +38,21 @@ table.dataTable {
     flex: auto;
 }
 
+.navbar {
+    /* align with leaflet-control */
+    padding: .5rem 10px;
+}    
+.navbar-brand {
+    float: right;
+    margin-left: 1rem;
+    margin-right: 0;
+}
+
+/* disabled style for "Custom" option, but not for selected items */
+.bootstrap-select.btn-group .dropdown-menu li.disabled:not(.selected) a {
+    color: #777;
+}
+
 footer {
     flex: none;
 
@@ -65,20 +80,15 @@ footer {
     border-bottom: 1px dotted #818a91;
 }
 
-#elevation-chart {
-    height: 175px;
+.steelblue-theme.leaflet-control.elevation .background {
+    display: block;
     font-size: 80%;
+    border-radius: 0;
 }
 
 .form-group {
     margin-bottom: 0
 }
-
-.bootstrap-select.btn-group:not(.input-group-btn),
-.bootstrap-select.btn-group[class*="col-"] {
-    margin-left: 10px;
-}
-
 
 .axis path,
 .axis line {
@@ -104,12 +114,14 @@ footer {
     cursor: crosshair;
 }
 
+#map {
+    /* center error message horizontally */
+    display: flex;
+    justify-content: center;
+}
 #message {
-    position: absolute;
-    left: 446px; /* 400 + 10 + 26 + 10 */
-    top: 0px;
-    margin-top: 10px;
     z-index: 3000;
+    font-size: 1rem;
 }
 
 #profile_buttons {
@@ -221,6 +233,10 @@ https://css-tricks.com/svg-line-animation-works/
 /* smaller tab height */
 .nav > li > a {
     padding: 2px 15px;
+}
+
+#message .alert {
+    margin: 10px 46px; /* 10 + 26 + 10 */
 }
 
 #profile_message .alert {
