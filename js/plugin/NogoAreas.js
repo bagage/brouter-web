@@ -45,7 +45,7 @@ BR.NogoAreas = L.Control.extend({
             featuresLayer: this.drawnItems
         });
 
-        var button = L.easyButton({
+        this.button = L.easyButton({
             states: [{
                 stateName: BR.NogoAreas.STATE_CREATE,
                 icon: 'fa-ban',
@@ -66,10 +66,10 @@ BR.NogoAreas = L.Control.extend({
                     control.state('no-go-create');
                 }
             }]
-        }).addTo(map);
+        });
 
         this.editTools.on('editable:drawing:end', function (e) {
-            button.state(BR.NogoAreas.STATE_CREATE);
+            self.button.state(BR.NogoAreas.STATE_CREATE);
 
             setTimeout(L.bind(function () {
                 // turn editing off after create; async to still fire 'editable:vertex:dragend'
@@ -88,7 +88,7 @@ BR.NogoAreas = L.Control.extend({
            e.layer.setStyle(this.style);
         }, this);
 
-        this.tooltip = new BR.EditingTooltip(map, editTools, button);
+        this.tooltip = new BR.EditingTooltip(map, editTools, this.button);
         this.tooltip.enable();
 
         // dummy, no own representation, delegating to EasyButton
@@ -148,6 +148,10 @@ BR.NogoAreas = L.Control.extend({
     
     getEditGroup: function() {
         return this.editTools.editLayer;
+    },
+    
+    getButton: function() {
+        return this.button;
     }
 });
 
@@ -259,15 +263,24 @@ BR.EditingTooltip = L.Handler.extend({
         }
     },
 
+    _setCloseTimeout: function(layer) {
+        var timeoutId = setTimeout(function () {
+           layer.closeTooltip();
+        }, this.options.closeTimeout);
+        
+        // prevent timer to close tooltip that changed in the meantime
+        layer.once('tooltipopen', function (e) {
+           clearTimeout(timeoutId);
+        });
+    },
+
     _postCreate: function () {
         // editing is disabled by another handler, tooltip won't stay open before
         this.editTools.once('editable:disable', function (e) {
 
             // show for a few seconds, as mouse often not hovering circle after create
             e.layer.openTooltip(e.layer);
-            setTimeout(function () {
-               e.layer.closeTooltip();
-            }, this.options.closeTimeout);
+            this._setCloseTimeout(e.layer);
         }, this);
     },
 
@@ -281,10 +294,7 @@ BR.EditingTooltip = L.Handler.extend({
 
     _disable: function (e) {
         e.layer.setTooltipContent(BR.NogoAreas.MSG_DISABLED);
-
-        setTimeout(function () {
-            e.layer.closeTooltip();
-        }, this.options.closeTimeout);
+        this._setCloseTimeout(e.layer);
     }
 });
 

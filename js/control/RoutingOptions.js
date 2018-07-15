@@ -1,6 +1,6 @@
-BR.RoutingOptions = BR.Control.extend({
+BR.RoutingOptions = L.Evented.extend({
     
-    onAdd: function (map) {
+    initialize: function () {
         $('#profile-alternative').on('changed.bs.select', this._getChangeHandler());
 
         // build option list from config
@@ -18,7 +18,6 @@ BR.RoutingOptions = BR.Control.extend({
         profiles_list.children[0].value = "Custom";
         // <custom> profile is empty at start, select next one
         profiles_list.children[1].selected = true;
-        return BR.Control.prototype.onAdd.call(this, map);
     },
 
     refreshUI: function() {
@@ -108,5 +107,3 @@ BR.RoutingOptions = BR.Control.extend({
         }, this);
     }
 });
-
-BR.RoutingOptions.include(L.Evented.prototype);
