@@ -18,7 +18,7 @@ BR.Map = {
         });
 
         var osmde = L.tileLayer('https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png', {
-            maxNativeZoom: 18,
+            maxNativeZoom: 19,
             maxZoom: maxZoom,
             attribution: '<a target="_blank" href="https://www.openstreetmap.de/karte.html?zoom={zoom}&lat={lat}&lon={lon}&layers=B000TF">OpenStreetMap.de</a>'
         });
@@ -128,10 +128,13 @@ BR.Map = {
 
         layersControl = BR.layersTab(baseLayers, overlays).addTo(map);
 
-        L.control.locate({
-            icon: 'fa fa-location-arrow',
-            iconLoading: 'fa fa-spinner fa-pulse',
-        }).addTo(map);
+        var secureContext = 'isSecureContext' in window ? isSecureContext : location.protocol === 'https:';
+        if (secureContext) {
+            L.control.locate({
+                icon: 'fa fa-location-arrow',
+                iconLoading: 'fa fa-spinner fa-pulse',
+            }).addTo(map);
+        }
 
         L.control.scale().addTo(map);
 
