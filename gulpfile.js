@@ -229,13 +229,13 @@ gulp.task('release:zip', ['release:tag', 'default'], function() {
 });
 
 gulp.task('release:publish', ['release:zip'], function() {
-  gulp.src('./brouter-web.'+nextVersion+'.zip')
+  gulp.src('./brouter-web-'+nextVersion+'.zip')
   .pipe(release({
     tag: nextVersion,
     token: ghToken,
     owner: 'bagage',
     repo: 'brouter-web',
-    manifeste: pkg,
+    manifest: pkg,
   }))
 });
 
