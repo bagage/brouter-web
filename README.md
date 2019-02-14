@@ -73,24 +73,20 @@ This is needed for pre-loading the selected profile (unless you allowed local fi
 
 ### Dependencies
 
-Requires [Node and npm](https://nodejs.org/) (or [io.js](https://iojs.org)), [Bower](https://bower.io/) and [Gulp](http://gulpjs.com/):
-
-    npm install -g bower
-    npm install -g gulp
+Requires [Node.js](https://nodejs.org/) and [Yarn](https://yarnpkg.com/en/).
 
 ### Install
 
-    npm install
-    bower install
+    yarn
 
 ### Build
 
-    gulp #for release
-    gulp debug #for development
+    yarn build #for release
+    yarn build debug #for development
 
 ### Develop
 
-    gulp watch
+    yarn build watch
 
 ## License
 
