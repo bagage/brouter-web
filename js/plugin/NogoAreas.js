@@ -4,7 +4,7 @@ BR.NogoAreas = L.Control.extend({
         MSG_BUTTON_CANCEL: 'Cancel drawing no-go area',
         MSG_CREATE: 'Click and drag to draw circle',
         MSG_DISABLED: 'Click to edit',
-        MSG_ENABLED: '&square; = move / resize, <span class="fa fa-trash-o"></span> = delete,<br>click circle to quit editing',
+        MSG_ENABLED: '&square; = move / resize, <span class="fa fa-trash-o"></span> = delete,<br>click nogo to quit editing',
         STATE_CREATE: 'no-go-create',
         STATE_CANCEL: 'cancel-no-go-create'
     },
@@ -17,7 +17,7 @@ BR.NogoAreas = L.Control.extend({
         fillOpacity: 0.2,
         dashArray: null
     },
-    
+
     editStyle: {
  				color: '#fe57a1',
 				opacity: 0.6,
@@ -31,7 +31,7 @@ BR.NogoAreas = L.Control.extend({
 
     onAdd: function (map) {
         var self = this;
-        
+
         this.drawnItems = new L.FeatureGroup().addTo(map);
         this.drawnItems.on('click', function(e) {
             L.DomEvent.stop(e);
@@ -109,22 +109,40 @@ BR.NogoAreas = L.Control.extend({
                     routing.draw(true);
                 }, 0);
             }
-        }, this);       
+        }, this);
     },
 
     getOptions: function() {
         return {
-            nogos: this.drawnItems.getLayers()
+            nogos: this.drawnItems.getLayers().filter(function (e) { return e instanceof L.Circle; }),
+            polygons: this.drawnItems.getLayers().filter(function (e) { return e instanceof L.Polygon; }),
+            polylines: this.drawnItems.getLayers().filter(function (e) {
+                return (e instanceof L.Polyline) && !(e instanceof L.Polygon);
+            }),
         };
     },
 
     setOptions: function(options) {
         var nogos = options.nogos;
+        var polylines = options.polylines;
+        var polygons = options.polygons;
         this._clear();
         if (nogos) {
             for (var i = 0; i < nogos.length; i++) {
                 nogos[i].setStyle(this.style);
                 this.drawnItems.addLayer(nogos[i]);
+            }
+        }
+        if (polylines) {
+            for (var i = 0; i < polylines.length; i++) {
+                polylines[i].setStyle(this.style);
+                this.drawnItems.addLayer(polylines[i]);
+            }
+        }
+        if (polygons) {
+            for (var i = 0; i < polygons.length; i++) {
+                polygons[i].setStyle(this.style);
+                this.drawnItems.addLayer(polygons[i]);
             }
         }
     },
@@ -141,15 +159,15 @@ BR.NogoAreas = L.Control.extend({
     _fireUpdate: function () {
         this.fire('update', {options: this.getOptions()});
     },
-    
+
     getFeatureGroup: function() {
         return this.drawnItems;
     },
-    
+
     getEditGroup: function() {
         return this.editTools.editLayer;
     },
-    
+
     getButton: function() {
         return this.button;
     }
@@ -175,7 +193,7 @@ BR.EditingTooltip = L.Handler.extend({
     },
 
     addHooks: function () {
-        // hack: listen to EasyButton click (instead of editable:drawing:start), 
+        // hack: listen to EasyButton click (instead of editable:drawing:start),
         // to get mouse position from event for initial tooltip location
         L.DomEvent.addListener(this.button.button, 'click', this._addCreate, this);
 
@@ -197,7 +215,7 @@ BR.EditingTooltip = L.Handler.extend({
     },
 
     _bind: function (e) {
-        // Position tooltip at bottom of circle, less distracting than 
+        // Position tooltip at bottom of circle, less distracting than
         // sticky with cursor or at center.
 
         var layer = e.layer;
@@ -206,11 +224,14 @@ BR.EditingTooltip = L.Handler.extend({
             className: 'editing-tooltip'
         });
 
-        // Override to set position to south instead of center (circle latlng); 
+        // Override to set position to south instead of center (circle latlng);
         // works better with zooming than updating offset to match radius
         layer.openTooltip = function (layer, latlng) {
             if (!latlng && layer instanceof L.Layer) {
-                latlng = L.latLng(layer.getBounds().getSouth(), layer.getLatLng().lng);
+                latlng = L.latLng(
+                    layer.getBounds().getSouth(),
+                    0.5 * (layer.getBounds().getWest() + layer.getBounds().getEast())
+                );
             }
             L.Layer.prototype.openTooltip.call(this, layer, latlng);
         };
@@ -219,7 +240,7 @@ BR.EditingTooltip = L.Handler.extend({
     _addCreate: function (e) {
         // button cancel
         if (!this.editTools.drawing()) return;
-        
+
         var initialLatLng = this.map.mouseEventToLatLng(e);
         var tooltip = L.tooltip({
             // no effect with map tooltip
@@ -256,7 +277,7 @@ BR.EditingTooltip = L.Handler.extend({
             this.map.closeTooltip(tooltip);
         };
         this.editTools.once('editable:editing editable:drawing:cancel', closeTooltip, this);
-        
+
         if (BR.Browser.touch) {
             // can't move with cursor on touch devices, so show at start pos for a few seconds
             setTimeout(L.bind(closeTooltip, this), this.options.closeTimeout);
@@ -267,7 +288,7 @@ BR.EditingTooltip = L.Handler.extend({
         var timeoutId = setTimeout(function () {
            layer.closeTooltip();
         }, this.options.closeTimeout);
-        
+
         // prevent timer to close tooltip that changed in the meantime
         layer.once('tooltipopen', function (e) {
            clearTimeout(timeoutId);
@@ -286,7 +307,7 @@ BR.EditingTooltip = L.Handler.extend({
 
     _enable: function (e) {
         e.layer.setTooltipContent(BR.NogoAreas.MSG_ENABLED);
-        
+
         this.editTools.once('editable:editing', function(e) {
             e.layer.closeTooltip();
         }, this);
@@ -353,7 +374,7 @@ BR.DeletableCircleEditor = L.Editable.CircleEditor.extend({
     onDrawingMouseDown: function (e) {
         this._deleteLatLng.update(e.latlng);
         L.Editable.CircleEditor.prototype.onDrawingMouseDown.call(this, e);
-    }, 
+    },
 
     // override to cancel/remove created circle when added by click instead of drag, because:
     // - without resize, edit handles stacked on top of each other
