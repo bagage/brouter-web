@@ -253,6 +253,8 @@ gulp.task('release:publish', ['release:zip'], function() {
   .pipe(release({
     tag: nextVersion,
     token: ghToken,
+    owner: 'bagage',
+    repo: 'brouter-web',
     manifest: pkg,
   }))
 });
