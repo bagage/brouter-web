@@ -63,9 +63,15 @@
         // local web server with the profiles in a subdirectory or allowing file access
         // in the Browser (security!), see
         // https://github.com/mrdoob/three.js/wiki/How-to-run-things-locally
-        //BR.conf.profilesUrl = 'http://localhost:8000/profiles2/';
+        BR.conf.profilesUrl = 'http://localhost:8000/profiles2/';
         //BR.conf.profilesUrl = 'file://YOUR_PATH_TO/profiles2/';
     }
+
+    BR.conf.profilesExtra =  {
+
+    };
+    BR.conf.profiles = BR.conf.profiles.concat(BR.conf.profilesExtra);
+    BR.conf.profilesExtraUrl = 'http://localhost:8000/profiles_custom/';
 
     // Removes default base layers when 'true'. Useful for only having custom layers (see below).
     BR.conf.clearBaseLayers = false;
