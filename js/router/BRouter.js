@@ -58,8 +58,8 @@ L.BRouter = L.Class.extend({
         if (format != null) {
             params.format = format;
         } else {
-            // do not put values in URL if this is the default value (format===null)
-            if (params.profile === BR.conf.profiles[0])
+            // do not put values in URL if this is the default value or if it is invalid
+            if ((params.profile === BR.conf.profiles[0]) || !(BR.conf.profiles.includes(params.profile) || params.profile.startsWith("custom_")))
                 delete params.profile;
             if (params.alternativeidx == 0)
                 delete params.alternativeidx;
@@ -90,7 +90,7 @@ L.BRouter = L.Class.extend({
         if (params.alternativeidx) {
             opts.alternative = params.alternativeidx;
         }
-        if (params.profile) {
+        if (params.profile && (BR.conf.profiles.includes(params.profile) || params.profile.startsWith("custom_"))) {
             opts.profile = params.profile;
         }
         return opts;
@@ -168,7 +168,7 @@ L.BRouter = L.Class.extend({
 
     uploadProfile: function(profileId, profileText, cb) {
         var url = L.BRouter.URL_PROFILE_UPLOAD;
-            xhr = new XMLHttpRequest();
+        var xhr = new XMLHttpRequest();
 
         // reuse existing profile file
         if (profileId) {
