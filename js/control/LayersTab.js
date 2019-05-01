@@ -1,5 +1,6 @@
 BR.LayersTab = BR.ControlLayers.extend({
     previewLayer: null,
+    previewBounds: null,
     saveLayers: [],
 
 	initialize: function (layersConfig, baseLayers, overlays, options) {
@@ -12,96 +13,45 @@ BR.LayersTab = BR.ControlLayers.extend({
         this._map = map;
         this.onAdd(map);
 
-        var layerIndex = BR.layerIndex;
-
         L.DomUtil.get('layers-control-wrapper').appendChild(this._section);
 
         this.initButtons();
+        this.initJsTree();
 
-        var structure = {
-            'base-layers': {
-                'worldwide-international': [
-                    'standard',
-                    'OpenTopoMap',
-                    'Stamen.Terrain',
-                    'Esri.WorldImagery',
-                    'wikimedia-map',
-                    'HDM_HOT',
-                    '1010', // OpenStreetMap.se (Hydda.Full)
-                    'opencylemap',
-                    '1061', // Thunderforest Outdoors
-                    '1065', // Hike & Bike Map
-                    '1016', // 4UMaps,
-                    'openmapsurfer'
-                ],
-                'worldwide-monolingual': [
-                    'osm-mapnik-german_style',
-                    'osmfr',
-                    '1017',  // Osmapa.pl - Mapa OpenStreetMap Polska
-                    '1023', // kosmosnimki.ru
-                    '1021' // sputnik.ru
-                ],
-                'europe': [
-                    'MtbMap',
-                    '1069'  // MRI (maps.refuges.info)
-                ],
-                'europe-monolingual': [
-                    'osmfr-basque',
-                    'osmfr-breton',
-                    'osmfr-occitan'
-                ],
-                'country': [
-                    {
-                        'BE': [
-                            'osmbe',
-                            'osmbe-fr',
-                            'osmbe-nl',
-                        ]
-                    },
-                    'OpenStreetMap.CH',
-                    'topplus-open',
-                    'OpenStreetMap-turistautak',
-                    {
-                        'IL': [
-                            'Israel_Hiking',
-                            'Israel_MTB',
-                        ]
-                    },
-                    'mtbmap-no',
-                    {
-                        'SK': [
-                            'Freemap.sk-Car',
-                            'Freemap.sk-Hiking',
-                            'Freemap.sk-Cyclo',
-                        ]
-                    },
-                    'osm-cambodia_laos_thailand_vietnam-bilingual'
-                ]
-            },
-            'overlays': {
-                'worldwide': [
-                    'HikeBike.HillShading',
-                    'Waymarked_Trails-Cycling',
-                    'Waymarked_Trails-Hiking',
-                    'Waymarked_Trails-MTB',
-                    'mapillary-coverage-raster'
-                ],
-                'country': [
-                    'historic-place-contours',
-                    'hu-hillshade',
-                    {
-                        'PL': [
-                            'mapaszlakow-cycle',
-                            'mapaszlakow-bike',
-                            'mapaszlakow-hike',
-                            'mapaszlakow-mtb',
-                            'mapaszlakow-incline'
-                        ]
-                    }
-                ]
+        return this;
+    },
+
+    initButtons: function () {
+       var expandTree = function (e) {
+            this.jstree.open_all();
+        };
+        var collapseTree = function (e) {
+            this.jstree.close_all();
+        };
+
+        var toggleOptionalLayers = function (e) {
+            var button = L.DomUtil.get('optional_layers_button');
+            var treeButtons = L.DomUtil.get('tree-button-group');
+            var div = L.DomUtil.get('optional-layers-tree');
+
+            div.hidden = !div.hidden;
+            treeButtons.hidden = !treeButtons.hidden;
+            button.classList.toggle('active');
+
+            if (div.hidden) {
+                this.deselectNode();
             }
         };
-        var treeData = this.toJsTree(structure);
+
+        L.DomUtil.get('expand_tree_button').onclick = L.bind(expandTree, this);
+        L.DomUtil.get('collapse_tree_button').onclick = L.bind(collapseTree, this);
+
+        L.DomUtil.get('optional_layers_button').onclick = L.bind(toggleOptionalLayers, this);
+    },
+
+    initJsTree: function () {
+        var layerIndex = BR.layerIndex;
+        var treeData = this.toJsTree(BR.confLayers.tree);
         var oldSelected = null;
 
         var onSelectNode = function (e, data) {
@@ -109,7 +59,7 @@ BR.LayersTab = BR.ControlLayers.extend({
             var selected = data.selected[0];
 
             if (selected !== oldSelected) {
-                this.showPreview(this.createLayer(layerData));
+                this.showPreview(layerData);
                 oldSelected = selected;
             } else {
                 data.instance.deselect_node(data.node);
@@ -176,36 +126,6 @@ BR.LayersTab = BR.ControlLayers.extend({
                 }
             });
         this.jstree = $('#optional-layers-tree').jstree(true);
-
-        return this;
-    },
-
-    initButtons: function () {
-       var expandTree = function (e) {
-            this.jstree.open_all();
-        };
-        var collapseTree = function (e) {
-            this.jstree.close_all();
-        };
-
-        var toggleOptionalLayers = function (e) {
-            var button = L.DomUtil.get('optional_layers_button');
-            var treeButtons = L.DomUtil.get('tree-button-group');
-            var div = L.DomUtil.get('optional-layers-tree');
-
-            div.hidden = !div.hidden;
-            treeButtons.hidden = !treeButtons.hidden;
-            button.classList.toggle('active');
-
-            if (div.hidden) {
-                this.deselectNode();
-            }
-        };
-
-        L.DomUtil.get('expand_tree_button').onclick = L.bind(expandTree, this);
-        L.DomUtil.get('collapse_tree_button').onclick = L.bind(collapseTree, this);
-
-        L.DomUtil.get('optional_layers_button').onclick = L.bind(toggleOptionalLayers, this);
     },
 
     toJsTree: function (layerTree) {
@@ -385,6 +305,27 @@ BR.LayersTab = BR.ControlLayers.extend({
         return false;
     },
 
+    showPreviewBounds: function (layerData) {
+        if (layerData.geometry) {
+            this.previewBounds = L.geoJson(layerData.geometry, {
+                // fill/mask outside of bounds polygon with Leaflet.snogylop
+                invert: true,
+                // reduce unmasked areas appearing due to clipping while panning and zooming out
+                renderer: L.svg({ padding: 1 }),
+                color: '#333',
+                fillOpacity: 0.4,
+                weight: 2
+            }).addTo(this._map);
+        }
+    },
+
+    removePreviewBounds: function () {
+        if (this.previewBounds && this._map.hasLayer(this.previewBounds)) {
+            this._map.removeLayer(this.previewBounds);
+            this.previewBounds = null;
+        }
+    },
+
     deselectNode: function () {
         var selected = this.jstree.get_selected();
         if (selected.length > 0) {
@@ -396,23 +337,29 @@ BR.LayersTab = BR.ControlLayers.extend({
         // execute after current input click handler,
         // otherwise added overlay checkbox state doesn't update
         setTimeout(L.Util.bind(function () {
+            this.removePreviewBounds();
             this.removePreviewLayer();
             this.restoreActiveLayers(true);
             this.deselectNode();
         }, this), 0);
     },
 
-    showPreview: function (layer) {
+    showPreview: function (layerData) {
+        var layer = this.createLayer(layerData);
         this._map.addLayer(layer);
+        this.removePreviewBounds();
         if (!this.removePreviewLayer()) {
             this.saveRemoveActiveLayers();
             this._map.once('baselayerchange', this.onBaselayerchange, this);
         }
         this.previewLayer = layer;
+
+        this.showPreviewBounds(layerData);
     },
 
     hidePreview: function (layer) {
         this._map.off('baselayerchange', this.onBaselayerchange, this);
+        this.removePreviewBounds();
         this.removePreviewLayer();
         this.restoreActiveLayers();
     }

@@ -1,16 +1,7 @@
 BR.LayersConfig = L.Class.extend({
-    defaultBaseLayers: [
-        'standard',
-        'osm-mapnik-german_style',
-        'OpenTopoMap',
-        'Stamen.Terrain',
-        'Esri.WorldImagery'
-    ],
-    defaultOverlays: [
-        'HikeBike.HillShading',
-        'Waymarked_Trails-Cycling',
-        'Waymarked_Trails-Hiking'
-    ],
+    defaultBaseLayers: BR.confLayers.defaultBaseLayers,
+    defaultOverlays: BR.confLayers.defaultOverlays,
+    legacyNameToIdMap: BR.confLayers.legacyNameToIdMap,
 
     legacyNameToIdMap: {
         'OpenStreetMap': 'standard',
@@ -25,9 +16,7 @@ BR.LayersConfig = L.Class.extend({
         this._map = map;
 
         this._addLeafletProvidersLayers();
-
         this._customizeLayers();
-
         this.loadDefaultLayers();
     },
 
@@ -53,13 +42,7 @@ BR.LayersConfig = L.Class.extend({
     },
 
     _addLeafletProvidersLayers: function () {
-        var includeList = [
-            'Stamen.Terrain',
-            'MtbMap',
-            'OpenStreetMap.CH',
-            'HikeBike.HillShading',
-            'Esri.WorldImagery'
-        ];
+        var includeList = BR.confLayers.leafletProvidersIncludeList;
 
         for (var i = 0; i < includeList.length; i++) {
             var id = includeList[i];
@@ -77,227 +60,7 @@ BR.LayersConfig = L.Class.extend({
     },
 
     _customizeLayers: function () {
-        // add Thunderforest API key variable
-        BR.layerIndex['opencylemap'].properties.url = 'https://{switch:a,b,c}.tile.thunderforest.com/cycle/{zoom}/{x}/{y}.png?apikey={keys_thunderforest}';
-        BR.layerIndex['1061'].properties.url = 'http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey={keys_thunderforest}';
-
-        BR.layerIndex['HikeBike.HillShading'].properties.overlay = true;
-
-        var propertyOverrides = {
-            'standard': {
-                'name': i18next.t('map.layer.osm'),
-                'attribution': {
-                    'html': '&copy; <a target="_blank" href="https://www.openstreetmap.org/copyright">openstreetmap.org</a>, <a target="_blank" href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a>'
-                },
-                'mapUrl': 'https://www.openstreetmap.org/#map={zoom}/{lat}/{lon}'
-            },
-            'OpenTopoMap': {
-                'name': i18next.t('map.layer.topo'),
-                'attribution': {
-                    'html': '&copy; <a target="_blank" href="https://opentopomap.org/about#verwendung">OpenTopoMap</a>, <a target="_blank" href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA 3.0</a>; <a target="_blank" href="http://viewfinderpanoramas.org">SRTM</a>'
-                },
-                'mapUrl': 'https://opentopomap.org/#map={zoom}/{lat}/{lon}'
-            },
-            'Stamen.Terrain': {
-                'name': i18next.t('map.layer.stamen-terrain'),
-                'attribution': '&copy; <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>',
-                'mapUrl': 'http://maps.stamen.com/#terrain/{zoom}/{lat}/{lon}'
-            },
-            'Esri.WorldImagery': {
-                'name': i18next.t('map.layer.esri'),
-                'nameShort': i18next.t('credits.esri-tiles'),
-                'attribution': i18next.t('credits.esri-license'),
-                'mapUrl': 'http://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9'
-            },
-            'wikimedia-map': {
-                'mapUrl': 'https://maps.wikimedia.org/#{zoom}/{lat}/{lon}'
-            },
-            'HDM_HOT': {
-                'nameShort': 'HOT',
-                'mapUrl': 'http://map.hotosm.org/#{zoom}/{lat}/{lon}'
-            },
-            // OpenStreetMap.se (Hydda.Full)
-            '1010': {
-                'mapUrl': 'https://maps.openstreetmap.se/#{zoom}/{lat}/{lon}'
-            },
-            'opencylemap': {
-                'name': i18next.t('map.layer.cycle'),
-                'nameShort': 'OpenCycleMap',
-                'mapUrl': 'https://www.opencyclemap.org/?zoom={zoom}&lat={lat}&lon={lon}&layers=B0000'
-            },
-            '1061': {
-                'name': i18next.t('map.layer.outdoors'),
-                'nameShort': 'Outdoors',
-                'mapUrl': 'https://www.opencyclemap.org/?zoom={zoom}&lat={lat}&lon={lon}&layers=000B0'
-            },
-            // Hike & Bike Map
-            '1065': {
-                'mapUrl': 'http://hikebikemap.org/?zoom={zoom}&lat={lat}&lon={lon}&layer=HikeBikeMap'
-            },
-            // 4UMaps
-            '1016': {
-                'mapUrl': 'https://www.4umaps.com/map.htm?zoom={zoom}&lat={lat}&lon={lon}&layers=B00'
-            },
-            'openmapsurfer': {
-                'mapUrl': 'https://maps.openrouteservice.org/directions?n1={lat}&n2={lon}&n3={zoom}&b=0&c=0&k1=en-US&k2=km'
-            },
-            'osm-mapnik-german_style': {
-                'name': i18next.t('map.layer.osmde'),
-                'language_code': 'de',
-                'attribution': {
-                    'html': '&copy; <a target="_blank" href="https://openstreetmap.de/karte.html">openstreetmap.de</a>'
-                },
-                'mapUrl': 'https://www.openstreetmap.de/karte.html?zoom={zoom}&lat={lat}&lon={lon}&layers=B000TF'
-            },
-            'osmfr': {
-                'language_code': 'fr',
-                'nameShort': 'OSM French',
-                'mapUrl': 'http://tile.openstreetmap.fr/?layers=B00000000FFFFFF&zoom={zoom}&lat={lat}&lon={lon}'
-            },
-            // Osmapa.pl - Mapa OpenStreetMap Polska
-            '1017': {
-                'language_code': 'pl',
-                'mapUrl': 'http://osmapa.pl/#lat={lat}&lon={lon}&z={zoom}&m=os'
-            },
-            // kosmosnimki.ru
-            '1023': {
-                'language_code': 'ru',
-                'mapUrl': 'http://kosmosnimki.ru/'
-            },
-            // sputnik.ru
-            '1021': {
-                'language_code': 'ru',
-                'mapUrl': 'http://maps.sputnik.ru/?lat={lat}&lng={lon}&zoom={zoom}'
-            },
-            'MtbMap': {
-                'mapUrl': 'http://mtbmap.cz/#zoom={zoom}&lat={lat}&lon={lon}'
-            },
-            // MRI (maps.refuges.info)
-            '1069': {
-                'nameShort': 'Refuges.info',
-                'mapUrl': 'http://maps.refuges.info/?zoom={zoom}&lat={lat}&lon={lon}&layers=B'
-            },
-            'osmfr-basque': {
-                'language_code': 'eu',
-                'nameShort': 'OSM Basque',
-                'mapUrl': 'http://tile.openstreetmap.fr/?layers=00000000BFFFFFF&zoom={zoom}&lat={lat}&lon={lon}'
-            },
-            'osmfr-breton': {
-                'language_code': 'br',
-                'nameShort': 'OSM Breton',
-                'mapUrl': 'https://kartenn.openstreetmap.bzh/#map={zoom}/{lat}/{lon}'
-            },
-            'osmfr-occitan': {
-                'language_code': 'oc',
-                'nameShort': 'OSM Occitan',
-                'mapUrl': 'http://tile.openstreetmap.fr/?layers=0000000B0FFFFFF&zoom={zoom}&lat={lat}&lon={lon}'
-            },
-            'osmbe': {
-                'nameShort': 'OSM Belgium',
-                'mapUrl': 'https://tile.osm.be/#map={zoom}/{lat}/{lon}'
-            },
-            'osmbe-fr': {
-                'nameShort': 'OSM Belgium (fr)',
-                'mapUrl': 'https://tile.osm.be/#map={zoom}/{lat}/{lon}'
-            },
-            'osmbe-nl': {
-                'nameShort': 'OSM Belgium (nl)',
-                'mapUrl': 'https://tile.osm.be/#map={zoom}/{lat}/{lon}'
-            },
-            'OpenStreetMap.CH': {
-                'country_code': 'CH',
-                'mapUrl': 'https://osm.ch/#{zoom}/{lat}/{lon}'
-            },
-            'topplus-open': {
-                'country_code': 'DE',
-                'mapUrl': 'http://www.geodatenzentrum.de/geodaten/gdz_rahmen.gdz_div?gdz_spr=deu&gdz_user_id=0&gdz_akt_zeile=5&gdz_anz_zeile=1&gdz_unt_zeile=41'
-            },
-
-            'OpenStreetMap-turistautak': {
-                'nameShort': 'OSM Turistautak',
-                'mapUrl': 'https://turistautak.openstreetmap.hu/?zoom={zoom}&lat={lat}&lon={lon}&layers=0B00F'
-            },
-            'Israel_Hiking': {
-                'mapUrl': 'https://israelhiking.osm.org.il/map/{zoom}/{lat}/{lon}'
-            },
-            'Israel_MTB': {
-                'mapUrl': 'https://israelhiking.osm.org.il/map/{zoom}/{lat}/{lon}'
-            },
-            'mtbmap-no': {
-                'mapUrl': 'https://mtbmap.no/#{zoom}/{lat}/{lon}'
-            },
-            'Freemap.sk-Car': {
-                'mapUrl': 'https://www.freemap.sk/?map={zoom}/{lat}/{lon}&layers=A'
-            },
-            'Freemap.sk-Hiking': {
-                'mapUrl': 'https://www.freemap.sk/?map={zoom}/{lat}/{lon}&layers=T'
-            },
-            'Freemap.sk-Cyclo': {
-                'mapUrl': 'https://www.freemap.sk/?map={zoom}/{lat}/{lon}&layers=C'
-            },
-            'osm-cambodia_laos_thailand_vietnam-bilingual': {
-                'country_code': 'TH+',
-                'nameShort': 'Thaimap',
-                'mapUrl': 'http://thaimap.osm-tools.org/?zoom={zoom}&lat={lat}&lon={lon}&layers=BT'
-            },
-            'HikeBike.HillShading': {
-                'name': i18next.t('map.layer.hikebike-hillshading'),
-                'nameShort': i18next.t('map.hikebike-hillshading'),
-                'attribution': '&copy; <a target="_blank" href="http://hikebikemap.org">hikebikemap.org</a>; SRTM3 v2 (<a target="_blank" href="http://www2.jpl.nasa.gov/srtm/">NASA</a>)',
-                'mapUrl': 'http://hikebikemap.org/?zoom={zoom}&lat={lat}&lon={lon}&layer=HikeBikeMap'
-            },
-            'Waymarked_Trails-Cycling': {
-                'name': i18next.t('map.layer.cycling'),
-                'nameShort': i18next.t('map.cycling'),
-                'attribution': {
-                    'html': '&copy; <a target="_blank" href="https://cycling.waymarkedtrails.org/en/help/legal">waymarkedtrails.org</a>, <a target="_blank" href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.en">CC-BY-SA 3.0 DE</a>'
-                },
-                'mapUrl': 'http://cycling.waymarkedtrails.org/#?map={zoom}!{lat}!{lon}'
-            },
-            'Waymarked_Trails-Hiking': {
-                'name': i18next.t('map.layer.hiking'),
-                'nameShort': i18next.t('map.hiking'),
-                'attribution': {
-                    'html': '&copy; <a target="_blank" href="https://hiking.waymarkedtrails.org/en/help/legal">waymarkedtrails.org</a>, <a target="_blank" href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.en">CC-BY-SA 3.0 DE</a>'
-                },
-                'mapUrl': 'http://hiking.waymarkedtrails.org/#?map={zoom}!{lat}!{lon}'
-            },
-            'Waymarked_Trails-MTB': {
-                'nameShort': 'MTB',
-                'mapUrl': 'http://mtb.waymarkedtrails.org/#?map={zoom}!{lat}!{lon}'
-            },
-            'mapillary-coverage-raster': {
-                'nameShort': 'Mapillary',
-                'mapUrl': 'https://www.mapillary.com/app/?lat={lat}&lng={lon}&z={zoom}&menu=false'
-            },
-            'historic-place-contours': {
-                'mapUrl': 'http://gk.historic.place/historische_objekte/?zoom={zoom}&lat={lat}&lon={lon}&pid=GhHaSaHe'
-            },
-            'hu-hillshade': {
-                'nameShort': 'Hillshade HU',
-                'mapUrl': 'http://map.turistautak.hu/?zoom={zoom}&lat={lat}&lon={lon}&layers=0B000FTF'
-            },
-            'mapaszlakow-cycle': {
-                'nameShort': 'Cycleways PL',
-                'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
-            },
-            'mapaszlakow-bike': {
-                'nameShort': 'Bicycle PL',
-                'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
-            },
-            'mapaszlakow-hike': {
-                'nameShort': 'Hiking PL',
-                'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
-            },
-            'mapaszlakow-mtb': {
-                'nameShort': 'MTB:scale PL',
-                'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
-            },
-            'mapaszlakow-incline': {
-                'nameShort': 'Incline PL',
-                'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
-            }
-        };
+        var propertyOverrides = BR.confLayers.getPropertyOverrides();
 
         for (id in propertyOverrides) {
             var layer = BR.layerIndex[id];
@@ -313,6 +76,11 @@ BR.LayersConfig = L.Class.extend({
                 console.error('Layer not found: ' + id);
             }
         }
+
+        BR.layerIndex['MtbMap'].geometry =  BR.confLayers.europeGeofabrik;
+        BR.layerIndex['1069'].geometry =  BR.confLayers.europeGeofabrik;
+
+        BR.layerIndex['OpenStreetMap.CH'].geometry = BR.confLayers.switzerlandPadded;
     },
 
     isDefaultLayer: function(id, overlay) {
@@ -422,7 +190,8 @@ BR.LayersConfig = L.Class.extend({
 
 
         var options = {
-            maxZoom: this._map.getMaxZoom()
+            maxZoom: this._map.getMaxZoom(),
+            bounds: layerData.geometry && !props.worldTiles ? L.geoJson(layerData.geometry).getBounds() : null
         };
         if (props.mapUrl) {
             options.mapLink = '<a target="_blank" href="' + props.mapUrl + '">' + (props.nameShort || props.name) + '</a>';
@@ -446,7 +215,7 @@ BR.LayersConfig = L.Class.extend({
 
         } else if (props.dataSource === 'LayersCollection') {
             layer = L.tileLayer(url, L.Util.extend(options, {
-                minZoom: props.minZoom,
+                minZoom: props.minZoom || 0,
                 maxNativeZoom: props.maxZoom
             }));
             if (props.subdomains) {
@@ -458,7 +227,7 @@ BR.LayersConfig = L.Class.extend({
             var url = convertUrlJosm(josmUrl);
 
             var josmOptions = L.Util.extend(options, {
-                minZoom: props.min_zoom,
+                minZoom: props.min_zoom || 0,
                 maxNativeZoom: props.max_zoom,
                 subdomains: getSubdomains(josmUrl),
                 attribution: convertAttributionJosm(props)

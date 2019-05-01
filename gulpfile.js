@@ -35,7 +35,7 @@ var paths = {
     'node_modules/jquery/dist/jquery.js',
     'node_modules/tether/dist/js/tether.js',
     'node_modules/async/lib/async.js'
-  ].concat(mainNpmFiles().filter(f => 
+  ].concat(mainNpmFiles().filter(f =>
     RegExp('.*\\.js', 'i').test(f) &&
     !RegExp('.*\\.min\\.js', 'i').test(f) &&
     !RegExp('url-search-params/.*\\.js', 'i').test(f)
@@ -49,7 +49,7 @@ var paths = {
     'js/control/*.js',
     'js/index.js'
   ]),
-  styles: mainNpmFiles().filter(f => 
+  styles: mainNpmFiles().filter(f =>
     RegExp('.*\\.css', 'i').test(f) &&
     !RegExp('.*\\.min\\.css', 'i').test(f)
   ).concat('css/*.css'),
@@ -58,6 +58,13 @@ var paths = {
   locales: 'locales/*.json',
   layers: 'layers/**/*.geojson',
   layersDestName: 'layers.js',
+  layersConfig: [
+    'layers/config/config.js',
+    'layers/config/tree.js',
+    'layers/config/overrides.js',
+    'layers/config/geometry.js'
+  ],
+  layersConfigDestName: 'layersConf.js',
   dest: 'dist',
   destName: 'brouter-web'
 };
@@ -145,6 +152,7 @@ gulp.task('watch', function() {
     }
   });
   gulp.watch(paths.styles, ['styles']);
+  gulp.watch(paths.layersConfig, ['layers_config']);
 });
 
 // Print paths to console, for manually debugging the gulp build
@@ -272,7 +280,7 @@ gulp.task('i18next', function() {
         resource: {
             // the source path is relative to current working directory
             loadPath: 'locales/{{lng}}.json',
-            
+
             // the destination path is relative to your `gulp.dest()` path
             savePath: 'locales/{{lng}}.json'
         }
@@ -280,13 +288,22 @@ gulp.task('i18next', function() {
     .pipe(gulp.dest('.'));
 })
 
+gulp.task('layers_config', function () {
+  return gulp.src(paths.layersConfig)
+  .pipe(concat(paths.layersConfigDestName))
+  .pipe(gulp.dest(paths.dest));
+});
+
 // Bundles layer files. To download and extract run "yarn layers"
-gulp.task('layers', function () {
+gulp.task('layers', ['layers_config'], function () {
   return gulp.src(paths.layers)
-    // Workaround to get file extension removed from the dictionary key 
+    // Workaround to get file extension removed from the dictionary key
     .pipe(rename({ extname: ".json" }))
     .pipe(jsonConcat(paths.layersDestName, function(data){
-      return Buffer.from('BR.layerIndex = ' + JSON.stringify(data, null, 2) + ';');
+      var header = '// Licensed under the MIT License (https://github.com/nrenner/brouter-web#license + Credits and Licenses),\n'
+        + '// except JOSM imagery database (dataSource=JOSM) is licensed under Creative Commons (CC-BY-SA),\n'
+        + '// see https://josm.openstreetmap.de/wiki/Maps#Otherimportantinformation\n';
+      return Buffer.from(header + 'BR.layerIndex = ' + JSON.stringify(data, null, 2) + ';');
     }))
     .pipe(gulp.dest(paths.dest));
 });
