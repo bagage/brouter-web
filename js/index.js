@@ -32,9 +32,10 @@
             trackMessages,
             sidebar,
             drawButton,
-            deleteButton,
+            deleteRouteButton,
             drawToolbar,
             urlHash,
+            reverseRoute,
             saveWarningShown = false;
 
         // By default bootstrap-select use glyphicons
@@ -70,7 +71,23 @@
             }]
         });
 
-        deleteButton = L.easyButton(
+        reverseRouteButton = L.easyButton(
+            'fa-random',
+            function () {
+                routing.reverse();
+            },
+            i18next.t('map.reverse-route')
+        );
+
+        deletePointButton = L.easyButton(
+            '<span><i class="fa fa-caret-left"></i><i class="fa fa-map-marker" style="margin-left: 1px; color: gray;"></i></span>',
+            function () {
+                routing.removeWaypoint(routing.getLast(), function(err, data) {});
+            },
+            i18next.t('map.delete-last-point')
+        );
+
+        deleteRouteButton = L.easyButton(
             'fa-trash-o',
             function () {
                 bootbox.prompt({
@@ -227,7 +244,7 @@
 
         routing.addTo(map);
         elevation.addBelow(map);
-
+        
         sidebar = BR.sidebar({
             defaultTabId: BR.conf.transit ? 'tab_itinerary' : 'tab_profile',
             listeningTabs: {
@@ -240,7 +257,7 @@
         }
 
         nogos.addTo(map);
-        drawToolbar = L.easyBar([drawButton, nogos.getButton(), deleteButton]).addTo(map);
+        drawToolbar = L.easyBar([drawButton, reverseRouteButton, nogos.getButton(), deletePointButton, deleteRouteButton]).addTo(map);
         nogos.preventRoutePointOnCreate(routing);
 
         if (BR.keys.strava) {
@@ -258,6 +275,7 @@
 
         var onHashChangeCb = function(url) {
             var url2params = function (s) {
+                s = s.replace(/;/g, '|');
                 var p = {};
                 var sep = '&';
                 if (s.search('&amp;') !== -1)
@@ -296,6 +314,7 @@
         urlHash = new L.Hash(null, null);
         urlHash.additionalCb = function() {
                 var url = router.getUrl(routing.getWaypoints(), null).substr('brouter?'.length+1);
+                url = url.replace(/\|/g, ';');
                 return url.length > 0 ? '&' + url : null;
             };
         urlHash.onHashChangeCb = onHashChangeCb;
@@ -415,9 +434,7 @@
 
                 var geoJSON = L.geoJson(turf.featureCollection(cleanedGeoJSONFeatures), {
                     onEachFeature: function (feature, layer) {
-                        if (!feature.properties.nogoWeight) {
-                            feature.properties.nogoWeight = nogoWeight;
-                        }
+                        layer.options.nogoWeight = feature.properties.nogoWeight || nogoWeight;
                     }
                 });
                 var nogosPoints = geoJSON.getLayers().filter(function (e) {

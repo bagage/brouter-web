@@ -212,20 +212,8 @@ BR.confLayers.getPropertyOverrides = function() {
             'nameShort': 'Cycleways PL',
             'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
         },
-        'mapaszlakow-bike': {
-            'nameShort': 'Bicycle PL',
-            'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
-        },
-        'mapaszlakow-hike': {
-            'nameShort': 'Hiking PL',
-            'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
-        },
-        'mapaszlakow-mtb': {
-            'nameShort': 'MTB:scale PL',
-            'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
-        },
-        'mapaszlakow-incline': {
-            'nameShort': 'Incline PL',
+        'mapaszlakow-routes': {
+            'nameShort': 'Routes PL',
             'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
         }
     };

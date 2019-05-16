@@ -400,13 +400,13 @@
             "url": "http://mapaszlakow.eu/"
         },
         "country_code": "PL",
-        "id": "mapaszlakow-incline",
+        "id": "mapaszlakow-routes",
         "max_zoom": 16,
-        "min_zoom": 14,
-        "name": "Incline (Mapa Szlaków)",
+        "min_zoom": 6,
+        "name": "Routes (Mapa Szlaków)",
         "overlay": true,
         "type": "tms",
-        "url": "http://mapaszlakow.eu/incline{zoom}/{zoom}/{x}/{y}.png"
+        "url": "http://mapaszlakow.eu/b{zoom}/{zoom}/{x}/{y}.png"
     },
     "type": "Feature"
 }

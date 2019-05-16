@@ -24,10 +24,6 @@ signing up, you can go to [BRouter's project
 page](https://www.transifex.com/openstreetmap/brouter-web/dashboard/), select a language and
 click **Translate** to start translating.
 
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src="https://www.transifex.com/_/charts/js/openstreetmap/brouter-web/inc_js/brouter-website/"></script>
-<div id="txchart-brouter-web-brouter-website">Loading chart...</div>
-
 ## Installation
 
 As an alternative to the above online version, the standalone server of BRouter can also be run on your local desktop.
@@ -174,4 +170,7 @@ imagery database is licensed under [CC-BY-SA](https://creativecommons.org/licens
 Copyright (c) 2016 Eduard &lt;edward17&gt;; [MIT License](https://github.com/Edward17/LayersCollection/blob/gh-pages/LICENSE.md)
 * [Leaflet-providers](https://github.com/leaflet-extras/leaflet-providers)  
 Copyright (c) 2013 Leaflet Providers contributors All rights reserved.; [2-clause BSD License](https://github.com/leaflet-extras/leaflet-providers/blob/master/license.md)
-
+* [Fetch polyfill](https://github.com/Github/fetch)  
+Copyright (c) 2014-2016 GitHub, Inc.; [MIT License](https://github.com/github/fetch/blob/master/LICENSE)
+* [Promise Polyfill](https://github.com/taylorhakes/promise-polyfill)  
+Copyright (c) 2014 Taylor Hakes, Copyright (c) 2014 Forbes Lindesay; [MIT License](https://github.com/taylorhakes/promise-polyfill/blob/master/LICENSE)
