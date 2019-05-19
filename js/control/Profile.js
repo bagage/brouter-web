@@ -81,7 +81,7 @@ BR.Profile = L.Evented.extend({
                     L.bind(function(err, profileText) {
                         if (err) {
                             console.warn(
-                                'Error getting profile from"' +
+                                'Error getting profile from "' +
                                     profileUrl +
                                     '": ' +
                                     err

@@ -3,15 +3,6 @@ BR.LayersConfig = L.Class.extend({
     defaultOverlays: BR.confLayers.defaultOverlays,
     legacyNameToIdMap: BR.confLayers.legacyNameToIdMap,
 
-    legacyNameToIdMap: {
-        OpenStreetMap: 'standard',
-        'OpenStreetMap.de': 'osm-mapnik-german_style',
-        OpenTopoMap: 'OpenTopoMap',
-        'Esri World Imagery': 'Esri.WorldImagery',
-        'Cycling (Waymarked Trails)': 'Waymarked_Trails-Cycling',
-        'Hiking (Waymarked Trails)': 'Waymarked_Trails-Hiking'
-    },
-
     initialize: function(map) {
         this._map = map;
 
