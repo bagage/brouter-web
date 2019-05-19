@@ -4,15 +4,15 @@ BR.LayersConfig = L.Class.extend({
     legacyNameToIdMap: BR.confLayers.legacyNameToIdMap,
 
     legacyNameToIdMap: {
-        'OpenStreetMap': 'standard',
+        OpenStreetMap: 'standard',
         'OpenStreetMap.de': 'osm-mapnik-german_style',
-        'OpenTopoMap': 'OpenTopoMap',
+        OpenTopoMap: 'OpenTopoMap',
         'Esri World Imagery': 'Esri.WorldImagery',
         'Cycling (Waymarked Trails)': 'Waymarked_Trails-Cycling',
         'Hiking (Waymarked Trails)': 'Waymarked_Trails-Hiking'
     },
 
-    initialize: function (map) {
+    initialize: function(map) {
         this._map = map;
 
         this._addLeafletProvidersLayers();
@@ -22,7 +22,7 @@ BR.LayersConfig = L.Class.extend({
 
     loadDefaultLayers: function() {
         if (BR.Util.localStorageAvailable()) {
-            var item = localStorage.getItem("map/defaultLayers");
+            var item = localStorage.getItem('map/defaultLayers');
             if (item) {
                 var defaultLayers = JSON.parse(item);
                 this.defaultBaseLayers = defaultLayers.baseLayers;
@@ -31,17 +31,20 @@ BR.LayersConfig = L.Class.extend({
         }
     },
 
-    storeDefaultLayers: function (baseLayers, overlays) {
+    storeDefaultLayers: function(baseLayers, overlays) {
         if (BR.Util.localStorageAvailable()) {
             var defaultLayers = {
                 baseLayers: baseLayers,
                 overlays: overlays
             };
-            localStorage.setItem("map/defaultLayers", JSON.stringify(defaultLayers));
+            localStorage.setItem(
+                'map/defaultLayers',
+                JSON.stringify(defaultLayers)
+            );
         }
     },
 
-    _addLeafletProvidersLayers: function () {
+    _addLeafletProvidersLayers: function() {
         var includeList = BR.confLayers.leafletProvidersIncludeList;
 
         for (var i = 0; i < includeList.length; i++) {
@@ -53,13 +56,13 @@ BR.LayersConfig = L.Class.extend({
                     name: id.replace('.', ' '),
                     dataSource: 'leaflet-providers'
                 },
-                type: "Feature"
+                type: 'Feature'
             };
             BR.layerIndex[id] = obj;
         }
     },
 
-    _customizeLayers: function () {
+    _customizeLayers: function() {
         var propertyOverrides = BR.confLayers.getPropertyOverrides();
 
         for (id in propertyOverrides) {
@@ -77,10 +80,11 @@ BR.LayersConfig = L.Class.extend({
             }
         }
 
-        BR.layerIndex['MtbMap'].geometry =  BR.confLayers.europeGeofabrik;
-        BR.layerIndex['1069'].geometry =  BR.confLayers.europeGeofabrik;
+        BR.layerIndex['MtbMap'].geometry = BR.confLayers.europeGeofabrik;
+        BR.layerIndex['1069'].geometry = BR.confLayers.europeGeofabrik;
 
-        BR.layerIndex['OpenStreetMap.CH'].geometry = BR.confLayers.switzerlandPadded;
+        BR.layerIndex['OpenStreetMap.CH'].geometry =
+            BR.confLayers.switzerlandPadded;
     },
 
     isDefaultLayer: function(id, overlay) {
@@ -120,7 +124,7 @@ BR.LayersConfig = L.Class.extend({
 
     // own convention: key placeholder with prefix
     // e.g. ?api_key={keys_openrouteservice}
-    getKeyName: function (url) {
+    getKeyName: function(url) {
         var result = null;
         // L.Util.template only matches [\w_-]
         var prefix = 'keys_';
@@ -141,7 +145,7 @@ BR.LayersConfig = L.Class.extend({
         return result;
     },
 
-    createLayer: function (layerData) {
+    createLayer: function(layerData) {
         var props = layerData.properties;
         var url = props.url;
         var layer;
@@ -176,7 +180,12 @@ BR.LayersConfig = L.Class.extend({
                 if (attr.html) {
                     result = attr.html;
                 } else if (attr.url && attr.text) {
-                    result = '<a href="' + attr.url + '" target="_blank" rel="noopener">' + attr.text + '</a>';
+                    result =
+                        '<a href="' +
+                        attr.url +
+                        '" target="_blank" rel="noopener">' +
+                        attr.text +
+                        '</a>';
                 } else if (attr.text) {
                     result = attr.text;
                 }
@@ -188,13 +197,20 @@ BR.LayersConfig = L.Class.extend({
             return result;
         }
 
-
         var options = {
             maxZoom: this._map.getMaxZoom(),
-            bounds: layerData.geometry && !props.worldTiles ? L.geoJson(layerData.geometry).getBounds() : null
+            bounds:
+                layerData.geometry && !props.worldTiles
+                    ? L.geoJson(layerData.geometry).getBounds()
+                    : null
         };
         if (props.mapUrl) {
-            options.mapLink = '<a target="_blank" href="' + props.mapUrl + '">' + (props.nameShort || props.name) + '</a>';
+            options.mapLink =
+                '<a target="_blank" href="' +
+                props.mapUrl +
+                '">' +
+                (props.nameShort || props.name) +
+                '</a>';
         }
         if (props.attribution) {
             options.attribution = props.attribution;
@@ -209,15 +225,17 @@ BR.LayersConfig = L.Class.extend({
             layer = L.tileLayer.provider(props.id);
 
             var layerOptions = L.Util.extend(options, {
-                maxNativeZoom: layer.options.maxZoom,
+                maxNativeZoom: layer.options.maxZoom
             });
             L.setOptions(layer, layerOptions);
-
         } else if (props.dataSource === 'LayersCollection') {
-            layer = L.tileLayer(url, L.Util.extend(options, {
-                minZoom: props.minZoom || 0,
-                maxNativeZoom: props.maxZoom
-            }));
+            layer = L.tileLayer(
+                url,
+                L.Util.extend(options, {
+                    minZoom: props.minZoom || 0,
+                    maxNativeZoom: props.maxZoom
+                })
+            );
             if (props.subdomains) {
                 layer.subdomains = props.subdomains;
             }
@@ -234,10 +252,13 @@ BR.LayersConfig = L.Class.extend({
             });
 
             if (props.type && props.type === 'wms') {
-                layer = L.tileLayer.wms(url, L.Util.extend(josmOptions, {
-                    layers: props.layers,
-                    format: props.format
-                }));
+                layer = L.tileLayer.wms(
+                    url,
+                    L.Util.extend(josmOptions, {
+                        layers: props.layers,
+                        format: props.format
+                    })
+                );
             } else {
                 layer = L.tileLayer(url, josmOptions);
             }
@@ -246,9 +267,9 @@ BR.LayersConfig = L.Class.extend({
         // Layer attribution here only as short link to original site,
         // to keep current position use placeholders: {zoom}/{lat}/{lon}
         // Copyright attribution in index.html #credits
-        var getAttribution = function () {
+        var getAttribution = function() {
             return this.options.mapLink;
-        }
+        };
         layer.getAttribution = getAttribution;
 
         layer.id = props.id;
@@ -257,6 +278,6 @@ BR.LayersConfig = L.Class.extend({
     }
 });
 
-BR.layersConfig = function (map) {
-	return new BR.LayersConfig(map);
+BR.layersConfig = function(map) {
+    return new BR.LayersConfig(map);
 };

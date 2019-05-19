@@ -1,7 +1,7 @@
 BR.Profile = L.Evented.extend({
     cache: {},
 
-    initialize: function () {
+    initialize: function() {
         var textArea = L.DomUtil.get('profile_upload');
         this.editor = CodeMirror.fromTextArea(textArea, {
             lineNumbers: true
@@ -19,7 +19,7 @@ BR.Profile = L.Evented.extend({
         var button = evt.target || evt.srcElement;
 
         evt.preventDefault();
-        this._setValue("");
+        this._setValue('');
 
         this.fire('clear');
         button.blur();
@@ -30,62 +30,100 @@ BR.Profile = L.Evented.extend({
             profileUrl,
             empty = !this.editor.getValue(),
             clean = this.editor.isClean();
-            profileWasCustomized = (!empty && !clean 
-                && (!(profileName in this.cache) || this.editor.getValue() !== this.cache[profileName]));
-        
+        profileWasCustomized =
+            !empty &&
+            !clean &&
+            (!(profileName in this.cache) ||
+                this.editor.getValue() !== this.cache[profileName]);
+
         this.profileName = profileName;
         if (profileName && !profileWasCustomized) {
             if (!(profileName in this.cache)) {
-                console.log("Profile", profileName, "is not available in cache, trying to download it…")
+                console.log(
+                    'Profile',
+                    profileName,
+                    'is not available in cache, trying to download it…'
+                );
                 var mustUpload, profileUrl;
                 if (BR.conf.profilesExtra.includes(profileName)) {
                     if (BR.conf.profilesExtraUrl === undefined) {
-                        console.error('profilesExtraUrl is not defined in config.js');
+                        console.error(
+                            'profilesExtraUrl is not defined in config.js'
+                        );
                         return;
                     }
-                    profileUrl = BR.conf.profilesExtraUrl + profileName + '.brf';                    
+                    profileUrl =
+                        BR.conf.profilesExtraUrl + profileName + '.brf';
                     mustUpload = true;
-                } else if (BR.conf.profilesUrl && BR.conf.profiles.includes(profileName)) {
+                } else if (
+                    BR.conf.profilesUrl &&
+                    BR.conf.profiles.includes(profileName)
+                ) {
                     profileUrl = BR.conf.profilesUrl + profileName + '.brf';
                     if (BR.conf.profilesUrl === undefined) {
-                        console.error('profilesUrl is not defined in config.js');
+                        console.error(
+                            'profilesUrl is not defined in config.js'
+                        );
                         return;
                     }
                     mustUpload = false;
                 } else {
-                    console.error('This profile "' + profileName + '" is unknown');
+                    console.error(
+                        'This profile "' + profileName + '" is unknown'
+                    );
                     return;
                 }
 
                 // try to download the profile from the server
-                console.log("Downloading profile from", profileUrl)
-                BR.Util.get(profileUrl, L.bind(function(err, profileText) {
-                    if (err) {
-                        console.warn('Error getting profile from"' + profileUrl + '": ' + err);
-                        BR.message.showError(new Error('Cannot download profile "' + profileName + '"'))
-                        return;
-                    }
-
-                    if (!mustUpload) {
-                       this.cache[profileName] = profileText;
-                    }
-                    // don't set when option has changed while loading
-                    if (!this.profileName || this.profileName === profileName) {
-                        this._setValue(profileText);
-                        if (mustUpload) {
-                            console.log("Uploading profile…")
-                            $('#upload').click();
+                console.log('Downloading profile from', profileUrl);
+                BR.Util.get(
+                    profileUrl,
+                    L.bind(function(err, profileText) {
+                        if (err) {
+                            console.warn(
+                                'Error getting profile from"' +
+                                    profileUrl +
+                                    '": ' +
+                                    err
+                            );
+                            BR.message.showError(
+                                new Error(
+                                    'Cannot download profile "' +
+                                        profileName +
+                                        '"'
+                                )
+                            );
+                            return;
                         }
-                    }
-                }, this));
+
+                        if (!mustUpload) {
+                            this.cache[profileName] = profileText;
+                        }
+                        // don't set when option has changed while loading
+                        if (
+                            !this.profileName ||
+                            this.profileName === profileName
+                        ) {
+                            this._setValue(profileText);
+                            if (mustUpload) {
+                                console.log('Uploading profile…');
+                                $('#upload').click();
+                            }
+                        }
+                    }, this)
+                );
             } else {
-                console.log("Profile", profileName, "found in cache, using it")
+                console.log('Profile', profileName, 'found in cache, using it');
                 this._setValue(this.cache[profileName]);
             }
         } else if (profileName) {
-            console.log("No need to download", profileName, ": user customized profile")
+            console.log(
+                'No need to download',
+                profileName,
+                ': user customized profile'
+            );
         } else {
-            console.log("No need to download profile, none is set yet")
+            console.log('No need to download profile, none is set yet');
         }
     },
 
@@ -107,7 +145,7 @@ BR.Profile = L.Evented.extend({
 
         this.fire('update', {
             profileText: profile,
-            callback: function () {
+            callback: function() {
                 $(button).button('reset');
                 $(button).blur();
             }

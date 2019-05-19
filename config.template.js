@@ -1,5 +1,4 @@
 (function() {
-
     var hostname = window.location.hostname;
     var params = new URLSearchParams(window.location.search.slice(1));
 
@@ -12,8 +11,11 @@
     // TODO not included in permalink (better replace permalink with hash plugin)
     //BR.conf.transit = params.has('transit') && (params.get('transit') === 'true');
 
-    if (hostname === 'brouter.damsy.net' || hostname === 'brouter.de' || hostname === 'h2096617.stratoserver.net') {
-
+    if (
+        hostname === 'brouter.damsy.net' ||
+        hostname === 'brouter.de' ||
+        hostname === 'h2096617.stratoserver.net'
+    ) {
         // online service (brouter.de) configuration
 
         BR.conf.profiles = [
@@ -39,9 +41,7 @@
 
         BR.conf.host = 'http://h2096617.stratoserver.net:443';
         BR.conf.profilesUrl = 'http://brouter.de/brouter/profiles2/';
-
     } else {
-
         // desktop configuration
 
         BR.conf.profiles = [
@@ -67,9 +67,7 @@
         //BR.conf.profilesUrl = 'file://YOUR_PATH_TO/profiles2/';
     }
 
-    BR.conf.profilesExtra =  [
-
-    ];
+    BR.conf.profilesExtra = [];
     BR.conf.profiles = BR.conf.profiles.concat(BR.conf.profilesExtra);
     BR.conf.profilesExtraUrl = 'http://localhost:8000/profiles_custom/';
 
@@ -120,7 +118,6 @@
 
     // transit (intermodal routing) demo config
     if (BR.conf.transit) {
-
         BR.conf.profiles = [
             '../im/bike',
             '../im/foot',
@@ -132,6 +129,5 @@
             'moped',
             'car-test'
         ];
-
     }
 })();
