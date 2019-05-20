@@ -40,7 +40,6 @@ L.BRouter = L.Class.extend({
 
     getUrlParams: function(latLngs, format) {
         params = {};
-
         if (this._getLonLatsString(latLngs) != null)
             params.lonlats = this._getLonLatsString(latLngs);
 
@@ -116,7 +115,7 @@ L.BRouter = L.Class.extend({
         return opts;
     },
 
-    getUrl: function(latLngs, format) {
+    getUrl: function(latLngs, format, trackname) {
         var urlParams = this.getUrlParams(latLngs, format);
 
         var args = [];
@@ -136,6 +135,8 @@ L.BRouter = L.Class.extend({
             );
         if (urlParams.format != null)
             args.push(L.Util.template('format={format}', urlParams));
+        if (trackname)
+            args.push(L.Util.template('trackname={trackname}', { trackname }));
 
         var prepend_host = format != null;
 
@@ -271,6 +272,7 @@ L.BRouter = L.Class.extend({
             // -1 is default nogo exclusion, it should not be passed as a URL parameter.
             if (
                 circle.options.nogoWeight !== null &&
+                circle.options.nogoWeight !== undefined &&
                 circle.options.nogoWeight !== -1
             ) {
                 s += L.BRouter.NUMBER_SEPARATOR;
