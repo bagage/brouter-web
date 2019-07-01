@@ -275,8 +275,8 @@ L.BRouter = L.Class.extend({
             s += Math.round(circle.getRadius());
             // -1 is default nogo exclusion, it should not be passed as a URL parameter.
             if (
-                circle.options.nogoWeight !== null &&
                 circle.options.nogoWeight !== undefined &&
+                circle.options.nogoWeight !== null &&
                 circle.options.nogoWeight !== -1
             ) {
                 s += L.BRouter.NUMBER_SEPARATOR;
@@ -328,6 +328,7 @@ L.BRouter = L.Class.extend({
             }
             // -1 is default nogo exclusion, it should not be passed as a URL parameter.
             if (
+                polyline.options.nogoWeight !== undefined &&
                 polyline.options.nogoWeight !== null &&
                 polyline.options.nogoWeight !== -1
             ) {
@@ -380,6 +381,7 @@ L.BRouter = L.Class.extend({
             }
             // -1 is default nogo exclusion, it should not be passed as a URL parameter.
             if (
+                polygon.options.nogoWeight !== undefined &&
                 polygon.options.nogoWeight !== null &&
                 polygon.options.nogoWeight !== -1
             ) {

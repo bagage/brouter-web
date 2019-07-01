@@ -60,6 +60,12 @@ BR.confLayers.getPropertyOverrides = function() {
         'openmapsurfer': {
             'mapUrl': 'https://maps.openrouteservice.org/directions?n1={lat}&n2={lon}&n3={zoom}&b=0&c=0&k1=en-US&k2=km'
         },
+        // ÖPNV Karte
+        '1059': {
+            'name': 'Public transport (ÖPNVKarte)',
+            'nameShort': 'ÖPNVKarte',
+            'mapUrl': 'http://öpnvkarte.de/#{lon};{lat};{zoom}'
+        },
         'osm-mapnik-german_style': {
             'name': i18next.t('map.layer.osmde'),
             'language_code': 'de',
@@ -72,11 +78,6 @@ BR.confLayers.getPropertyOverrides = function() {
             'language_code': 'fr',
             'nameShort': 'OSM French',
             'mapUrl': 'http://tile.openstreetmap.fr/?layers=B00000000FFFFFF&zoom={zoom}&lat={lat}&lon={lon}'
-        },
-        // Osmapa.pl - Mapa OpenStreetMap Polska
-        '1017': {
-            'language_code': 'pl',
-            'mapUrl': 'http://osmapa.pl/#lat={lat}&lon={lon}&z={zoom}&m=os'
         },
         // kosmosnimki.ru
         '1023': {
@@ -155,6 +156,13 @@ BR.confLayers.getPropertyOverrides = function() {
         'mtbmap-no': {
             'mapUrl': 'https://mtbmap.no/#{zoom}/{lat}/{lon}'
         },
+        // Osmapa.pl - Mapa OpenStreetMap Polska
+        '1017': {
+            "country_code": "PL",
+            'language_code': 'pl',
+            'mapUrl': 'http://osmapa.pl/#lat={lat}&lon={lon}&z={zoom}&m=os',
+            'worldTiles': true // -z13
+        },
         'Freemap.sk-Car': {
             'mapUrl': 'https://www.freemap.sk/?map={zoom}/{lat}/{lon}&layers=A'
         },
@@ -200,6 +208,10 @@ BR.confLayers.getPropertyOverrides = function() {
         'mapillary-coverage-raster': {
             'nameShort': 'Mapillary',
             'mapUrl': 'https://www.mapillary.com/app/?lat={lat}&lng={lon}&z={zoom}&menu=false'
+        },
+        'openpt_map': {
+            'nameShort': 'openptmap',
+            'mapUrl': 'http://openptmap.org/?zoom={zoom}&lat={lat}&lon={lon}&layers=B0000TFT'
         },
         'historic-place-contours': {
             'mapUrl': 'http://gk.historic.place/historische_objekte/?zoom={zoom}&lat={lat}&lon={lon}&pid=GhHaSaHe'

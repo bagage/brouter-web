@@ -12,12 +12,12 @@ BR.confLayers.tree = {
             '1061', // Thunderforest Outdoors
             '1065', // Hike & Bike Map
             '1016', // 4UMaps,
-            'openmapsurfer'
+            'openmapsurfer',
+            '1059'  // ÖPNV Karte
         ],
         'worldwide-monolingual': [
             'osm-mapnik-german_style',
             'osmfr',
-            '1017',  // Osmapa.pl - Mapa OpenStreetMap Polska
             '1023', // kosmosnimki.ru
             '1021' // sputnik.ru
         ],
@@ -48,6 +48,7 @@ BR.confLayers.tree = {
                 ]
             },
             'mtbmap-no',
+            '1017',  // Osmapa.pl - Mapa OpenStreetMap Polska
             {
                 'SK': [
                     'Freemap.sk-Car',
@@ -64,7 +65,8 @@ BR.confLayers.tree = {
             'Waymarked_Trails-Cycling',
             'Waymarked_Trails-Hiking',
             'Waymarked_Trails-MTB',
-            'mapillary-coverage-raster'
+            'mapillary-coverage-raster',
+            'openpt_map'
         ],
         'country': [
             'historic-place-contours',

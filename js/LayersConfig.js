@@ -9,6 +9,7 @@ BR.LayersConfig = L.Class.extend({
         this._addLeafletProvidersLayers();
         this._customizeLayers();
         this.loadDefaultLayers();
+        this._addLanguageDefaultLayer();
     },
 
     loadDefaultLayers: function() {
@@ -76,6 +77,36 @@ BR.LayersConfig = L.Class.extend({
 
         BR.layerIndex['OpenStreetMap.CH'].geometry =
             BR.confLayers.switzerlandPadded;
+
+        BR.layerIndex['1017'].geometry = BR.confLayers.osmapaPl;
+    },
+
+    _addLanguageDefaultLayer: function() {
+        // language code -> layer id
+        var languageLayersMap = {};
+        var i;
+
+        for (i = 0; i < BR.confLayers.languageDefaultLayers.length; i++) {
+            var id = BR.confLayers.languageDefaultLayers[i];
+            var layer = BR.layerIndex[id];
+            if (layer) {
+                var layerLanguage = layer.properties['language_code'];
+                if (layerLanguage) {
+                    languageLayersMap[layerLanguage] = id;
+                }
+            }
+        }
+
+        // iterate language code hierarchy, e.g ["de-DE", "de", "en"] (includes `i18next.options.fallbackLng`)
+        for (i = 0; i < i18next.languages.length; i++) {
+            var language = i18next.languages[i];
+            var layerId = languageLayersMap[language];
+
+            if (layerId) {
+                this.defaultBaseLayers.unshift(layerId);
+                break;
+            }
+        }
     },
 
     isDefaultLayer: function(id, overlay) {
@@ -104,7 +135,13 @@ BR.LayersConfig = L.Class.extend({
             var layerData = BR.layerIndex[layerId];
 
             if (layerData) {
-                layers[layerData.properties.name] = this.createLayer(layerData);
+                // when key required only add if configured
+                var keyObj = this.getKeyName(layerData.properties.url);
+                if (!keyObj || (keyObj && BR.keys[keyObj.name])) {
+                    layers[layerData.properties.name] = this.createLayer(
+                        layerData
+                    );
+                }
             } else {
                 console.error('Layer not found: ' + layerId);
             }

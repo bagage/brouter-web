@@ -3,6 +3,7 @@
     "bug-reports": "Fehlerberichte und Funktionsanfragen:",
     "bug-reports-back": "Server / Backend, Routing Engine, Android-App, Profile, brouter.de Website",
     "bug-reports-front": "Web-Client / Frontend.",
+    "chat": "Chatte mit Benutzern und Entwicklern",
     "contact": "Kontakt:",
     "data": "Daten:",
     "data-description": "Dies basiert auf <a href=\"https://www.openstreetmap.org\" target=\"_blank\">OpenStreetMap</a>. Es wird normalerweise einmal pro Woche aktualisiert, wenn ein neues Planet-File verfügbar ist. Siehe Datum der <a href=\"http://brouter.de/brouter/segments4/\" target=\"_blank\">Datendateien</a>.",
@@ -27,24 +28,27 @@
     "format_geojson": "GeoJSON",
     "format_gpx": "GPX",
     "format_kml": "KML",
-    "route-from-to": "{{from}} -> {{to}} ({{distance}}km)",
-    "route-loop": "{{from}} ({{distance}}km)",
-    "title": "Export route",
+    "route-from-to": "{{from}} -> {{to}} ({{distance}} km)",
+    "route-loop": "{{from}} ({{distance}} km)",
+    "title": "Route exportieren",
     "trackname": "Name"
   },
   "footer": {
-    "ascend": "Aufsteigend (einfach aufsteigend)",
-    "cost": "Kosten (durchschnittlicher Kostenfaktor)",
+    "ascend": "Aufsteigend",
+    "cost": "Kosten",
     "distance": "Entfernung",
+    "energy-per-100km": "Energie pro 100 km",
+    "hours": "Stunden",
+    "hours-abbrev": "h",
     "kilometer": "Kilometer",
     "kilometer-abbrev": "km",
     "kilowatthour": "Kilowattstunden",
     "kilowatthour-abbrev": "kWh",
+    "mean-cost-factor": "durchschnittlicher Kostenfaktor",
     "meter": "Meter",
     "meter-abbrev": "m",
-    "minutes": "Minuten",
-    "minutes-abbrev": "min",
-    "total-energy": "Gesamtenergie (pro 100 km)",
+    "plain-ascend": "einfach aufsteigend",
+    "total-energy": "Gesamtenergie",
     "travel-time": "Reisezeit"
   },
   "layers": {
@@ -112,7 +116,7 @@
     "zoomOutTitle": "Herauszoomen"
   },
   "modal": {
-    "close": "Close"
+    "close": "Schließen"
   },
   "navbar": {
     "about": "Über",
