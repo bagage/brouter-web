@@ -682,6 +682,32 @@
                                     </div>
                                 </div>
                             </fieldset>
+                            <fieldset id="export-includes" class="form-group">
+                                <div class="row">
+                                    <legend
+                                        class="col-form-label col-sm-2"
+                                        data-i18n="export.include"
+                                    >
+                                        Include
+                                    </legend>
+                                    <div class="col-sm-10">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input
+                                                    class="form-check-input"
+                                                    id="include-waypoints"
+                                                    type="checkbox"
+                                                    name="include-waypoints"
+                                                />
+                                                <span
+                                                    data-i18n="export.include_waypoints"
+                                                    >Waypoints</span
+                                                >
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
                             <div class="modal-footer">
                                 <button
                                     type="button"
@@ -794,6 +820,20 @@
                                 >
                             </h1>
                             <div id="layers-control-wrapper"></div>
+                            <div class="leaflet-control-layers-separator"></div>
+                            <div
+                                class="leaflet-control-layers-overlays-opacity"
+                            >
+                                <p>
+                                    <span
+                                        data-i18n="sidebar.layers.overlay-opacity"
+                                        >Overlay transparency</span
+                                    >
+                                    <span
+                                        id="leaflet-control-layers-overlays-opacity-slider"
+                                    ></span>
+                                </p>
+                            </div>
                             <div class="leaflet-control-layers-separator"></div>
                             <div id="layers-button-group">
                                 <div hidden id="tree-button-group">
@@ -966,7 +1006,7 @@
                             >
                         </p>
                     </li>
-                    <li hidden>
+                    <li>
                         <div
                             class="text-muted small d-none d-sm-block"
                             data-i18n="footer.travel-time"
@@ -982,7 +1022,7 @@
                             >
                         </p>
                     </li>
-                    <li hidden>
+                    <li>
                         <div class="text-muted small d-none d-sm-block">
                             <span data-i18n="footer.total-energy"
                                 >Total Energy</span
