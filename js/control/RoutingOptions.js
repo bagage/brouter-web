@@ -1,9 +1,6 @@
 BR.RoutingOptions = L.Evented.extend({
     initialize: function() {
-        $('#profile-alternative').on(
-            'changed.bs.select',
-            this._getChangeHandler()
-        );
+        $('#profile-alternative').on('changed.bs.select', this._getChangeHandler());
 
         // build option list from config
         var profiles = BR.conf.profiles;
@@ -12,9 +9,7 @@ BR.RoutingOptions = L.Evented.extend({
             var is_custom = BR.conf.profilesExtra.includes(profiles[i]);
             var option = document.createElement('option');
             option.value = profiles[i];
-            option.text = is_custom
-                ? '* ' + profiles[i]
-                : i18next.t('navbar.profile.' + profiles[i]);
+            option.text = is_custom ? '* ' + profiles[i] : i18next.t('navbar.profile.' + profiles[i]);
             profiles_list.appendChild(option);
         }
         // set default value, used as indicator for empty custom profile
@@ -58,12 +53,8 @@ BR.RoutingOptions = L.Evented.extend({
 
     setOptions: function(options) {
         var values = [
-            options.profile
-                ? options.profile
-                : $('#profile option:selected').val(),
-            options.alternative
-                ? options.alternative
-                : $('#alternative option:selected').val()
+            options.profile ? options.profile : $('#profile option:selected').val(),
+            options.alternative ? options.alternative : $('#alternative option:selected').val()
         ];
         $('.selectpicker').selectpicker('val', values);
         this.refreshUI();

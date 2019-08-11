@@ -10,15 +10,8 @@
     function verifyTouchStyle(mapContext) {
         // revert touch style (large icons) when touch screen detection is available and negative
         // see https://github.com/nrenner/brouter-web/issues/69
-        if (
-            L.Browser.touch &&
-            BR.Browser.touchScreenDetectable &&
-            !BR.Browser.touchScreen
-        ) {
-            L.DomUtil.removeClass(
-                mapContext.map.getContainer(),
-                'leaflet-touch'
-            );
+        if (L.Browser.touch && BR.Browser.touchScreenDetectable && !BR.Browser.touchScreen) {
+            L.DomUtil.removeClass(mapContext.map.getContainer(), 'leaflet-touch');
         }
     }
 
@@ -91,10 +84,7 @@
         deletePointButton = L.easyButton(
             '<span><i class="fa fa-caret-left"></i><i class="fa fa-map-marker" style="margin-left: 1px; color: gray;"></i></span>',
             function() {
-                routing.removeWaypoint(routing.getLast(), function(
-                    err,
-                    data
-                ) {});
+                routing.removeWaypoint(routing.getLast(), function(err, data) {});
             },
             i18next.t('map.delete-last-point')
         );
@@ -171,19 +161,14 @@
         profile.on('update', function(evt) {
             BR.message.hide();
             var profileId = routingOptions.getCustomProfile();
-            router.uploadProfile(profileId, evt.profileText, function(
-                err,
-                profileId
-            ) {
+            router.uploadProfile(profileId, evt.profileText, function(err, profileId) {
                 if (!err) {
                     routingOptions.setCustomProfile(profileId, true);
                     updateRoute({
                         options: routingOptions.getOptions()
                     });
                     if (!saveWarningShown) {
-                        profile.message.showWarning(
-                            i18next.t('warning.temporary-profile')
-                        );
+                        profile.message.showWarning(i18next.t('warning.temporary-profile'));
                         saveWarningShown = true;
                     }
                 } else {
@@ -214,9 +199,7 @@
             styles: BR.conf.routingStyles
         });
 
-        routing.on('routing:routeWaypointEnd routing:setWaypointsEnd', function(
-            evt
-        ) {
+        routing.on('routing:routeWaypointEnd routing:setWaypointsEnd', function(evt) {
             search.clear();
             onUpdate(evt && evt.err);
         });
@@ -282,8 +265,9 @@
         }
 
         map.addControl(
-            new BR.OpacitySlider({
+            new BR.OpacitySliderControl({
                 id: 'route',
+                title: i18next.t('map.opacity-slider'),
                 callback: L.bind(routing.setOpacity, routing)
             })
         );
@@ -338,9 +322,7 @@
         // do not initialize immediately
         urlHash = new L.Hash(null, null);
         urlHash.additionalCb = function() {
-            var url = router
-                .getUrl(routing.getWaypoints(), null)
-                .substr('brouter?'.length + 1);
+            var url = router.getUrl(routing.getWaypoints(), null).substr('brouter?'.length + 1);
             url = url.replace(/\|/g, ';');
             return url.length > 0 ? '&' + url : null;
         };
@@ -400,117 +382,10 @@
             .on('hidden.bs.collapse', onHide)
             .on('shown.bs.collapse', onShow)
             .each(function() {
-                if (
-                    this.id &&
-                    BR.Util.localStorageAvailable() &&
-                    localStorage[this.id] === 'true'
-                ) {
+                if (this.id && BR.Util.localStorageAvailable() && localStorage[this.id] === 'true') {
                     $(this).collapse('show');
                 }
             });
-
-        $('#submitNogos').on('click', function() {
-            var geoJSONPromise;
-            var nogoURL = $('#nogoURL').val();
-            var nogoFile = $('#nogoFile')[0].files[0];
-            if (nogoURL) {
-                // TODO: Handle {{bbox}}
-                geoJSONPromise = fetch(nogoURL).then(function(response) {
-                    response.json();
-                });
-            } else if (nogoFile) {
-                geoJSONPromise = new Promise(function(resolve, reject) {
-                    var reader = new FileReader();
-                    reader.onload = function() {
-                        resolve(reader.result);
-                    };
-                    reader.readAsText(nogoFile);
-                }).then(function(response) {
-                    return JSON.parse(response);
-                });
-            } else {
-                $('#nogoError').text('Error: Missing file or URL.');
-                $('#nogoError').css('display', 'block');
-                return false;
-            }
-            var nogoWeight = parseFloat($('#nogoWeight').val());
-            if (isNaN(nogoWeight)) {
-                $('#nogoError').text('Error: Missing default nogo weight.');
-                $('#nogoError').css('display', 'block');
-                return false;
-            }
-            var nogoRadius = parseFloat($('#nogoRadius').val());
-            if (isNaN(nogoRadius) || nogoRadius < 0) {
-                $('#nogoError').text('Error: Invalid default nogo radius.');
-                $('#nogoError').css('display', 'block');
-                return false;
-            }
-            var nogoBuffer = parseFloat($('#nogoBuffer').val());
-            if (isNaN(nogoBuffer)) {
-                $('#nogoError').text('Error: Invalid nogo buffering radius.');
-                $('#nogoError').css('display', 'block');
-                return false;
-            }
-
-            geoJSONPromise.then(function(response) {
-                // Iterate on features in order to discard features without geometry
-                var cleanedGeoJSONFeatures = [];
-                turf.featureEach(response, function(feature) {
-                    if (turf.getGeom(feature)) {
-                        var maybeBufferedFeature = feature;
-                        // Eventually buffer GeoJSON
-                        if (nogoBuffer != 0) {
-                            maybeBufferedFeature = turf.buffer(
-                                maybeBufferedFeature,
-                                nogoBuffer,
-                                { units: 'meters' }
-                            );
-                        }
-                        cleanedGeoJSONFeatures.push(maybeBufferedFeature);
-                    }
-                });
-
-                var geoJSON = L.geoJson(
-                    turf.featureCollection(cleanedGeoJSONFeatures),
-                    {
-                        onEachFeature: function(feature, layer) {
-                            layer.options.nogoWeight =
-                                feature.properties.nogoWeight || nogoWeight;
-                        }
-                    }
-                );
-                var nogosPoints = geoJSON.getLayers().filter(function(e) {
-                    return e.feature.geometry.type === 'Point';
-                });
-                nogosPoints = nogosPoints.map(function(item) {
-                    var radius = item.feature.properties.radius || nogoRadius;
-                    if (radius > 0) {
-                        return L.circle(item.getLatLng(), { radius: radius });
-                    }
-                    return null;
-                });
-                nogosPoints = nogosPoints.filter(function(e) {
-                    return e;
-                });
-                nogos.setOptions({
-                    nogos: nogosPoints,
-                    polygons: geoJSON.getLayers().filter(function(e) {
-                        return e.feature.geometry.type === 'Polygon';
-                    }),
-                    polylines: geoJSON.getLayers().filter(function(e) {
-                        return e.feature.geometry.type === 'LineString';
-                    })
-                });
-                updateRoute({
-                    options: nogos.getOptions()
-                });
-                urlHash.onMapMove();
-                $('#nogoError').text('');
-                $('#nogoError').css('display', 'none');
-                $('#loadNogos').modal('hide');
-            });
-            return false;
-        });
     }
 
     i18next

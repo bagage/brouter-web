@@ -11,11 +11,7 @@
     // TODO not included in permalink (better replace permalink with hash plugin)
     //BR.conf.transit = params.has('transit') && (params.get('transit') === 'true');
 
-    if (
-        hostname === 'brouter.damsy.net' ||
-        hostname === 'brouter.de' ||
-        hostname === 'h2096617.stratoserver.net'
-    ) {
+    if (hostname === 'brouter.damsy.net' || hostname === 'brouter.de') {
         // online service (brouter.de) configuration
 
         BR.conf.profiles = [
@@ -39,7 +35,7 @@
             'hiking-beta'
         ];
 
-        BR.conf.host = 'http://h2096617.stratoserver.net:443';
+        BR.conf.host = 'http://brouter.de:443';
         BR.conf.profilesUrl = 'http://brouter.de/brouter/profiles2/';
     } else {
         // desktop configuration
