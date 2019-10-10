@@ -151,14 +151,6 @@ gulp.task('locales', function() {
     return gulp.src(paths.locales).pipe(gulp.dest(paths.dest + '/locales'));
 });
 
-gulp.task('serve', function() {
-    server.init({
-        server: {
-            baseDir: './'
-        }
-    });
-});
-
 gulp.task('reload', function(done) {
     server.reload();
     done();
@@ -173,6 +165,7 @@ gulp.task('watch', function() {
             remember.forget('scripts', event.path);
         }
     });
+    gulp.watch(paths.locales, gulp.series('locales', 'reload'));
     gulp.watch(paths.styles, gulp.series('styles', 'reload'));
     gulp.watch(paths.layersConfig, gulp.series('layers_config', 'reload'));
     gulp.watch(
@@ -187,18 +180,16 @@ gulp.task('watch', function() {
 // Print paths to console, for manually debugging the gulp build
 // (comment out corresponding line of paths to print)
 gulp.task('log', function() {
-    //return gulp.src(paths.scripts)
-    //return gulp.src(paths.styles)
-    //return gulp.src(paths.images)
-    // return gulp.src(paths.locales)
-    return gulp
-        .src(
-            paths.scripts
-                .concat(paths.styles)
-                .concat(paths.images)
-                .concat(paths.locales)
-        )
-        .pipe(gulpDebug());
+    // var src = paths.scripts
+    // var src = paths.styles
+    // var src = paths.images
+    // var src = paths.locales
+    var src = paths.scripts
+        .concat(paths.styles)
+        .concat(paths.images)
+        .concat(paths.locales);
+
+    return gulp.src(src).pipe(gulpDebug());
 });
 
 gulp.task('inject', function() {
@@ -334,6 +325,17 @@ gulp.task(
     }, 'default')
 );
 
+gulp.task(
+    'serve',
+    gulp.series('debug', function(cb) {
+        server.init({
+            server: {
+                baseDir: './'
+            }
+        });
+        cb();
+    })
+);
 gulp.task('release:zip', function() {
     gutil.log(gutil.colors.green('Build brouter-web.' + nextVersion + '.zip'));
     return gulp

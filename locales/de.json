@@ -97,6 +97,7 @@
       "osm": "OpenStreetMap",
       "osmde": "OpenStreetMap.de",
       "outdoors": "Outdoor (Thunderforest)",
+      "route-quality": "Routenqualitätscodierung",
       "stamen-terrain": "Terrain (Stamen)",
       "strava-segments": "Strava Segmente",
       "topo": "OpenTopoMap"
@@ -113,6 +114,9 @@
     "opacity-slider": "Transparenz von Route und Markern anpassen",
     "privacy": "Datenschutz",
     "reverse-route": "Route umkehren",
+    "route-quality-altitude": "Höhencodierung",
+    "route-quality-cost": "Kostencodierung",
+    "route-quality-incline": "Steigungscodierung",
     "strava-biking": "Zeige Strava Radfahrsegmente",
     "strava-running": "Zeige Strava Läufersegmente",
     "zoomInTitle": "Hineinzoomen",
@@ -132,7 +136,8 @@
     "export": "Export",
     "load": {
       "nogos": "No-go-Areas",
-      "title": "Laden"
+      "title": "Laden",
+      "tracks": "Touren"
     },
     "profile": {
       "car-eco": "Auto (effizient)",
@@ -208,6 +213,7 @@
     "profile-error": "Profil-Fehler: keine oder leere Antwort vom Server",
     "strava-error": "Fehler beim Laden der Strava Segmente: {{error}}",
     "temporary-profile": "<strong>Note:</strong> Hochgeladene benutzerdefinierte Profile nur verübergehend auf dem Server zwischengespeichert. <br/>Bitte Bearbeitungen auf dem lokalen PC speichern.",
+    "tracks-load-error'": "Fehler beim Laden der Touren: {{error}}",
     "upload-error": "Fehler beim Hochladen: {{error}}"
   }
 }

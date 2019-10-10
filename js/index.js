@@ -54,9 +54,8 @@
             sidebar,
             drawButton,
             deleteRouteButton,
-            drawToolbar,
+            pois,
             urlHash,
-            reverseRoute,
             saveWarningShown = false;
 
         // By default bootstrap-select use glyphicons
@@ -95,7 +94,7 @@
             ]
         });
 
-        reverseRouteButton = L.easyButton(
+        var reverseRouteButton = L.easyButton(
             'fa-random',
             function() {
                 routing.reverse();
@@ -103,7 +102,7 @@
             i18next.t('map.reverse-route')
         );
 
-        deletePointButton = L.easyButton(
+        var deletePointButton = L.easyButton(
             '<span><i class="fa fa-caret-left"></i><i class="fa fa-map-marker" style="margin-left: 1px; color: gray;"></i></span>',
             function() {
                 routing.removeWaypoint(routing.getLast(), function(err, data) {});
@@ -116,7 +115,7 @@
             function() {
                 bootbox.prompt({
                     size: 'small',
-                    title: i18next.t('map.delete-route-nogos'),
+                    title: i18next.t('map.clear-route'),
                     inputType: 'checkbox',
                     inputOptions: [
                         {
@@ -126,6 +125,10 @@
                         {
                             text: i18next.t('map.delete-nogo-areas'),
                             value: 'nogo'
+                        },
+                        {
+                            text: i18next.t('map.delete-pois'),
+                            value: 'pois'
                         }
                     ],
                     value: ['route'],
@@ -137,13 +140,16 @@
                             if (result.indexOf('nogo') !== -1) {
                                 nogos.clear();
                             }
+                            if (result.indexOf('pois') !== -1) {
+                                pois.clear();
+                            }
                             onUpdate();
                             urlHash.onMapMove();
                         }
                     }
                 });
             },
-            i18next.t('map.delete-route-nogos')
+            i18next.t('map.clear-route')
         );
 
         function updateRoute(evt) {
@@ -183,7 +189,6 @@
         } else {
             stats = new BR.TrackStats();
         }
-        exportRoute = new BR.Export(router);
         elevation = new BR.Elevation();
 
         profile = new BR.Profile();
@@ -221,12 +226,20 @@
             requestUpdate: requestUpdate
         });
 
+        routingPathQuality = new BR.RoutingPathQuality(map, layersControl);
+
         routing = new BR.Routing({
             routing: {
                 router: L.bind(router.getRouteSegment, router)
             },
             styles: BR.conf.routingStyles
         });
+
+        pois = new BR.PoiMarkers({
+            routing: routing
+        });
+
+        exportRoute = new BR.Export(router, pois);
 
         routing.on('routing:routeWaypointEnd routing:setWaypointsEnd', function(evt) {
             search.clear();
@@ -255,6 +268,7 @@
                 segmentsLayer = routing._segments;
 
             elevation.update(track, segmentsLayer);
+            routingPathQuality.update(track, segmentsLayer);
             if (BR.conf.transit) {
                 itinerary.update(track, segments);
             } else {
@@ -266,7 +280,10 @@
         }
 
         routing.addTo(map);
+
         elevation.addBelow(map);
+
+        pois.addTo(map);
 
         sidebar = BR.sidebar({
             defaultTabId: BR.conf.transit ? 'tab_itinerary' : 'tab_profile',
@@ -280,18 +297,16 @@
         }
 
         nogos.addTo(map);
-        drawToolbar = L.easyBar([
-            drawButton,
-            reverseRouteButton,
-            nogos.getButton(),
-            deletePointButton,
-            deleteRouteButton
-        ]).addTo(map);
+        L.easyBar([drawButton, reverseRouteButton, nogos.getButton(), deletePointButton, deleteRouteButton]).addTo(map);
         nogos.preventRoutePointOnCreate(routing);
 
         if (BR.keys.strava) {
             BR.stravaSegments(map, layersControl);
         }
+
+        BR.tracksLoader(map, layersControl, routing);
+
+        routingPathQuality.addTo(map);
 
         map.addControl(
             new BR.OpacitySliderControl({
@@ -327,6 +342,7 @@
                 return p;
             };
             if (url == null) return;
+
             var opts = router.parseUrlParams(url2params(url));
             router.setOptions(opts);
             routingOptions.setOptions(opts);
@@ -337,6 +353,10 @@
                 routing.draw(false);
                 routing.clear();
                 routing.setWaypoints(opts.lonlats);
+            }
+
+            if (opts.pois) {
+                pois.setMarkers(opts.pois);
             }
         };
 
@@ -350,9 +370,13 @@
 
         // do not initialize immediately
         urlHash = new L.Hash(null, null);
+        // this callback is used to append anything in URL after L.Hash wrote #map=zoom/lat/lng/layer
         urlHash.additionalCb = function() {
-            var url = router.getUrl(routing.getWaypoints(), null).substr('brouter?'.length + 1);
+            var url = router.getUrl(routing.getWaypoints(), pois.getMarkers(), null).substr('brouter?'.length + 1);
+
+            // by default brouter use | as separator. To make URL more human-readable, we remplace them with ; for users
             url = url.replace(/\|/g, ';');
+
             return url.length > 0 ? '&' + url : null;
         };
         urlHash.onHashChangeCb = onHashChangeCb;
@@ -369,6 +393,7 @@
 
         routingOptions.on('update', urlHash.onMapMove, urlHash);
         nogos.on('update', urlHash.onMapMove, urlHash);
+        pois.on('update', urlHash.onMapMove, urlHash);
         // waypoint add, move, delete (but last)
         routing.on('routing:routeWaypointEnd', urlHash.onMapMove, urlHash);
         // delete last waypoint
@@ -418,6 +443,8 @@
 
         displayWelcomePopup(map, search);
     }
+
+    L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
 
     i18next
         .use(window.i18nextXHRBackend)
