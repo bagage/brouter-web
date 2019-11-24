@@ -191,6 +191,11 @@ input#trackname:focus:invalid {
     cursor: auto;
 }
 
+/* Override Bootstrap tabs that set `display` from `none` to `block` when activating */
+#profileEditorTabsContent.tab-content > .active {
+    display: flex;
+}
+
 #profile_buttons {
     padding-top: 4px;
 }
@@ -433,13 +438,43 @@ table.dataTable.display tbody tr.even:hover {
     height: 100%;
 }
 
+#profile_params,
+.CodeMirror {
+    /* auto instead of 1 to avoid overflow to content height in Firefox */
+    flex: auto;
+    /* override default 300px, behaves like min-height with flex auto */
+    height: 0;
+}
+
+#profile_params {
+    overflow-y: scroll;
+    padding-right: 5px;
+}
+
+.leaflet-sidebar-pane#tab_profile label {
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.leaflet-sidebar-pane#tab_profile input[type='checkbox'] {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.leaflet-sidebar-pane#tab_profile .help-block {
+    display: block;
+    color: #737373;
+    margin-bottom: 0.5rem;
+}
+
 .leaflet-sidebar-content {
     /* for optional-layers-tree */
     overflow-x: auto;
 }
 
 /* layers control as sidebar tab */
-#tab_layers_control {
+#tab_layers_control,
+#profile_params {
     font-size: 0.9rem;
     line-height: normal;
 }
@@ -489,11 +524,6 @@ table.dataTable.display tbody tr.even:hover {
  */
 
 .CodeMirror {
-    /* auto instead of 1 to avoid overflow to content height in Firefox */
-    flex: auto;
-    /* override default 300px, behaves like min-height with flex auto */
-    height: 0;
-
     border: 1px solid #ddd;
 
     font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
