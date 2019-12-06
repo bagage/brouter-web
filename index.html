@@ -143,6 +143,10 @@
                                 Search by
                                 <a href="https://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim</a>
                             </dd>
+                            <dt data-i18n="credits.elevation-data">Elevation data</dt>
+                            <dd>
+                                <a href="http://srtm.csi.cgiar.org" target="_blank">CGIAR-CSI SRTM</a>
+                            </dd>
                         </dl>
                         <h5 data-i18n="credits.map-tiles">Map tiles</h5>
                         <dl id="credits-maps"></dl>
@@ -281,12 +285,12 @@
                             <i data-i18n="about.data">Data:</i>
                         </p>
 
-                        <div data-i18n="[html]about.data-description">
+                        <p data-i18n="[html]about.data-description">
                             This is based on
                             <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a>. It is usually
-                            updated once a week when a new Planet file is available, see dates of
+                            updated daily, see dates of
                             <a href="https://brouter.de/brouter/segments4/" target="_blank">data files</a>.
-                        </div>
+                        </p>
                         <p data-i18n="[html]about.details">
                             <i><a href="https://brouter.de/privacypolicy.html" target="_blank">Privacy Policy</a></i
                             >,
@@ -575,6 +579,7 @@
             <div class="leaflet-sidebar-flex-row flexgrow">
                 <div id="map" class="leaflet-sidebar-map">
                     <div id="message"></div>
+                    <div id="preview" hidden data-i18n="map.preview">Preview</div>
                 </div>
 
                 <div id="sidebar" class="leaflet-sidebar collapsed">
@@ -641,7 +646,10 @@
                                     </button>
                                 </div>
                             </div>
-                            <div hidden id="optional-layers-tree"></div>
+                            <div hidden id="optional-layers">
+                                <div class="help-block" data-i18n="sidebar.layers.optional"></div>
+                                <div id="optional-layers-tree"></div>
+                            </div>
                         </div>
 
                         <div class="leaflet-sidebar-pane" id="tab_profile">
@@ -733,9 +741,16 @@
 
                         <div class="leaflet-sidebar-pane" id="tab_data">
                             <h1 class="leaflet-sidebar-header">
-                                <span class="leaflet-sidebar-close"><i class="fa fa-caret-right"></i></span
-                                ><span class="leaflet-sidebar-expand"><i class="fa fa-expand"></i></span
-                                ><span data-i18n="sidebar.data.title">Data</span>
+                                <span class="leaflet-sidebar-close"><i class="fa fa-caret-right"></i></span>
+                                <span class="leaflet-sidebar-expand"><i class="fa fa-expand"></i></span>
+                                <span
+                                    id="data-sync-map"
+                                    class="sync-map active"
+                                    data-i18n="[title]sidebar.data.sync-map"
+                                    title="Synchronize map"
+                                    ><i class="fa fa-exchange"></i
+                                ></span>
+                                <span data-i18n="sidebar.data.title">Data</span>
                             </h1>
                             <table id="datatable" class="mini cell-border hover stripe"></table>
                         </div>
