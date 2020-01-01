@@ -9,6 +9,7 @@ BR.RoutingPathQuality = L.Control.extend({
         var renderer = new L.Hotline.Renderer({ pane: 'routingQualityPane' });
 
         this._routingSegments = L.featureGroup();
+        this._routingSegments.id = 'route-quality'; // for URL hash instead of language name
         layersControl.addOverlay(this._routingSegments, i18next.t('map.layer.route-quality'));
 
         this.providers = {
@@ -68,13 +69,33 @@ BR.RoutingPathQuality = L.Control.extend({
                 })
             }
         };
-        this.selectedProvider = this.options.initialProvider || 'incline';
+        this._initialProvider = this.options.initialProvider || 'incline';
+        this.selectedProvider = this._initialProvider;
+
+        this._active = false;
     },
 
     onAdd: function(map) {
-        var self = this;
         this._map = map;
-        this._routingSegments.addTo(map);
+
+        map.on(
+            'overlayadd',
+            function(evt) {
+                if (evt.layer === this._routingSegments) {
+                    this._activate(this.routingPathButton);
+                }
+            },
+            this
+        );
+        map.on(
+            'overlayremove',
+            function(evt) {
+                if (evt.layer === this._routingSegments) {
+                    this._deactivate(this.routingPathButton);
+                }
+            },
+            this
+        );
 
         var states = [],
             i,
@@ -88,12 +109,22 @@ BR.RoutingPathQuality = L.Control.extend({
                 stateName: keys[i],
                 icon: provider.icon,
                 title: provider.title,
-                onClick: (function(state) {
-                    return function(btn) {
-                        btn.state(state);
-                        self.setProvider(state);
-                    };
-                })(nextState)
+                onClick: L.bind(function(state) {
+                    return L.bind(function(btn) {
+                        if (this._active) {
+                            btn.state(state);
+                            this.setProvider(state);
+
+                            if (state === this._initialProvider) {
+                                this._deactivate(btn);
+                            } else {
+                                this._getIcon(btn).classList.add('active');
+                            }
+                        } else {
+                            this._activate(btn);
+                        }
+                    }, this);
+                }, this)(nextState)
             });
         }
 
@@ -101,6 +132,22 @@ BR.RoutingPathQuality = L.Control.extend({
             states: states
         }).addTo(map);
         return new L.DomUtil.create('div');
+    },
+
+    _activate: function(btn) {
+        this._active = true;
+        this._getIcon(btn).classList.add('active');
+        this._routingSegments.addTo(this._map);
+    },
+
+    _deactivate: function(btn) {
+        this._active = false;
+        this._getIcon(btn).classList.remove('active');
+        this._map.removeLayer(this._routingSegments);
+    },
+
+    _getIcon: function(btn) {
+        return btn.button.firstChild.firstChild;
     },
 
     update: function(track, layer) {
@@ -115,7 +162,6 @@ BR.RoutingPathQuality = L.Control.extend({
     setProvider: function(provider) {
         this.selectedProvider = provider;
         this._update(this.segments);
-        this._routingSegments.addTo(this._map);
     },
 
     _update: function(segments) {

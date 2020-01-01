@@ -15,46 +15,12 @@
     if (hostname === 'brouter.damsy.net' || hostname.endsWith('brouter.de')) {
         // online service (brouter.de) configuration
 
-        BR.conf.profiles = [
-            'trekking',
-            'fastbike',
-            'car-eco',
-            'car-fast',
-            'safety',
-            'shortest',
-            'trekking-ignore-cr',
-            'trekking-steep',
-            'trekking-noferries',
-            'trekking-nosteps',
-            'moped',
-            'rail',
-            'river',
-            'vm-forum-liegerad-schnell',
-            'vm-forum-velomobil-schnell',
-            'fastbike-lowtraffic',
-            'fastbike-asia-pacific',
-            'hiking-beta'
-        ];
-
         BR.conf.host = origin;
         BR.conf.profilesUrl = origin + '/brouter/profiles2/';
     } else {
         // desktop configuration
 
-        BR.conf.profiles = [
-            'trekking',
-            'fastbike',
-            'car-eco',
-            'car-fast',
-            'shortest',
-            'moped',
-            'vm-forum-liegerad-schnell',
-            'vm-forum-velomobil-schnell',
-            'fastbike-lowtraffic',
-            'fastbike-asia-pacific'
-        ];
-
-        BR.conf.host = 'http://0.0.0.0:17777';
+        BR.conf.host = 'http://localhost:17777';
 
         // Pre-loading selected profile disabled locally. Needs brouter-web to run on a
         // local web server with the profiles in a subdirectory or allowing file access
@@ -65,8 +31,27 @@
     }
 
     BR.conf.profilesExtra = [];
-    BR.conf.profiles = BR.conf.profiles.concat(BR.conf.profilesExtra);
     BR.conf.profilesExtraUrl = 'http://localhost:8000/profiles_custom/';
+    BR.conf.profiles = [
+        'trekking',
+        'fastbike',
+        'car-eco',
+        'car-fast',
+        'safety',
+        'shortest',
+        'trekking-ignore-cr',
+        'trekking-steep',
+        'trekking-noferries',
+        'trekking-nosteps',
+        'moped',
+        'rail',
+        'river',
+        'vm-forum-liegerad-schnell',
+        'vm-forum-velomobil-schnell',
+        'fastbike-lowtraffic',
+        'fastbike-asia-pacific',
+        'hiking-beta'
+    ].concat(BR.conf.profilesExtra);
 
     // Removes default base layers when 'true'. Useful for only having custom layers (see below).
     BR.conf.clearBaseLayers = false;
@@ -111,6 +96,14 @@
         nodata: {
             color: 'darkred'
         }
+    };
+
+    BR.conf.markerColors = {
+        // awesome-markers colors (by color picker)
+        poi: '#436978',
+        start: '#72b026',
+        via: '#38aadd',
+        stop: '#d63e2a'
     };
 
     // transit (intermodal routing) demo config

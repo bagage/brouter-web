@@ -2,7 +2,18 @@ BR.tracksLoader = function(map, layersControl, routing) {
     TracksLoader = L.Control.FileLayerLoad.extend({
         options: {
             layer: L.geoJson,
-            layerOptions: { style: { color: 'blue' }, interactive: false },
+            layerOptions: {
+                style: { color: 'blue' },
+                interactive: false,
+                pointToLayer: function(geoJsonPoint, latlng) {
+                    return L.marker(latlng, {
+                        interactive: false,
+                        opacity: 0.7,
+                        // prevent being on top of route markers
+                        zIndexOffset: -1000
+                    });
+                }
+            },
             addToMap: false,
             // File size limit in kb (default: 1024) ?
             fileSizeLimit: 1024
@@ -42,7 +53,9 @@ BR.tracksLoader = function(map, layersControl, routing) {
                 e.preventDefault();
             });
             // dummy, no own representation, triggered in loading menu
-            return L.DomUtil.create('div');
+            var dummy = L.DomUtil.create('div');
+            dummy.hidden = true;
+            return dummy;
         }
     });
     var tracksLoaderControl = new TracksLoader();
@@ -51,6 +64,7 @@ BR.tracksLoader = function(map, layersControl, routing) {
     tracksLoaderControl.loader.on('data:loaded', function(event) {
         var eventLayer = event.layer,
             routingMarkers = [];
+        /* disabled for now, see issue #254
         for (var layerIdx = 0; layerIdx < eventLayer.getLayers().length; layerIdx++) {
             var layer = eventLayer.getLayers()[layerIdx];
             if (layer.feature && layer.feature.properties && layer.feature.properties.type) {
@@ -70,6 +84,7 @@ BR.tracksLoader = function(map, layersControl, routing) {
                 );
             });
         }
+        */
         layersControl.addOverlay(eventLayer, event.filename);
         eventLayer.addTo(map);
     });
