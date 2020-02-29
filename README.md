@@ -33,55 +33,73 @@ click **Translate** to start translating.
 
 As an alternative to the above online version, the standalone server of BRouter can also be run on your local desktop.
 
-### Install BRouter (server with routing engine)
+### Install standalone zip (client and server)
 
-1.  download and unzip latest [BRouter revision](https://brouter.de/brouter/revisions.html)  
-    e.g. for Linux (replace `~/opt/` with your preferred install directory and `1_4_11` with latest version):
+1.  download and unzip latest standalone archive (`brouter-web-standalone.<version>.zip`) from https://github.com/nrenner/brouter-web/releases e.g. for Linux (replace `~/opt/` with your preferred install directory and `0.11.0` with latest version):
 
             mkdir ~/opt/brouter
             cd ~/opt/brouter
-            wget https://brouter.de/brouter_bin/brouter_1_4_11.zip
-            unzip brouter_1_4_11.zip
-            chmod +x ./standalone/server.sh
+            wget https://github.com/nrenner/brouter-web/releases/download/0.11.0/brouter-web-standalone.0.11.0.zip
+            unzip brouter-web-standalone.0.11.0.zip
 
 2.  download one or more [data file(s)](https://brouter.de/brouter/segments4/) (rd5) into `segments4` directory
 
-### Install BRouter-Web (client)
+#### Configure BRouter-Web
 
-1.  download BRouter-Web as subdirectory `brouter-web` of the `brouter` directory
+In the `brouter-web` subdirectory:
 
-    -   using the latest stable release - adjust to current version number - from
-        https://github.com/nrenner/brouter-web/releases:
-
-            wget https://github.com/nrenner/brouter-web/releases/download/0.7.0/brouter-web-0.7.0.zip
-            unzip brouter-web-0.7.0.zip -d brouter-web
-
-    -   OR the current development state (potentially instable and without runtime distributables):
-
-            wget https://github.com/nrenner/brouter-web/archive/master.zip
-            unzip master.zip
-            mv brouter-web-master brouter-web
-
-        -   build the distributable files required for runtime (only for development state), see section [Build](#build)
-
-2.  copy `config.template.js` to `config.js`
-3.  configure URL to `profiles2` directory  
-    set `BR.conf.profilesUrl` in config.js, e.g. uncomment:
-
-            BR.conf.profilesUrl = 'http://localhost:8000/profiles2/';
-
-4.  add your API keys (optional)  
+1.  copy `config.template.js` to `config.js`
+2.  add your API keys (optional)  
     copy `keys.template.js` to `keys.js` and edit to add your keys
 
-### Run
+#### Run
 
-1.  start BRouter server in the `standalone` directory with `./server.sh` or `server.cmd` (Windows)
-2.  serve the `brouter` directory for BRouter-Web  
-    This is needed for pre-loading the selected profile (unless you allowed local file access in the Browser). Depending on your setup (see [How to run things locally](https://threejs.org/docs/#manual/en/introduction/How-to-run-things-locally)), start a web server in the `brouter` directory, e.g.:
+1.  start `./run.sh`
 
-            python -m SimpleHTTPServer
+### Running as Docker container (client only)
 
-3.  open http://localhost:8000/brouter-web/
+brouter-web can be run as a Docker container, making it easy for continous deployment or running locally
+without having to install any build tools.
+
+The `Dockerfile` builds the application inside a NodeJS container and copies the built application into a
+separate Nginx based image. The application runs from a webserver only container serving only static files.
+
+#### Prerequisites
+
+-   Docker installed
+-   working directory is this repository
+-   `config.template.js` copied to `config.js` and modified with a Brouter server, see `BR.conf.host`
+-   `keys.template.js` to `keys.js` and add your API keys
+-   Optionally create `profiles` directory with `brf` profile files and add path to `config.js`:
+    BR.conf.profilesUrl = 'profiles/';
+
+#### Building Docker image
+
+To build the Docker container run:
+
+      docker build -t brouter-web .
+
+This creates a Docker image with the name `brouter-web`.
+
+#### Running Docker container
+
+To run the previously build Docker image run:
+
+      docker run --rm --name brouter-web \
+        -p 127.0.0.1:8080:80 \
+        -v "`pwd`/config.js:/usr/share/nginx/html/config.js" \
+        -v "`pwd`/keys.js:/usr/share/nginx/html/keys.js" \
+        -v "`pwd`/profiles:/usr/share/nginx/html/profiles" \
+        brouter-web
+
+This command does the following:
+
+1. Runs a container with the name `brouter-web` and removes it automatically after stopping
+1. Binds port 80 of the container to the host interface 127.0.0.1 on port 8080
+1. Takes the absolute paths of `config.js`, `keys.js` and `profiles` and mounts them inside the container
+1. Uses the image `brouter-web` to run as a container
+
+brouter-web should be accessible at http://127.0.0.1:8080.
 
 ## Build
 

@@ -19,6 +19,8 @@ BR.Profile = L.Evented.extend({
         L.DomUtil.get('upload').onclick = L.bind(this._upload, this);
         L.DomUtil.get('clear').onclick = L.bind(this.clear, this);
 
+        this.pinned = L.DomUtil.get('profile-pinned');
+
         this.message = new BR.Message('profile_message', {
             alert: true
         });
@@ -28,6 +30,8 @@ BR.Profile = L.Evented.extend({
         var button = evt.target || evt.srcElement;
 
         evt.preventDefault();
+
+        this.editor.markClean();
         this._setValue('');
 
         this.fire('clear');
@@ -40,57 +44,68 @@ BR.Profile = L.Evented.extend({
             empty = !this.editor.getValue(),
             clean = this.editor.isClean();
 
-        if (profileName && BR.conf.profilesUrl && (empty || clean)) {
-            this.profileName = profileName;
-            if (!(profileName in this.cache)) {
-                console.log('Profile', profileName, 'is not available in cache, trying to download it…');
-                var mustUpload, profileUrl;
-                if (BR.conf.profilesExtra.includes(profileName)) {
-                    if (BR.conf.profilesExtraUrl === undefined) {
-                        console.error('profilesExtraUrl is not defined in config.js');
-                        return;
-                    }
-                    profileUrl = BR.conf.profilesExtraUrl + profileName + '.brf';
-                    mustUpload = true;
-                } else if (BR.conf.profilesUrl && BR.conf.profiles.includes(profileName)) {
-                    profileUrl = BR.conf.profilesUrl + profileName + '.brf';
-                    if (BR.conf.profilesUrl === undefined) {
-                        console.error('profilesUrl is not defined in config.js');
-                        return;
-                    }
-                    mustUpload = false;
-                } else {
-                    console.error('This profile "' + profileName + '" is unknown');
-                    return;
-                }
-
-                // try to download the profile from the server
-                console.log('Downloading profile from', profileUrl);
-                BR.Util.get(
-                    profileUrl,
-                    L.bind(function(err, profileText) {
-                        if (err) {
-                            console.warn('Error getting profile from "' + profileUrl + '": ' + err);
-                            BR.message.showError(new Error('Cannot download profile "' + profileName + '"'));
+        if (profileName && BR.conf.profilesUrl) {
+            // only synchronize profile editor/parameters with selection if no manual changes in full editor,
+            // else keep custom profile pinned - to prevent changes in another profile overwriting previous ones
+            if (empty || clean) {
+                this.profileName = profileName;
+                if (!(profileName in this.cache)) {
+                    console.log('Profile', profileName, 'is not available in cache, trying to download it…');
+                    var mustUpload, profileUrl;
+                    if (BR.conf.profilesExtra.includes(profileName)) {
+                        if (BR.conf.profilesExtraUrl === undefined) {
+                            console.error('profilesExtraUrl is not defined in config.js');
                             return;
                         }
+                        profileUrl = BR.conf.profilesExtraUrl + profileName + '.brf';
+                        mustUpload = true;
+                    } else if (BR.conf.profilesUrl && BR.conf.profiles.includes(profileName)) {
+                        profileUrl = BR.conf.profilesUrl + profileName + '.brf';
+                        if (BR.conf.profilesUrl === undefined) {
+                            console.error('profilesUrl is not defined in config.js');
+                            return;
+                        }
+                        mustUpload = false;
+                    } else {
+                        console.error('This profile "' + profileName + '" is unknown');
+                        return;
+                    }
 
-                        if (!mustUpload) {
-                            this.cache[profileName] = profileText;
-                        }
-                        // don't set when option has changed while loading
-                        if (!this.profileName || this.profileName === profileName) {
-                            this._setValue(profileText);
-                            if (mustUpload) {
-                                console.log('Uploading profile…');
-                                $('#upload').click();
+                    // try to download the profile from the server
+                    console.log('Downloading profile from', profileUrl);
+                    BR.Util.get(
+                        profileUrl,
+                        L.bind(function(err, profileText) {
+                            if (err) {
+                                console.warn('Error getting profile from "' + profileUrl + '": ' + err);
+                                BR.message.showError(new Error('Cannot download profile "' + profileName + '"'));
+                                return;
                             }
-                        }
-                    }, this)
-                );
+
+                            if (!mustUpload) {
+                                this.cache[profileName] = profileText;
+                            }
+                            // don't set when option has changed while loading
+                            if (!this.profileName || this.profileName === profileName) {
+                                this._setValue(profileText);
+                                if (mustUpload) {
+                                    console.log('Uploading profile…');
+                                    $('#upload').click();
+                                }
+                            }
+                        }, this)
+                    );
+                } else {
+                    this._setValue(this.cache[profileName]);
+                }
+
+                if (!this.pinned.hidden) {
+                    this.pinned.hidden = true;
+                }
             } else {
-                console.log('Profile', profileName, 'found in cache, using it');
-                this._setValue(this.cache[profileName]);
+                if (this.pinned.hidden) {
+                    this.pinned.hidden = false;
+                }
             }
         } else if (profileName) {
             console.log('No need to download', profileName, ': user customized profile');
@@ -119,6 +134,7 @@ BR.Profile = L.Evented.extend({
             callback: L.bind(function(err, profileId, profileText) {
                 $(button).blur();
                 if (!err) {
+                    this.profileName = profileId;
                     this.cache[profileId] = profileText;
 
                     if (!this.saveWarningShown) {
@@ -130,8 +146,7 @@ BR.Profile = L.Evented.extend({
         });
     },
 
-    _buildCustomProfile: function() {
-        var profileText = this.cache[this.profileName];
+    _buildCustomProfile: function(profileText) {
         document.querySelectorAll('#profile_params input, #profile_params select').forEach(function(input) {
             var name = input.name;
             var value;
@@ -154,37 +169,52 @@ BR.Profile = L.Evented.extend({
     },
 
     _save: function(evt) {
-        var profileText = this._buildCustomProfile();
+        var profileText = this._buildCustomProfile(this.editor.getValue());
         var that = this;
         this.fire('update', {
             profileText: profileText,
             callback: function(err, profileId, profileText) {
                 if (!err) {
+                    that.profileName = profileId;
                     that.cache[profileId] = profileText;
                 }
             }
         });
     },
 
-    _setValue: function(profileText, profileEditorActivated) {
-        if (L.DomUtil.get('profile_editor').classList.contains('active')) {
-            // Set value of the full editor and exit
-            this.editor.setValue(profileText);
+    _setValue: function(profileText) {
+        profileText = profileText || '';
+
+        var clean = this.editor.isClean();
+
+        // Always set value of the full editor, even if not active.
+        // Full editor is master, the parameter form always gets the text from it (not cache).
+        this.editor.setValue(profileText);
+
+        // keep dirty state (manually modified; setValue also sets dirty)
+        if (clean) {
             this.editor.markClean();
-            return;
         }
 
+        if (this._isParamsFormActive()) {
+            this._buildParamsForm(profileText);
+        }
+    },
+
+    _buildParamsForm: function(profileText) {
+        if (!profileText) return;
+
         // Otherwise, create user friendly form
+        var params = {};
         var global = profileText.split('---context:').filter(function(e) {
             return e.startsWith('global');
         });
-        if (global) {
+        if (global && global.length > 0) {
             // Remove ---context:global line
             global = global[0].split('\n').slice(1);
 
             // Comment is mandatory
             var assignRegex = /assign\s*(\w*)\s*=?\s*([\w\.]*)\s*#\s*%(.*)%\s*(\|\s*(.*)\s*\|\s*(.*)\s*)?$/;
-            var params = {};
             global.forEach(function(item) {
                 var match = item.match(assignRegex);
                 var value;
@@ -307,11 +337,17 @@ BR.Profile = L.Evented.extend({
         });
     },
 
+    _isParamsFormActive: function() {
+        return L.DomUtil.get('profile_params_container').classList.contains('active');
+    },
+
     _activateSecondaryTab: function() {
-        if (L.DomUtil.get('profile_params_container').classList.contains('active')) {
-            this._setValue(this.editor.getValue());
+        var profileText = this.editor.getValue();
+
+        if (this._isParamsFormActive()) {
+            this._buildParamsForm(profileText);
         } else {
-            this._setValue(this._buildCustomProfile());
+            this._setValue(this._buildCustomProfile(profileText));
         }
     }
 });
