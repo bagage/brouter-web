@@ -19,7 +19,7 @@ BR.Map = {
             })
             .addTo(map);
         if (!map.restoreView()) {
-            map.setView([50.99, 9.86], 5);
+            map.setView(BR.conf.initialMapLocation || [50.99, 9.86], BR.conf.initialMapZoom || 5);
         }
 
         // two attribution lines by adding two controls, prevents ugly wrapping on
