@@ -61,6 +61,11 @@ L.BRouter = L.Class.extend({
 
         params.alternativeidx = this.options.alternative;
 
+        // In case of extra profiles we need to first upload the profile as a custom profile
+        // then a new request will be made; hence we discard the first one
+        if (params.profile != null && BR.conf.profilesExtra.indexOf(params.profile) !== -1)
+            params.profile = BR.conf.profiles[0];
+
         if (format != null) {
             params.format = format;
         } else {
