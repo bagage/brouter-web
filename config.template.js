@@ -33,6 +33,8 @@
     BR.conf.profilesExtra = [];
     BR.conf.profilesExtraUrl = 'http://localhost:8000/profiles_custom/';
 
+    BR.conf.privacyPolicyUrl = '/privacypolicy.html';
+
     // Set the initial position and zoom level of the map
     BR.conf.initialMapLocation = [50.99, 9.86];
     BR.conf.initialMapZoom = 5;

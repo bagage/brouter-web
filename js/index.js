@@ -51,6 +51,7 @@
             exportRoute,
             profile,
             trackMessages,
+            trackAnalysis,
             sidebar,
             drawButton,
             deleteRouteButton,
@@ -220,6 +221,9 @@
         trackMessages = new BR.TrackMessages(map, {
             requestUpdate: requestUpdate
         });
+        trackAnalysis = new BR.TrackAnalysis(map, {
+            requestUpdate: requestUpdate
+        });
 
         routingPathQuality = new BR.RoutingPathQuality(map, layersControl);
 
@@ -270,6 +274,7 @@
                 stats.update(track, segments);
             }
             trackMessages.update(track, segments);
+            trackAnalysis.update(track, segments);
 
             exportRoute.update(latLngs);
         }
@@ -282,7 +287,8 @@
             defaultTabId: BR.conf.transit ? 'tab_itinerary' : 'tab_profile',
             listeningTabs: {
                 tab_profile: profile,
-                tab_data: trackMessages
+                tab_data: trackMessages,
+                tab_analysis: trackAnalysis
             }
         }).addTo(map);
         if (BR.conf.transit) {
@@ -306,6 +312,7 @@
             new BR.OpacitySliderControl({
                 id: 'route',
                 title: i18next.t('map.opacity-slider'),
+                muteKeyCode: 77, // m
                 callback: L.bind(routing.setOpacity, routing)
             })
         );
@@ -450,7 +457,9 @@
             },
             function(err, t) {
                 jqueryI18next.init(i18next, $);
-                $('html').localize();
+                $('html').localize({
+                    privacyPolicyUrl: BR.conf.privacyPolicyUrl || 'https://brouter.de/privacypolicy.html'
+                });
 
                 mapContext = BR.Map.initMap();
                 verifyTouchStyle(mapContext);
