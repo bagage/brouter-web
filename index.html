@@ -29,7 +29,7 @@
             >
             <div class="collapse navbar-collapse" id="collapsingNavbar">
                 <div class="navbar-nav">
-                    <form class="form-inline">
+                    <form class="form-inline" id="profile-alternative-form">
                         <div class="form-group">
                             <select class="selectpicker show-tick" data-width="250px" id="profile-alternative" multiple>
                                 <optgroup label="Profile" data-max-options="1" data-icon="fa-bicycle" id="profile">
@@ -61,6 +61,9 @@
                             role="button"
                             aria-haspopup="true"
                             aria-expanded="false"
+                            data-i18n="[title]keyboard.generic-shortcut"
+                            data-i18n-options='{ "action": "$t(navbar.export-tooltip)", "key": "X" }'
+                            title="Export route"
                         >
                             <span class="fa fa-lg fa-cloud-download" aria-hidden="true"> </span>
                             <span data-i18n="navbar.export">Export</span>
@@ -76,6 +79,14 @@
                             id="navbarLoadDropdown"
                             aria-haspopup="true"
                             aria-expanded="false"
+                            data-i18n="[title]navbar.load.tooltip"
+                            data-i18n-options='{
+                                "tracksAction": "$t(navbar.load.tracks)",
+                                "tracksKey": "O",
+                                "nogosAction": "$t(navbar.load.nogos)",
+                                "nogosKey": "$t(keyboard.shift)+O"
+                            }'
+                            title="Load route"
                         >
                             <span class="fa fa-lg fa-cloud-upload" aria-hidden="true"> </span>
                             <span data-i18n="navbar.load.title">Load</span>
@@ -84,6 +95,17 @@
                             <div id="navbarLoadTracksContainer">
                                 <a class="dropdown-item" data-i18n="navbar.load.tracks" href="#" id="navbarLoadTracks"
                                     >Tracks</a
+                                >
+                            </div>
+                            <div id="navbarLoadEditTracksContainer">
+                                <a
+                                    class="dropdown-item"
+                                    data-i18n="trackasroute.title"
+                                    data-toggle="modal"
+                                    data-target="#loadedittrackdlg"
+                                    href="#"
+                                    id="navbarLoadEditTracks"
+                                    >Track as Route</a
                                 >
                             </div>
                             <a
@@ -96,7 +118,12 @@
                             >
                         </div>
                     </div>
-                    <div class="nav-item">
+                    <div
+                        class="nav-item"
+                        data-i18n="[title]keyboard.generic-shortcut"
+                        data-i18n-options='{ "action": "$t(about.tooltip)", "key": "H" }'
+                        title="Show more information about BRouter-Web"
+                    >
                         <a class="nav-link" href="#" data-toggle="modal" data-target="#about"
                             ><span class="fa fa-lg fa-info-circle" aria-hidden="true"></span
                             ><span data-i18n="navbar.about">About</span></a
@@ -249,7 +276,11 @@
                             information see
                             <a href="https://brouter.de/" target="_blank">brouter.de</a>.
                         </p>
-                        <p><i data-i18n="about.contact">Contact:</i><br /></p>
+                        <p><i data-i18n="about.contact">Contact:</i></p>
+
+                        <div id="about-contact-language" data-i18n="about.contact-language">
+                            Preferred language is English, as we have both international contributors and users.
+                        </div>
 
                         <ul>
                             <li>
@@ -291,7 +322,7 @@
                             updated daily, see dates of
                             <a href="https://brouter.de/brouter/segments4/" target="_blank">data files</a>.
                         </p>
-                        <p data-i18n="[html]about.details">
+                        <p id="aboutLinks" data-i18n="[html]about.details">
                             <i><a href="{{privacyPolicyUrl}}" target="_blank">Privacy Policy</a></i
                             >,
                             <i
@@ -527,11 +558,173 @@
             </div>
         </div>
 
+        <!-- Track to Route modal window -->
+        <div
+            class="modal fade"
+            id="loadedittrackdlg"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="Load Track as route"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" data-i18n="trackasroute.title">
+                            Load Track as Route
+                        </h4>
+
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form name="loadedittrackForm" id="loadedittrackForm">
+                            <div class="form-group row mt-4 ">
+                                <label class="col-sm-3" for="loadedittrackFile" data-i18n="trackasroute.file"
+                                    >Trackfile</label
+                                >
+                                <div class="custom-control  custom-file col-sm-8">
+                                    <input
+                                        type="file"
+                                        accept=".gpx,.kml,.geojson,*.*"
+                                        name="loadedittrackFile"
+                                        id="loadedittrackFile"
+                                        class="custom-file-input"
+                                    />
+                                    <label
+                                        for="loadedittrackFile"
+                                        class="custom-file-label"
+                                        style="white-space: nowrap; overflow: hidden;  text-overflow: ellipsis;"
+                                    >
+                                    </label
+                                    ><br />
+                                </div>
+                            </div>
+
+                            <div class="form-group row mt-4 ">
+                                <label class="col-sm-3" for="cb_showtracklayer" data-i18n="trackasroute.tracklayer"
+                                    >Track Layer</label
+                                >
+                                <div class="custom-control custom-switch">
+                                    <input
+                                        type="checkbox"
+                                        class="custom-control-input"
+                                        id="cb_showtracklayer"
+                                        checked="checked"
+                                    />
+                                    <label
+                                        class="custom-control-label"
+                                        for="cb_showtracklayer"
+                                        data-i18n="trackasroute.explaintracklayer"
+                                        >(show Track as separate Layer)</label
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="form-group row mt-4 ">
+                                <label class="col-sm-3" for="cb_showpois" data-i18n="trackasroute.showpois"
+                                    >POI's</label
+                                >
+                                <div class="custom-control custom-switch">
+                                    <input
+                                        type="checkbox"
+                                        class="custom-control-input"
+                                        id="cb_showpois"
+                                        checked="checked"
+                                    />
+                                    <label
+                                        class="custom-control-label"
+                                        for="cb_showpois"
+                                        data-i18n="trackasroute.explainpoi"
+                                        >(show waypoints as POI's)</label
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="accordion " id="manual_accordion">
+                                <div class="row">
+                                    <button
+                                        class="btn btn-link"
+                                        id="bt_manual_collapse"
+                                        autocomplete="off"
+                                        type="button"
+                                        data-toggle="collapse"
+                                        href="#manual_collapse"
+                                        aria-expanded="false"
+                                        aria-controls="manual_collapse"
+                                        data-i18n="trackasroute.tuning"
+                                    >
+                                        Tuning
+                                    </button>
+                                </div>
+                                <div id="manual_collapse" class="collapse" data-toggle="false">
+                                    <div class="form-group  row">
+                                        <label
+                                            for="simplify_tolerance"
+                                            class="col-sm-3"
+                                            data-i18n="trackasroute.fuzziness"
+                                            >fuzziness</label
+                                        >
+                                        <input
+                                            type="range"
+                                            class="custom-range  col-sm-8"
+                                            id="simplify_tolerance"
+                                            min="-500"
+                                            max="500"
+                                            step="any"
+                                            value="0"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                id="msg_busy"
+                                class="row float-right mr-4 invisible text-danger"
+                                data-i18n="trackasroute.pleasewait"
+                            >
+                                Please wait!
+                            </div>
+                            <div class="modal-footer mt-4">
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-i18n="modal.close"
+                                    data-dismiss="modal"
+                                >
+                                    Close
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    data-i18n="trackasroute.title"
+                                    id="submitLoadEditTrack"
+                                >
+                                    Import Track
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Track to Route window  END -->
         <div id="content" class="flexcolumn flexgrow">
             <div id="sidebarTabs" class="leaflet-sidebar-tabs collapsed">
                 <ul role="tablist">
                     <li>
-                        <a href="#tab_layers_control" role="tab" data-i18n="[title]sidebar.layers.title" title="Layers">
+                        <a
+                            href="#tab_layers_control"
+                            role="tab"
+                            data-i18n="[title]sidebar.tab-tooltip"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.layers.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
+                            title="Select layers"
+                        >
                             <!--
                 https://github.com/feathericons/feather/blob/0dc2bf5c9d01759e47485d9498aefc02cac1d845/icons/layers.svg
                 MIT License: https://github.com/feathericons/feather/blob/master/LICENSE
@@ -555,7 +748,16 @@
                         </a>
                     </li>
                     <li hidden>
-                        <a href="#tab_itinerary" role="tab" data-i18n="[title]sidebar.itinerary.title" title="Itinerary"
+                        <a
+                            href="#tab_itinerary"
+                            role="tab"
+                            data-i18n="[title]sidebar.tab-tooltip"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.itinerary.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
+                            title="Show Itinerary"
                             ><i class="fa fa-map-signs"></i
                         ></a>
                     </li>
@@ -563,18 +765,41 @@
                         <a
                             href="#tab_profile"
                             role="tab"
-                            data-i18n="[title]sidebar.customize-profile.title"
+                            data-i18n="[title]sidebar.tab-tooltip"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.customize-profile.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
                             title="Customize profile"
                             ><i class="fa fa-wrench"></i
                         ></a>
                     </li>
                     <li>
-                        <a href="#tab_data" role="tab" data-i18n="[title]sidebar.data.title" title="Data"
+                        <a
+                            href="#tab_data"
+                            role="tab"
+                            data-i18n="[title]sidebar.tab-tooltip"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.data.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
+                            title="Show detailed route data table"
                             ><i class="fa fa-table"></i
                         ></a>
                     </li>
                     <li>
-                        <a href="#tab_statistics" role="tab" data-i18n="[title]sidebar.analysis.title" title="Analysis"
+                        <a
+                            href="#tab_analysis"
+                            role="tab"
+                            data-i18n="[title]sidebar.tab-tooltip"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.analysis.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
+                            title="Analyse route"
                             ><i class="fa fa-pie-chart"></i
                         ></a>
                     </li>
@@ -770,7 +995,7 @@
                             <div id="itinerary" class="flexcolumn flexgrow"></div>
                         </div>
 
-                        <div class="leaflet-sidebar-pane" id="tab_statistics">
+                        <div class="leaflet-sidebar-pane" id="tab_analysis">
                             <h1 class="leaflet-sidebar-header">
                                 <span data-i18n="sidebar.analysis.title">Analysis</span>
                                 <span class="leaflet-sidebar-close"><i class="fa fa-caret-right"></i></span>
@@ -784,14 +1009,14 @@
 
         <div class="collapse" id="elevation-chart"></div>
 
-        <footer>
-            <div id="stats-info">
+        <footer class="flexrow">
+            <div id="stats-info" class="flexgrow">
                 <div>
                     <span class="fa fa-info-circle"></span>
                     <span data-i18n="footer.stats-info">Start drawing a route to get stats.</span>
                 </div>
             </div>
-            <div id="stats-container" class="flexrow">
+            <div id="stats-container" class="flexrow flexgrow">
                 <ul id="stats">
                     <li>
                         <div class="text-muted small d-none d-md-block" data-i18n="footer.distance">
@@ -846,7 +1071,8 @@
                             >
                         </div>
                         <p class="stats-label">
-                            <span id="ascend">-</span>&#8239;<abbr
+                            <span id="ascend">-</span><span class="d-none d-md-inline">&#8239;</span
+                            ><abbr
                                 class="d-none d-md-inline"
                                 data-i18n="[title]footer.meter;footer.meter-abbrev"
                                 title="meters"
@@ -870,20 +1096,23 @@
                         </p>
                     </li>
                 </ul>
-
-                <button
-                    class="btn btn-outline-secondary btn-sm"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#elevation-chart"
-                    aria-controls="elevation-chart"
-                    id="elevation-btn"
-                    aria-expanded="false"
-                    aria-label="Toggle elevation chart"
-                >
-                    <span class="fa fa-area-chart"></span>
-                </button>
             </div>
+
+            <button
+                class="btn btn-outline-secondary btn-sm"
+                type="button"
+                data-toggle="collapse"
+                data-target="#elevation-chart"
+                aria-controls="elevation-chart"
+                id="elevation-btn"
+                aria-expanded="false"
+                aria-label="Toggle elevation chart"
+                data-i18n="[title]keyboard.generic-shortcut"
+                data-i18n-options='{ "action": "$t(footer.elevation-chart)", "key": "E" }'
+                title="Toggle elevation chart"
+            >
+                <span class="fa fa-area-chart"></span>
+            </button>
         </footer>
 
         <script>

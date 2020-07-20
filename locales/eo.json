@@ -4,14 +4,14 @@
     "bug-reports-back": "server / backend, routing engine, Android app, profiles, brouter.de site",
     "bug-reports-front": "web client / frontend.",
     "chat": "Chat with users and developers",
-    "contact": "İrtibat:",
+    "contact": "Contact:",
     "contact-language": "Preferred language is English, as we have both international contributors and users.",
-    "data": "Veri",
+    "data": "Data:",
     "data-description": "This is based on <a href=\"https://www.openstreetmap.org\" target=\"_blank\">OpenStreetMap</a>. It is usually updated daily, see dates of <a href=\"https://brouter.de/brouter/segments4/\" target=\"_blank\">data files</a>.",
     "description": "Online service of the BRouter routing engine. For the offline Android app and more information see <a href=\"https://brouter.de/\" target=\"_blank\">brouter.de</a>",
     "details": "<i><a href=\"{{privacyPolicyUrl}}\" target=\"_blank\">Privacy Policy</a></i>, \n<i><a href=\"https://github.com/nrenner/brouter-web#credits-and-licenses\" target=\"_blank\">Credits</a></i>,\n<i><a href=\"https://github.com/nrenner/brouter-web/blob/master/CHANGELOG.md\" target=\"_blank\">Changelog</a></i> and\n<i><a href=\"https://github.com/nrenner/brouter-web#readme\" target=\"_blank\">more info</a></i> on the client.",
     "support": "General discussions/questions, support",
-    "title": "Hakkında",
+    "title": "Pri",
     "tooltip": "Show more information about BRouter-Web"
   },
   "credits": {
@@ -20,43 +20,43 @@
     "elevation-data": "Elevation data",
     "esri-license": "<a target=\"_blank\" href=\"http://goto.arcgisonline.com/maps/World_Imagery\">World Imagery</a> &copy; <a target=\"_blank\" href=\"https://www.esri.com/\">Esri</a>, sources: Esri, DigitalGlobe, Earthstar Geographics, CNES/Airbus DS, GeoEye, USDA FSA, USGS, Getmapping, Aerogrid, IGN, IGP, and the GIS User Community",
     "esri-tiles": "Esri World Imagery",
-    "map-data": "Harita verisi",
-    "map-tiles": "Harita döşemeleri",
+    "map-data": "Map data",
+    "map-tiles": "Map tiles",
     "nominatim": "Search by <a href=\"https://wiki.openstreetmap.org/wiki/Nominatim\" target=\"_blank\" data-i18n=\"credits.nominatim\">Nominatim</a>",
     "openstreetmap": "&copy; <a target=\"_blank\" href=\"https://www.openstreetmap.org/copyright\" >OpenStreetMap contributors</a> under <a target=\"_blank\" href=\"https://opendatacommons.org/licenses/odbl/\" >ODbL</a>"
   },
   "export": {
-    "format": "Biçim",
+    "format": "Format",
     "format_csv": "CSV",
     "format_geojson": "GeoJSON",
     "format_gpx": "GPX",
     "format_kml": "KML",
     "include": "Include",
-    "include_waypoints": "Uğraknoktaları",
-    "route-from-to": "{{from}} -> {{to}} ({{distance}}km)",
-    "route-loop": "{{from}} ({{distance}}km)",
-    "title": "Yolu dışa aktar",
-    "trackname": "İsim"
+    "include_waypoints": "Waypoints",
+    "route-from-to": "{{from}} → {{to}} ({{distance}} km)",
+    "route-loop": "{{from}} ({{distance}} km)",
+    "title": "Export route",
+    "trackname": "Nomo"
   },
   "footer": {
     "ascend": "Ascend",
     "cost": "Cost",
-    "distance": "Distance",
+    "distance": "Distanco",
     "elevation-chart": "Toggle elevation chart",
     "energy-per-100km": "Energy per 100 km",
-    "hours": "saatler",
-    "hours-abbrev": "s",
-    "kilometer": "kilometreler",
+    "hours": "horoj",
+    "hours-abbrev": "h",
+    "kilometer": "kilometroj",
     "kilometer-abbrev": "km",
-    "kilowatthour": "kilowatt hours",
+    "kilowatthour": "kilovathoroj",
     "kilowatthour-abbrev": "kWh",
     "mean-cost-factor": "Mean cost factor",
-    "meter": "metreler",
+    "meter": "metroj",
     "meter-abbrev": "m",
     "plain-ascend": "Plain ascend",
     "stats-info": "Start drawing a route to get stats.",
     "total-energy": "Total Energy",
-    "travel-time": "Seyahat zamanı"
+    "travel-time": "Travel time"
   },
   "keyboard": {
     "backspace": "Backspace",
@@ -67,20 +67,20 @@
   "layers": {
     "add-base": "Add base layer",
     "add-overlay": "Add overlay",
-    "customize": "Katmanları özelleştir",
+    "customize": "Customize layers",
     "opacity-slider": "Opacity slider",
     "placeholder-layer-name": "Custom layer name. (ex: OpenStreetMap)",
     "placeholder-layer-url": "Custom layer URL. (ex: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png)",
     "remove-selection": "Remove selection"
   },
   "loadNogos": {
-    "defaultProperties": "Varsayılan özellikler",
+    "defaultProperties": "Default properties",
     "file": "File (.geojson): ",
-    "load": "Yükle",
+    "load": "Load",
     "nogoBuffer": "Buffer no-go areas (in meters): ",
     "nogoRadius": "No-go radius for points (in meters): ",
     "nogoWeight": "No-go weight (-1 means impassable): ",
-    "source": "Kaynak",
+    "source": "Fonto",
     "title": "Load no-go areas",
     "url": "URL: "
   },
@@ -88,7 +88,7 @@
     "attribution-osm-long": "OpenStreetMap contributors",
     "attribution-osm-short": "OpenStreetMap",
     "clear-route": "Clear route data",
-    "copyright": "Telif",
+    "copyright": "Copyright",
     "cycling": "Cycling",
     "delete-last-point": "Delete last point",
     "delete-nogo-areas": "Delete all no-go areas",
@@ -130,7 +130,7 @@
     },
     "opacity-slider": "Set transparency of route track and markers",
     "opacity-slider-shortcut": "{{action}}\n(Hold {{key}} key to mute temporarily)",
-    "preview": "Preview",
+    "preview": "Antaŭvidi",
     "privacy": "Privacy",
     "reverse-route": "Reverse route",
     "route-quality-altitude": "Altitude coding",
@@ -140,14 +140,14 @@
     "strava-biking": "Show Strava biking segments",
     "strava-running": "Show Strava running segments",
     "strava-shortcut": "{{action}}\n({{key}} key to toggle layer, click to reload for current area)",
-    "zoomInTitle": "Zoom in",
-    "zoomOutTitle": "Zoom out"
+    "zoomInTitle": "Pligrandigi",
+    "zoomOutTitle": "Malgrandigi"
   },
   "modal": {
-    "close": "Close"
+    "close": "Fermi"
   },
   "navbar": {
-    "about": "About",
+    "about": "Pri",
     "alternative": {
       "first": "1st alternative",
       "original": "Original",
@@ -212,16 +212,16 @@
       "tooltip": "Show detailed route data table"
     },
     "itinerary": {
-      "title": "Itinerary",
+      "title": "Itinero",
       "tooltip": "Show itinerary"
     },
     "layers": {
       "category": {
-        "base-layers": "Base layers",
-        "country": "Country",
-        "europe": "Europe",
+        "base-layers": "Bazaj tavoloj",
+        "country": "Lando",
+        "europe": "Eŭropo",
         "europe-monolingual": "Europe monolingual",
-        "overlays": "Overlays",
+        "overlays": "Tegiloj",
         "worldwide": "Worldwide",
         "worldwide-international": "Worldwide international",
         "worldwide-monolingual": "Worldwide monolingual"
@@ -231,12 +231,12 @@
       "customize": "Add or remove custom layers",
       "expand": "Expand all",
       "optional": "Add or remove optional layers",
-      "optional-layers": "More",
+      "optional-layers": "Pli",
       "overlay-opacity": "Overlay transparency",
       "table": {
         "URL": "URL",
         "empty": "No custom layer configured yet.",
-        "name": "Name",
+        "name": "Nomo",
         "type": "Type"
       },
       "title": "Layers",
@@ -245,7 +245,7 @@
     "profile": {
       "apply": "Apply",
       "clear": "Clear",
-      "help": "Help",
+      "help": "Helpo",
       "no_easy_configuration_warning": "No easy configuration is available for this profile.",
       "options": "Options",
       "placeholder": "Write your custom profile here.",

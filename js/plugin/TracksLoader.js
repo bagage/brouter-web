@@ -1,28 +1,22 @@
-BR.tracksLoader = function(map, layersControl, routing) {
+BR.tracksLoader = function(map, layersControl, routing, pois) {
+    // proxy to L.geoJSON factory function, to get hold of raw GeoJSON object
+    var createGeoJsonLayer = function(geojson, options) {
+        BR.Track.addPoiMarkers(pois, geojson);
+
+        return L.geoJSON(geojson, options);
+    };
+
     TracksLoader = L.Control.FileLayerLoad.extend({
         options: {
-            layer: L.geoJson,
-            layerOptions: {
-                style: function(geoJsonFeature) {
-                    var currentLayerId = layersControl.getActiveBaseLayer().layer.id;
-                    return {
-                        color: currentLayerId === 'cyclosm' ? 'yellow' : 'blue',
-                        weight: 4
-                    };
-                },
-                interactive: false,
-                pointToLayer: function(geoJsonPoint, latlng) {
-                    return L.marker(latlng, {
-                        interactive: false,
-                        opacity: 0.7,
-                        // prevent being on top of route markers
-                        zIndexOffset: -1000
-                    });
-                }
-            },
+            // `layer` allows to use a customized version of `L.geoJson` with the same signature
+            layer: createGeoJsonLayer,
+            layerOptions: BR.Track.getGeoJsonOptions(layersControl),
             addToMap: false,
             // File size limit in kb (default: 1024) ?
-            fileSizeLimit: 1024
+            fileSizeLimit: 1024,
+            shortcut: {
+                open: 79 // char code for 'o'
+            }
         },
 
         _initContainer: function() {
@@ -30,6 +24,8 @@ BR.tracksLoader = function(map, layersControl, routing) {
 
             var fileInput;
             var container = L.DomUtil.get('navbarLoadTracksContainer');
+
+            L.DomEvent.addListener(document, 'keydown', this._keydownListener, this);
 
             // Create an invisible file input
             fileInput = L.DomUtil.create('input', 'hidden', container);
@@ -62,6 +58,16 @@ BR.tracksLoader = function(map, layersControl, routing) {
             var dummy = L.DomUtil.create('div');
             dummy.hidden = true;
             return dummy;
+        },
+
+        _keydownListener: function(e) {
+            if (BR.Util.keyboardShortcutsAllowed(e) && e.keyCode === this.options.shortcut.open) {
+                if (e.shiftKey) {
+                    $('#loadNogos').modal('show');
+                } else {
+                    $('#navbarLoadTracks')[0].click();
+                }
+            }
         }
     });
     var tracksLoaderControl = new TracksLoader();
@@ -102,6 +108,7 @@ BR.tracksLoader = function(map, layersControl, routing) {
                 error: err && err.message ? err.message : err
             })
         );
+        console.error(err);
     });
 
     return tracksLoaderControl;

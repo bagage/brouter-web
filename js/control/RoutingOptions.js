@@ -1,4 +1,10 @@
 BR.RoutingOptions = L.Evented.extend({
+    options: {
+        shortcut: {
+            switch: 71 // char code for 'g'
+        }
+    },
+
     initialize: function() {
         $('#profile-alternative').on('changed.bs.select', this._getChangeHandler());
 
@@ -16,6 +22,8 @@ BR.RoutingOptions = L.Evented.extend({
         profiles_list.children[0].value = 'Custom';
         // <custom> profile is empty at start, select next one
         profiles_list.children[1].selected = true;
+
+        L.DomEvent.addListener(document, 'keydown', this._keydownListener, this);
     },
 
     refreshUI: function() {
@@ -38,6 +46,10 @@ BR.RoutingOptions = L.Evented.extend({
             custom.disabled = true;
         }
         $('.selectpicker').selectpicker('refresh');
+
+        // append shortcut text to tooltip
+        var button = $('#profile-alternative-form button')[0];
+        button.title = button.title + i18next.t('navbar.profile-tooltip', { key: 'G' });
     },
 
     getOptions: function() {
@@ -106,5 +118,13 @@ BR.RoutingOptions = L.Evented.extend({
         return L.bind(function(evt) {
             this.fire('update', { options: this.getOptions() });
         }, this);
+    },
+
+    _keydownListener: function(e) {
+        if (BR.Util.keyboardShortcutsAllowed(e) && e.keyCode === this.options.shortcut.switch) {
+            if (!$('#profile-alternative-form .dropdown').hasClass('show')) {
+                $('#profile-alternative-form button').click();
+            }
+        }
     }
 });

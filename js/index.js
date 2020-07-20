@@ -68,6 +68,10 @@
 
         search = new BR.Search();
         map.addControl(search);
+        $('#map .leaflet-control-geocoder > button')[0].title = i18next.t('keyboard.generic-shortcut', {
+            action: '$t(map.geocoder)',
+            key: 'F'
+        });
 
         router = L.bRouter(); //brouterCgi dummyRouter
 
@@ -80,7 +84,10 @@
                         routing.draw(false);
                         control.state('activate-draw');
                     },
-                    title: i18next.t('map.draw-route-stop')
+                    title: i18next.t('keyboard.generic-shortcut', {
+                        action: '$t(map.draw-route-stop)',
+                        key: '$t(keyboard.escape)'
+                    })
                 },
                 {
                     stateName: 'activate-draw',
@@ -89,7 +96,7 @@
                         routing.draw(true);
                         control.state('deactivate-draw');
                     },
-                    title: i18next.t('map.draw-route-start')
+                    title: i18next.t('keyboard.generic-shortcut', { action: '$t(map.draw-route-start)', key: 'D' })
                 }
             ]
         });
@@ -99,58 +106,79 @@
             function() {
                 routing.reverse();
             },
-            i18next.t('map.reverse-route')
+            i18next.t('keyboard.generic-shortcut', { action: '$t(map.reverse-route)', key: 'R' })
         );
 
         var deletePointButton = L.easyButton(
             '<span><i class="fa fa-caret-left"></i><i class="fa fa-map-marker" style="margin-left: 1px; color: gray;"></i></span>',
             function() {
-                routing.removeWaypoint(routing.getLast(), function(err, data) {});
+                routing.deleteLastPoint();
             },
-            i18next.t('map.delete-last-point')
+            i18next.t('keyboard.generic-shortcut', { action: '$t(map.delete-last-point)', key: 'Z' })
         );
 
         deleteRouteButton = L.easyButton(
             'fa-trash-o',
             function() {
-                bootbox.prompt({
-                    size: 'small',
-                    title: i18next.t('map.clear-route'),
-                    inputType: 'checkbox',
-                    inputOptions: [
-                        {
-                            text: i18next.t('map.delete-route'),
-                            value: 'route'
-                        },
-                        {
-                            text: i18next.t('map.delete-nogo-areas'),
-                            value: 'nogo'
-                        },
-                        {
-                            text: i18next.t('map.delete-pois'),
-                            value: 'pois'
-                        }
-                    ],
-                    value: ['route'],
-                    callback: function(result) {
-                        if (result !== null) {
-                            if (result.indexOf('route') !== -1) {
-                                routing.clear();
-                            }
-                            if (result.indexOf('nogo') !== -1) {
-                                nogos.clear();
-                            }
-                            if (result.indexOf('pois') !== -1) {
-                                pois.clear();
-                            }
-                            onUpdate();
-                            urlHash.onMapMove();
-                        }
-                    }
-                });
+                clearRoute();
             },
-            i18next.t('map.clear-route')
+            i18next.t('keyboard.generic-shortcut', { action: '$t(map.clear-route)', key: '$t(keyboard.backspace)' })
         );
+
+        L.DomEvent.addListener(
+            document,
+            'keydown',
+            function(e) {
+                if (BR.Util.keyboardShortcutsAllowed(e) && !$('.modal.show').length) {
+                    if (e.keyCode === 8) {
+                        // char code for 'backspace'
+                        clearRoute();
+                    } else if (e.keyCode === 72) {
+                        // char code for 'h'
+                        $('#about').modal('show');
+                    }
+                }
+            },
+            this
+        );
+
+        function clearRoute() {
+            bootbox.prompt({
+                size: 'small',
+                title: i18next.t('map.clear-route'),
+                inputType: 'checkbox',
+                inputOptions: [
+                    {
+                        text: i18next.t('map.delete-route'),
+                        value: 'route'
+                    },
+                    {
+                        text: i18next.t('map.delete-nogo-areas'),
+                        value: 'nogo'
+                    },
+                    {
+                        text: i18next.t('map.delete-pois'),
+                        value: 'pois'
+                    }
+                ],
+                value: ['route'],
+                callback: function(result) {
+                    if (result !== null) {
+                        if (result.indexOf('route') !== -1) {
+                            routing.clear();
+                        }
+                        if (result.indexOf('nogo') !== -1) {
+                            nogos.clear();
+                        }
+                        if (result.indexOf('pois') !== -1) {
+                            pois.clear();
+                        }
+                        onUpdate();
+                        urlHash.onMapMove();
+                    }
+                }
+            });
+        }
 
         function updateRoute(evt) {
             router.setOptions(evt.options);
@@ -175,8 +203,11 @@
             profile.update(evt.options);
         });
 
-        BR.NogoAreas.MSG_BUTTON = i18next.t('map.nogo.draw');
-        BR.NogoAreas.MSG_BUTTON_CANCEL = i18next.t('map.nogo.cancel');
+        BR.NogoAreas.MSG_BUTTON = i18next.t('keyboard.generic-shortcut', { action: '$t(map.nogo.draw)', key: 'N' });
+        BR.NogoAreas.MSG_BUTTON_CANCEL = i18next.t('keyboard.generic-shortcut', {
+            action: '$t(map.nogo.cancel)',
+            key: '$t(keyboard.escape)'
+        });
         BR.NogoAreas.MSG_CREATE = i18next.t('map.nogo.click-drag');
         BR.NogoAreas.MSG_DISABLED = i18next.t('map.nogo.edit');
         BR.NogoAreas.MSG_ENABLED = i18next.t('map.nogo.help');
@@ -303,7 +334,9 @@
             BR.stravaSegments(map, layersControl);
         }
 
-        BR.tracksLoader(map, layersControl, routing);
+        BR.tracksLoader(map, layersControl, routing, pois);
+
+        BR.routeLoader(map, layersControl, routing, pois);
 
         pois.addTo(map);
         routingPathQuality.addTo(map);
@@ -311,7 +344,7 @@
         map.addControl(
             new BR.OpacitySliderControl({
                 id: 'route',
-                title: i18next.t('map.opacity-slider'),
+                title: i18next.t('map.opacity-slider-shortcut', { action: '$t(map.opacity-slider)', key: 'M' }),
                 muteKeyCode: 77, // m
                 callback: L.bind(routing.setOpacity, routing)
             })
@@ -409,41 +442,29 @@
             urlHash
         );
 
+        // listener and initCollapse here and not in onAdd, as addBelow calls addTo (-> onAdd) on resize
         $(window).resize(function() {
             elevation.addBelow(map);
         });
-
-        $('#elevation-chart').on('show.bs.collapse', function() {
-            $('#elevation-btn').addClass('active');
-        });
-        $('#elevation-chart').on('hidden.bs.collapse', function() {
-            $('#elevation-btn').removeClass('active');
-            // we must fetch tiles that are located behind elevation-chart
-            map._onResize();
-        });
-
-        var onHide = function() {
-            if (this.id && BR.Util.localStorageAvailable()) {
-                localStorage.removeItem(this.id);
-            }
-        };
-        var onShow = function() {
-            if (this.id && BR.Util.localStorageAvailable()) {
-                localStorage[this.id] = 'true';
-            }
-        };
-        // on page load, we want to restore collapsible elements from previous usage
-        $('.collapse')
-            .on('hidden.bs.collapse', onHide)
-            .on('shown.bs.collapse', onShow)
-            .each(function() {
-                if (this.id && BR.Util.localStorageAvailable() && localStorage[this.id] === 'true') {
-                    $(this).collapse('show');
-                }
-            });
-
-        displayWelcomePopup(map, search);
+        elevation.initCollapse(map);
     }
+
+    i18next.on('languageChanged', function(detectedLanguage) {
+        // detected + fallbacks, e.g. ["de-DE", "de", "en"]
+        for (i = 0; i < i18next.languages.length; i++) {
+            var language = i18next.languages[i];
+
+            // set first (fallback) language, for which a bundle was found
+            if (i18next.hasResourceBundle(language, 'translation')) {
+                var htmlElem = document.documentElement;
+                if (htmlElem.getAttribute('lang') !== language) {
+                    htmlElem.setAttribute('lang', language);
+                }
+                break;
+            }
+        }
+        displayWelcomePopup(map, search);
+    });
 
     i18next
         .use(window.i18nextXHRBackend)
@@ -456,8 +477,9 @@
                 }
             },
             function(err, t) {
-                jqueryI18next.init(i18next, $);
-                $('html').localize({
+                jqueryI18next.init(i18next, $, { useOptionsAttr: true });
+                $('html').localize();
+                $('#aboutLinks').localize({
                     privacyPolicyUrl: BR.conf.privacyPolicyUrl || 'https://brouter.de/privacypolicy.html'
                 });
 

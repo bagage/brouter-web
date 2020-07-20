@@ -18,7 +18,9 @@ BR.TrackAnalysis = L.Class.extend({
         overlayStyle: {
             color: 'yellow',
             opacity: 0.8,
-            weight: 8
+            weight: 8,
+            // show above quality coding (pane defined in RoutingPathQuality.js)
+            pane: 'routingQualityPane'
         }
     },
 
@@ -49,6 +51,28 @@ BR.TrackAnalysis = L.Class.extend({
     trackPolyline: null,
 
     /**
+     * true when tab is shown, false when hidden
+     *
+     * @type {boolean}
+     */
+    active: false,
+
+    /**
+     * Called by BR.Sidebar when tab is activated
+     */
+    show: function() {
+        this.active = true;
+        this.options.requestUpdate(this);
+    },
+
+    /**
+     * Called by BR.Sidebar when tab is deactivated
+     */
+    hide: function() {
+        this.active = false;
+    },
+
+    /**
      * Everytime the track changes this method is called:
      *
      * - calculate statistics (way type, surface, smoothness)
@@ -61,6 +85,10 @@ BR.TrackAnalysis = L.Class.extend({
      * @param {Array} segments
      */
     update: function(polyline, segments) {
+        if (!this.active) {
+            return;
+        }
+
         if (segments.length === 0) {
             $('#track_statistics').html('');
             return;
@@ -190,7 +218,7 @@ BR.TrackAnalysis = L.Class.extend({
             }
 
             analysisSortable[type].sort(function(a, b) {
-                return a.distance < b.distance;
+                return b.distance - a.distance;
             });
 
             for (var j = 0; j < analysisSortable[type].length; j++) {
@@ -226,11 +254,17 @@ BR.TrackAnalysis = L.Class.extend({
         var $content = $('#track_statistics');
 
         $content.html('');
-        $content.append($('<h4 class="analysis-heading">' + i18next.t('sidebar.analysis.header.highway') + '</h4>'));
+        $content.append(
+            $('<h4 class="track-analysis-heading">' + i18next.t('sidebar.analysis.header.highway') + '</h4>')
+        );
         $content.append(this.renderTable('highway', analysis.highway));
-        $content.append($('<h4 class="analysis-heading">' + i18next.t('sidebar.analysis.header.surface') + '</h4>'));
+        $content.append(
+            $('<h4 class="track-analysis-heading">' + i18next.t('sidebar.analysis.header.surface') + '</h4>')
+        );
         $content.append(this.renderTable('surface', analysis.surface));
-        $content.append($('<h4 class="analysis-heading">' + i18next.t('sidebar.analysis.header.smoothness') + '</h4>'));
+        $content.append(
+            $('<h4 class="track-analysis-heading">' + i18next.t('sidebar.analysis.header.smoothness') + '</h4>')
+        );
         $content.append(this.renderTable('smoothness', analysis.smoothness));
     },
 

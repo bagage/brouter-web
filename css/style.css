@@ -108,6 +108,7 @@ ul#stats {
     display: flex;
     align-items: stretch;
     justify-content: space-around;
+    flex-wrap: wrap;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -116,6 +117,7 @@ ul#stats {
     display: inline-block;
     flex: 0 1 auto;
     list-style-type: none;
+    margin: 0 0.2em;
 }
 
 p.stats-label {
@@ -249,22 +251,21 @@ input#trackname:focus:invalid {
     margin: 0;
 }
 
-.track-analysis-header-distance {
+table.dataTable.mini .track-analysis-header-distance {
     text-align: right;
+    padding-right: 4px;
 }
 
-.track-analysis-table td {
+.track-analysis-table {
     font-size: small;
+    padding-bottom: 0.5em;
 }
 
 table.dataTable.track-analysis-table tfoot td {
     font-weight: bold;
     text-align: right;
-    padding-right: 0;
-}
-
-table.track-analysis-table tr:hover {
-    background-color: rgba(255, 255, 0, 0.3);
+    padding-right: 4px;
+    padding-top: 4px;
 }
 
 .track-analysis-title {
@@ -276,8 +277,8 @@ table.track-analysis-table tr:hover {
 }
 
 .track-analysis-heading {
-    margin-top: 15px;
-    font-weight: bold;
+    margin-top: 0.7em;
+    margin-bottom: 0.1em;
     font-size: 1.2em;
 }
 
@@ -422,6 +423,12 @@ button.btn {
     margin-right: -1em;
 }
 
+/* about dialog */
+#about-contact-language {
+    font-size: 0.9em;
+    margin: -6px 0 6px 20px;
+}
+
 /*
 * DataTables
 */
@@ -447,13 +454,10 @@ table.dataTable thead .sorting {
     background-position: center right -3px;
 }
 
+table.track-analysis-table tbody tr:hover,
 table.dataTable.hover tbody tr:hover,
-table.dataTable.hover tbody tr.odd:hover,
-table.dataTable.hover tbody tr.even:hover,
-table.dataTable.display tbody tr:hover,
-table.dataTable.display tbody tr.odd:hover,
-table.dataTable.display tbody tr.even:hover {
-    background-color: rgba(255, 255, 0, 0.2);
+table.dataTable.display tbody tr:hover {
+    background-color: rgba(255, 255, 0, 0.3);
 }
 table.dataTable.hover tbody tr:hover.selected,
 table.dataTable.display tbody tr:hover.selected {
