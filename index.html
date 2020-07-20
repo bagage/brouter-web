@@ -102,6 +102,12 @@
                             ><span data-i18n="navbar.about">About</span></a
                         >
                     </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#preferences"
+                            ><span class="fa fa-lg fa-sliders" aria-hidden="true"></span
+                            ><span data-i18n="navbar.preferences">Preferences</span></a
+                        >
+                    </div>
                 </div>
             </div>
         </nav>
@@ -522,6 +528,36 @@
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preferences modal window -->
+        <div
+            class="modal fade"
+            id="preferences"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="Preferences window"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" data-i18n="preferences.title">
+                            Preferences
+                        </h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Lang selector -->
+                        <div class="form-group">
+                            <label for="langSelect">Select language</label>
+                            <select class="form-control" id="langSelect"> </select>
+                        </div>
                     </div>
                 </div>
             </div>

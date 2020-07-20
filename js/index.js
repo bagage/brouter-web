@@ -240,6 +240,8 @@
 
         exportRoute = new BR.Export(router, pois);
 
+        preferences = new BR.Preferences();
+
         routing.on('routing:routeWaypointEnd routing:setWaypointsEnd', function(evt) {
             search.clear();
             onUpdate(evt && evt.err);

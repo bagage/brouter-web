@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var fs = require('fs');
 var concat = require('gulp-concat');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
@@ -15,6 +16,7 @@ var gulpif = require('gulp-if');
 var gutil = require('gulp-util');
 var zip = require('gulp-zip');
 var bump = require('gulp-bump');
+var tap = require('gulp-tap');
 var semver = require('semver');
 var git = require('gulp-git');
 var replace = require('gulp-replace');
@@ -152,6 +154,19 @@ gulp.task('fonts', function() {
 
 gulp.task('locales', function() {
     return gulp.src(paths.locales).pipe(gulp.dest(paths.dest + '/locales'));
+});
+
+gulp.task('locales-js', function(cb) {
+    files = '';
+    gulp.src(paths.locales)
+        // .pipe(rename({ extname: '.json' }))
+        .pipe(
+            tap(function(file, t) {
+                gutil.log(gutil.colors.yellow(file.basename.replace('.json', '')));
+                files += file.path;
+            })
+        )
+        .pipe(fs.writeFile(paths.dest + '/locales.js', files, cb));
 });
 
 gulp.task('reload', function(done) {
@@ -317,7 +332,18 @@ gulp.task('layers', function() {
 
 gulp.task(
     'default',
-    gulp.series('clean', 'scripts_config', 'layers_config', 'layers', 'scripts', 'styles', 'images', 'fonts', 'locales')
+    gulp.series(
+        'clean',
+        'scripts_config',
+        'layers_config',
+        'layers',
+        'scripts',
+        'styles',
+        'images',
+        'fonts',
+        'locales',
+        'locales-js'
+    )
 );
 
 gulp.task(

@@ -6,7 +6,7 @@
     "scripts": {
         "build": "gulp",
         "transifex-push": "gulp i18next && tx push --source",
-        "transifex-pull": "tx pull --all --minimum-perc 1 --force && (git add locales/*.json && git commit locales/*.json -m 'Update translations' || true)",
+        "transifex-pull": "tx pull --all --minimum-perc 1 --force && (echo locales/*.json | sed 's > locales.js && git add locales* && git commit locales* -m 'Update translations' || true)",
         "layers": "node layers/josm/extract.js && node layers/collection/extract.js",
         "test": "gulp",
         "lint": "eslint .",
@@ -101,6 +101,7 @@
         "gulp-rename": "^1.4.0",
         "gulp-replace": "^0.5.4",
         "gulp-sourcemaps": "^1.5.1",
+        "gulp-tap": "^2.0.0",
         "gulp-uglify": "^1.1.0",
         "gulp-util": "^3.0.7",
         "gulp-zip": "^4.0.0",
