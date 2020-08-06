@@ -2,6 +2,7 @@ BR.confLayers.tree = {
     'base-layers': {
         'worldwide-international': [
             'standard',
+            'cyclosm',
             'OpenTopoMap',
             'Stamen.Terrain',
             'Esri.WorldImagery',
@@ -51,8 +52,9 @@ BR.confLayers.tree = {
             {
                 'SK': [
                     'Freemap.sk-Car',
-                    'Freemap.sk-Hiking',
                     'Freemap.sk-Cyclo',
+                    'Freemap.sk-Hiking',
+                    'Freemap.sk-Outdoor'
                 ]
             },
             'osm-cambodia_laos_thailand_vietnam-bilingual'

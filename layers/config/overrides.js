@@ -172,6 +172,9 @@ BR.confLayers.getPropertyOverrides = function() {
         'Freemap.sk-Cyclo': {
             'mapUrl': 'https://www.freemap.sk/?map={zoom}/{lat}/{lon}&layers=C'
         },
+        'Freemap.sk-Outdoor': {
+            'mapUrl': 'https://www.freemap.sk/?map={zoom}/{lat}/{lon}&layers=X'
+        },
         'osm-cambodia_laos_thailand_vietnam-bilingual': {
             'country_code': 'TH+',
             'nameShort': 'Thaimap',
@@ -229,7 +232,7 @@ BR.confLayers.getPropertyOverrides = function() {
             'mapUrl': 'http://mapaszlakow.eu/#{zoom}/{lat}/{lon}'
         },
         'cyclosm': {
-            'language_code': 'fr',
+            'pseudo_language_code': 'fr',
             'nameShort': 'CyclOSM',
             'mapUrl': 'https://www.cyclosm.org/#map={zoom}/{lat}/{lon}/cyclosm'
         },
