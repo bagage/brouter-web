@@ -447,6 +447,8 @@
             elevation.addBelow(map);
         });
         elevation.initCollapse(map);
+
+        displayWelcomePopup(map, search);
     }
 
     i18next.on('languageChanged', function(detectedLanguage) {
@@ -463,7 +465,6 @@
                 break;
             }
         }
-        displayWelcomePopup(map, search);
     });
 
     i18next
