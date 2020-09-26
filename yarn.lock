@@ -1868,10 +1868,10 @@ bootbox@~5.3.4:
     jquery ">=1.12.0"
     popper.js ">=1.12.9"
 
-bootstrap-select@1.13.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.13.0.tgz#f31d0a23fc6070fd5b17b841bf1ca115ce54775b"
-  integrity sha1-8x0KI/xgcP1bF7hBvxyhFc5Ud1s=
+bootstrap-select@1.13.6:
+  version "1.13.6"
+  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.13.6.tgz#dc41f8a7385ab4e385562b400d4cf2422f5ef852"
+  integrity sha512-MsOZjYVv0jjHOCUV6CG3J8MSsosrKL8MlA8DacMhMqFq43tTxMjjd7Czo5a/upKPNHW6asFq29oyKJTrPva6FQ==
 
 bootstrap-slider@^9.8.1:
   version "9.10.0"
@@ -4958,10 +4958,10 @@ leaflet-plugins@~3.0.0:
   resolved "https://registry.yarnpkg.com/leaflet-plugins/-/leaflet-plugins-3.0.3.tgz#7c727ac79a37636b245dd1adc64e10c61b425864"
   integrity sha512-J2dfJxrq7ETmciGq01syYmB0zG1Ogzy5FioIFJjJB82jFqxHZJDFUMiPFGJn+gfJnWhv/LobbPQYqHdaJSxR9w==
 
-leaflet-providers@^1.5.0:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.10.1.tgz#30a7487aa0333e9fac9b47ced12011ec3780c624"
-  integrity sha512-6+K44xgRY13K7ildNY+5uCnkG3oBTol3GvSQQjLt2QWTJdob/PWzPHuvPzYiBDOELFy+aAzPo8+skU0sYUUzwg==
+leaflet-providers@^1.10.2:
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.10.2.tgz#763c8e6655f26caf1afe3a1ef4add6c3e32de663"
+  integrity sha512-1l867LObxwuFBeyPeBewip8PAXKOnvEoujq4/9y2TKTiZNHH76ksBD6dfktGjgUrOF+IdjsGHkpASPE+v2DQLw==
 
 leaflet-routing@nrenner/leaflet-routing#e94e153:
   version "0.1.3"
