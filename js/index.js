@@ -56,6 +56,7 @@
             drawButton,
             deleteRouteButton,
             pois,
+            circleGo,
             urlHash;
 
         // By default bootstrap-select use glyphicons
@@ -68,10 +69,14 @@
 
         search = new BR.Search();
         map.addControl(search);
-        $('#map .leaflet-control-geocoder > button')[0].title = i18next.t('keyboard.generic-shortcut', {
-            action: '$t(map.geocoder)',
-            key: 'F'
-        });
+        $('#map .leaflet-control-geocoder > button')[0].title = i18next.t(
+            'keyboard.generic-shortcut',
+
+            {
+                action: '$t(map.geocoder)',
+                key: 'F'
+            }
+        );
 
         router = L.bRouter(); //brouterCgi dummyRouter
 
@@ -96,7 +101,11 @@
                         routing.draw(true);
                         control.state('deactivate-draw');
                     },
-                    title: i18next.t('keyboard.generic-shortcut', { action: '$t(map.draw-route-start)', key: 'D' })
+                    title: i18next.t('keyboard.generic-shortcut', {
+                        action: '$t(map.draw-route-start)',
+
+                        key: 'D'
+                    })
                 }
             ]
         });
@@ -106,7 +115,11 @@
             function() {
                 routing.reverse();
             },
-            i18next.t('keyboard.generic-shortcut', { action: '$t(map.reverse-route)', key: 'R' })
+            i18next.t('keyboard.generic-shortcut', {
+                action: '$t(map.reverse-route)',
+
+                key: 'R'
+            })
         );
 
         var deletePointButton = L.easyButton(
@@ -114,7 +127,11 @@
             function() {
                 routing.deleteLastPoint();
             },
-            i18next.t('keyboard.generic-shortcut', { action: '$t(map.delete-last-point)', key: 'Z' })
+            i18next.t('keyboard.generic-shortcut', {
+                action: '$t(map.delete-last-point)',
+
+                key: 'Z'
+            })
         );
 
         deleteRouteButton = L.easyButton(
@@ -122,7 +139,11 @@
             function() {
                 clearRoute();
             },
-            i18next.t('keyboard.generic-shortcut', { action: '$t(map.clear-route)', key: '$t(keyboard.backspace)' })
+            i18next.t('keyboard.generic-shortcut', {
+                action: '$t(map.clear-route)',
+
+                key: '$t(keyboard.backspace)'
+            })
         );
 
         L.DomEvent.addListener(
@@ -203,7 +224,11 @@
             profile.update(evt.options);
         });
 
-        BR.NogoAreas.MSG_BUTTON = i18next.t('keyboard.generic-shortcut', { action: '$t(map.nogo.draw)', key: 'N' });
+        BR.NogoAreas.MSG_BUTTON = i18next.t('keyboard.generic-shortcut', {
+            action: '$t(map.nogo.draw)',
+
+            key: 'N'
+        });
         BR.NogoAreas.MSG_BUTTON_CANCEL = i18next.t('keyboard.generic-shortcut', {
             action: '$t(map.nogo.cancel)',
             key: '$t(keyboard.escape)'
@@ -268,8 +293,14 @@
         pois = new BR.PoiMarkers({
             routing: routing
         });
+        circleGo = new BR.CircleGoArea({
+            routing: routing,
+            nogos: nogos,
+            pois: pois
+        });
+        pois.options.circlego = circleGo;
 
-        exportRoute = new BR.Export(router, pois);
+        exportRoute = new BR.Export(router, pois, circleGo);
 
         routing.on('routing:routeWaypointEnd routing:setWaypointsEnd', function(evt) {
             search.clear();
@@ -327,7 +358,15 @@
         }
 
         nogos.addTo(map);
-        L.easyBar([drawButton, reverseRouteButton, nogos.getButton(), deletePointButton, deleteRouteButton]).addTo(map);
+        circleGo.addTo(map);
+        L.easyBar([
+            drawButton,
+            reverseRouteButton,
+            nogos.getButton(),
+            circleGo.getButton(),
+            deletePointButton,
+            deleteRouteButton
+        ]).addTo(map);
         nogos.preventRoutePointOnCreate(routing);
 
         if (BR.keys.strava) {
@@ -344,7 +383,11 @@
         map.addControl(
             new BR.OpacitySliderControl({
                 id: 'route',
-                title: i18next.t('map.opacity-slider-shortcut', { action: '$t(map.opacity-slider)', key: 'M' }),
+                title: i18next.t('map.opacity-slider-shortcut', {
+                    action: '$t(map.opacity-slider)',
+
+                    key: 'M'
+                }),
                 muteKeyCode: 77, // m
                 callback: L.bind(routing.setOpacity, routing)
             })
@@ -406,7 +449,11 @@
         urlHash = new L.Hash(null, null);
         // this callback is used to append anything in URL after L.Hash wrote #map=zoom/lat/lng/layer
         urlHash.additionalCb = function() {
-            var url = router.getUrl(routing.getWaypoints(), pois.getMarkers(), null).substr('brouter?'.length + 1);
+            var url = router
+
+                .getUrl(routing.getWaypoints(), pois.getMarkers(), null)
+
+                .substr('brouter?'.length + 1);
 
             // by default brouter use | as separator. To make URL more human-readable, we remplace them with ; for users
             url = url.replace(/\|/g, ';');
