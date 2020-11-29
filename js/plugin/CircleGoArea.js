@@ -29,7 +29,7 @@ BR.CircleGoArea = L.Control.extend({
                     },
                     title: i18next.t('keyboard.generic-shortcut', {
                         action: 'Draw limited go-to zone (20km)',
-                        key: 'G'
+                        key: 'I'
                     })
                 },
                 {
