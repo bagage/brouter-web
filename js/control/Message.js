@@ -40,11 +40,7 @@ BR.Message = L.Class.extend({
     },
 
     showError: function(err) {
-        if (err && err.message) err = err.message;
-
-        if (err == 'target island detected for section 0\n') {
-            err = i18next.t('warning.no-route-found');
-        } else if (err == 'no track found at pass=0\n') {
+        if (err == 'Error: target island detected for section 0\n') {
             err = i18next.t('warning.no-route-found');
         }
         this._show(err, 'error');
