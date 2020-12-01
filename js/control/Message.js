@@ -46,6 +46,10 @@ BR.Message = L.Class.extend({
             err = i18next.t('warning.no-route-found');
         } else if (err == 'no track found at pass=0\n') {
             err = i18next.t('warning.no-route-found');
+        } else if (err == 'to-position not mapped in existing datafile\n') {
+            err = i18next.t('warning.invalid-route-to');
+        } else if (err == 'from-position not mapped in existing datafile\n') {
+            err = i18next.t('warning.invalid-route-from');
         }
         this._show(err, 'error');
     },

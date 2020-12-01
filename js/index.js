@@ -281,15 +281,9 @@
             styles: BR.conf.routingStyles
         });
 
-        pois = new BR.PoiMarkers({
-            routing: routing
-        });
-        circleGo = new BR.CircleGoArea({
-            routing: routing,
-            nogos: nogos,
-            pois: pois
-        });
-        pois.options.circlego = circleGo;
+        pois = new BR.PoiMarkers(routing);
+        circleGo = new BR.CircleGoArea(routing, nogos, pois);
+        pois.circlego = circleGo;
 
         exportRoute = new BR.Export(router, pois);
 
@@ -350,7 +344,13 @@
 
         nogos.addTo(map);
 
-        var shouldAddCircleGo = true; // to improve: detect country?
+        var shouldAddCircleGo = false;
+        var lang = i18next.languages.length && i18next.languages[0];
+
+        if (lang.startsWith('fr')) {
+            circleGo.options.radius = 20000;
+            shouldAddCircleGo = true;
+        }
 
         if (shouldAddCircleGo) circleGo.addTo(map);
 
@@ -377,7 +377,6 @@
                 id: 'route',
                 title: i18next.t('map.opacity-slider-shortcut', {
                     action: '$t(map.opacity-slider)',
-
                     key: 'M'
                 }),
                 muteKeyCode: 77, // m
@@ -415,6 +414,11 @@
             var opts = router.parseUrlParams(url2params(url));
             router.setOptions(opts);
             routingOptions.setOptions(opts);
+            if (opts.circlego) {
+                // must be done before nogos!
+                circleGo.options.radius = opts.circlego[2];
+                circleGo.setCircle([opts.circlego[0], opts.circlego[1]]);
+            }
             nogos.setOptions(opts);
             profile.update(opts);
 
@@ -423,7 +427,6 @@
                 routing.clear();
                 routing.setWaypoints(opts.lonlats);
             }
-
             if (opts.pois) {
                 pois.setMarkers(opts.pois);
             }
@@ -442,9 +445,7 @@
         // this callback is used to append anything in URL after L.Hash wrote #map=zoom/lat/lng/layer
         urlHash.additionalCb = function() {
             var url = router
-
-                .getUrl(routing.getWaypoints(), pois.getMarkers(), null)
-
+                .getUrl(routing.getWaypoints(), pois.getMarkers(), circleGo.getCircle(), null)
                 .substr('brouter?'.length + 1);
 
             // by default brouter use | as separator. To make URL more human-readable, we remplace them with ; for users

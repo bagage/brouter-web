@@ -2,15 +2,18 @@ BR.CircleGoArea = L.Control.extend({
     circleLayer: null,
 
     options: {
-        routing: null,
-        nogos: null,
-        pois: null,
+        radius: 1000, // in meters
         shortcut: {
             draw: {
                 enable: 73, // char code for 'i'
                 disable: 27 // char code for 'ESC'
             }
         }
+    },
+    initialize: function(routing, nogos, pois) {
+        this.routing = routing;
+        this.nogos = nogos;
+        this.pois = pois;
     },
 
     onAdd: function(map) {
@@ -19,6 +22,7 @@ BR.CircleGoArea = L.Control.extend({
         this.map = map;
         this.circleLayer = L.layerGroup([]).addTo(map);
 
+        var radiusKm = (this.options.radius / 1000).toFixed();
         this.drawButton = L.easyButton({
             states: [
                 {
@@ -28,7 +32,7 @@ BR.CircleGoArea = L.Control.extend({
                         self.draw(true);
                     },
                     title: i18next.t('keyboard.generic-shortcut', {
-                        action: 'Draw limited go-to zone (20km)',
+                        action: i18next.t('map.draw-circlego-start', { radius: radiusKm }),
                         key: 'I'
                     })
                 },
@@ -39,7 +43,7 @@ BR.CircleGoArea = L.Control.extend({
                         self.draw(false);
                     },
                     title: i18next.t('keyboard.generic-shortcut', {
-                        action: 'Stop drawing limited go-to zone (20km)',
+                        action: i18next.t('map.draw-circlego-stop', { radius: radiusKm }),
                         key: '$t(keyboard.escape)'
                     })
                 }
@@ -59,8 +63,8 @@ BR.CircleGoArea = L.Control.extend({
     draw: function(enable) {
         this.drawButton.state(enable ? 'deactivate-circlego' : 'activate-circlego');
         if (enable) {
-            this.options.routing.draw(false);
-            this.options.pois.draw(false);
+            this.routing.draw(false);
+            this.pois.draw(false);
             this.map.on('click', this.onMapClick, this);
             L.DomUtil.addClass(this.map.getContainer(), 'circlego-draw-enabled');
         } else {
@@ -80,39 +84,41 @@ BR.CircleGoArea = L.Control.extend({
         }
     },
 
-    setGoCircle: function(center) {
-        var nogos = this.options.nogos;
-
+    setNogoCircle: function(center) {
         if (center) {
-            $('#nogoJSON').val(JSON.stringify(this.circleToPolygon(center, 20000)));
-            nogos.uploadNogos();
+            var polygon = this.circleToPolygon(center, this.options.radius);
+            $('#nogoJSON').val(JSON.stringify(polygon));
+            this.nogos.uploadNogos();
         } else {
-            nogos.clear();
+            this.nogos.clear();
         }
     },
 
     onMapClick: function(e) {
+        this.setCircle([e.latlng.lng, e.latlng.lat]);
+    },
+
+    setCircle: function(center) {
         var self = this;
-        var latlng = e.latlng;
         var icon = L.VectorMarkers.icon({
             icon: 'home',
             markerColor: BR.conf.markerColors.circlego
         });
-        var marker = L.marker(latlng, { icon: icon, draggable: true, name: name })
+        var marker = L.marker([center[1], center[0]], { icon: icon, draggable: true, name: name })
             .on('dragend', function(e) {
-                self.setGoCircle([e.target.getLatLng().lng, e.target.getLatLng().lat]);
+                self.setNogoCircle([e.target.getLatLng().lng, e.target.getLatLng().lat]);
             })
             .on('click', function() {
                 var drawing = self.drawButton.state() == 'deactivate-circlego';
                 if (drawing) {
                     self.circleLayer.removeLayer(marker);
-                    self.setGoCircle(undefined);
+                    self.setNogoCircle(undefined);
                 }
             });
 
         this.clear();
         marker.addTo(this.circleLayer);
-        this.setGoCircle([latlng.lng, latlng.lat]);
+        this.setNogoCircle(center);
         this.draw(false);
     },
 
@@ -124,10 +130,15 @@ BR.CircleGoArea = L.Control.extend({
         return this.drawButton;
     },
 
-    getCircleGo: function() {
-        return this.circleLayer.getLayers().map(function(it) {
-            return it._latlng;
+    getCircle: function() {
+        var circle = this.circleLayer.getLayers().map(function(it) {
+            return it.getLatLng();
         });
+        if (circle && circle.length) {
+            return [circle[0].lng.toFixed(6), circle[0].lat.toFixed(6), this.options.radius].join(',');
+        } else {
+            return null;
+        }
     },
 
     toRadians: function(angleInDegrees) {
@@ -139,8 +150,8 @@ BR.CircleGoArea = L.Control.extend({
     },
 
     offset: function(c1, distance, bearing) {
-        var lat1 = this.toRadians(c1[1]);
         var lon1 = this.toRadians(c1[0]);
+        var lat1 = this.toRadians(c1[1]);
         var dByR = distance / 6378137; // distance divided by 6378137 (radius of the earth) wgs84
         var lat = Math.asin(Math.sin(lat1) * Math.cos(dByR) + Math.cos(lat1) * Math.sin(dByR) * Math.cos(bearing));
         var lon =
