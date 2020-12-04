@@ -1,5 +1,6 @@
 BR.CircleGoArea = L.Control.extend({
     circleLayer: null,
+    outsideAreaRenderer: L.svg({ padding: 1 }),
 
     options: {
         radius: 1000, // in meters
@@ -87,12 +88,51 @@ BR.CircleGoArea = L.Control.extend({
     setNogoCircle: function(center) {
         if (center) {
             var polygon = this.circleToPolygon(center, this.options.radius);
-            $('#nogoJSON').val(JSON.stringify(polygon));
+            var geoJson = JSON.stringify(polygon);
+            $('#nogoJSON').val(geoJson);
             $('#nogoBuffer').val(0);
             this.nogos.uploadNogos();
+
+            var polygonClone = JSON.parse(geoJson);
+            this.setOutsideArea(polygonClone);
         } else {
             this.nogos.clear();
+            this.map.removeLayer(this.outsideArea);
         }
+    },
+
+    setOutsideArea: function(polygon) {
+        var inner = polygon.features[0].geometry.coordinates.concat(polygon.features[1].geometry.coordinates);
+        var world = [
+            [180, 90],
+            [-180, 90],
+            [-180, -90],
+            [180, -90],
+            [180, 90]
+        ];
+        polygon.features[0].geometry.coordinates = [world, inner];
+        polygon.features[0].geometry.type = 'Polygon';
+        polygon.features.pop();
+
+        if (this.outsideArea) {
+            this.map.removeLayer(this.outsideArea);
+        }
+
+        this.outsideArea = L.geoJson(polygon, {
+            renderer: this.outsideAreaRenderer,
+            style: function(feature) {
+                return {
+                    weight: 2,
+                    color: 'black',
+                    opacity: 0.4,
+                    fillColor: 'black',
+                    fillOpacity: 0.4,
+                    className: 'circlego-outside'
+                };
+            }
+        })
+            .on('click', L.DomEvent.stop)
+            .addTo(this.map);
     },
 
     onMapClick: function(e) {
@@ -119,7 +159,12 @@ BR.CircleGoArea = L.Control.extend({
 
         this.clear();
         marker.addTo(this.circleLayer);
-        if (!skipNogo) this.setNogoCircle(center);
+        if (!skipNogo) {
+            this.setNogoCircle(center);
+        } else {
+            var polygon = this.circleToPolygon(center, this.options.radius);
+            this.setOutsideArea(polygon);
+        }
         this.draw(false);
     },
 
@@ -173,7 +218,7 @@ BR.CircleGoArea = L.Control.extend({
         }
         inner.push(inner[0]);
 
-        /* hack: it seems there is a bug then using a single closed ring line,
+        /* hack: it seems there is a bug when using a single closed ring line,
          cf. https://github.com/nrenner/brouter-web/issues/349#issue-755514458
          so instead we use 2 half rings to ensure we properly close the area */
         return {
