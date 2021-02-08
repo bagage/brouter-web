@@ -1,6 +1,6 @@
 {
     "name": "brouter-web",
-    "version": "99.48.0",
+    "version": "BROUTER_VERSION",
     "description": "Web client for BRouter",
     "main": "js/index.js",
     "scripts": {
