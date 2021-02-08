@@ -68,18 +68,20 @@
         "leaflet-sidebar-v2": "nrenner/leaflet-sidebar-v2#dev",
         "leaflet-triangle-marker": "^1.0.2",
         "leaflet.heightgraph": "nrenner/Leaflet.Heightgraph#0757b2a",
-        "leaflet.locatecontrol": "^0.60.0",
+        "leaflet.locatecontrol": "^0.72.0",
         "leaflet.snogylop": "^0.4.0",
         "leaflet.stravasegments": "2.3.2",
         "mapbbcode": "MapBBCode/mapbbcode#v1.2.0",
         "osmtogeojson": "^3.0.0-beta.4",
         "promise-polyfill": "^8.2.0",
+        "togpx": "^0.5.4",
+        "topojson-client": "^3.1.0",
         "url-search-params": "~0.5.0",
         "whatwg-fetch": "^3.5.0"
     },
     "devDependencies": {
         "autoprefixer": "^8.1.0",
-        "browser-sync": "^2.26.13",
+        "browser-sync": "^2.26.14",
         "del": "^1.1.1",
         "eslint": "^7.15.0",
         "eslint-plugin-compat": "3.3.0",
@@ -264,6 +266,11 @@
         "@turf/turf": {
             "main": [
                 "turf.min.js"
+            ]
+        },
+        "togpx": {
+            "main": [
+                "togpx.js"
             ]
         }
     }
