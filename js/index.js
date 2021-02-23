@@ -475,6 +475,8 @@
             urlHash
         );
         displayWelcomePopup(map, search);
+
+        BR.WhatsNew.init();
     }
 
     i18next.on('languageChanged', function (detectedLanguage) {
