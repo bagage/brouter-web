@@ -1,7 +1,7 @@
 {
-    "short_name": "BRouter",
-    "name": "Bike router",
-    "description": "Bike (and others) routing engine based on OpenStreetMap",
+    "short_name": "BRouter-Web",
+    "name": "BRouter routing web client",
+    "description": "Frontend for BRouter routing engine based on OpenStreetMap",
     "icons": [
         {
             "src": "icon-192.png",
@@ -34,5 +34,9 @@
     "scope": "/",
     "theme_color": "#343a40",
     "lang": "en-US",
-    "screenshots": []
+    "orientation": "portrait-primary",
+    "categories": ["entertainment", "sports"],
+    "screenshots": [
+        "https://user-images.githubusercontent.com/1451988/83979926-1f6d8c80-a912-11ea-8f21-b2ed60963501.gif"
+    ]
 }
