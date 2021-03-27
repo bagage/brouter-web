@@ -63,7 +63,7 @@
                             aria-haspopup="true"
                             aria-expanded="false"
                             data-i18n="[title]keyboard.generic-shortcut"
-                            data-i18n-options="{ 'action': '$t(navbar.export-tooltip)', 'key': 'X' }"
+                            data-i18n-options='{ "action": "$t(navbar.export-tooltip)", "key": "X" }'
                             title="Export route"
                         >
                             <span class="fa fa-lg fa-cloud-download" aria-hidden="true"> </span>
@@ -80,12 +80,14 @@
                             aria-haspopup="true"
                             aria-expanded="false"
                             data-i18n="[title]navbar.load.tooltip"
-                            data-i18n-options="{
-                                'tracksAction': '$t(navbar.load.tracks)',
-                                'tracksKey': 'O',
-                                'nogosAction': '$t(navbar.load.nogos)',
-                                'nogosKey': '$t(keyboard.shift)+O'
-                            }"
+                            data-i18n-options='{
+                                "tracksAction": "$t(navbar.load.tracks)",
+                                "tracksKey": "O",
+                                "trackAsRouteAction": "$t(trackasroute.title)",
+                                "trackAsRouteKey": "$t(keyboard.shift)+O",
+                                "nogosAction": "$t(navbar.load.nogos)",
+                                "nogosKey": "$t(keyboard.shift)+N"
+                            }'
                             title="Load route"
                         >
                             <span class="fa fa-lg fa-cloud-upload" aria-hidden="true"> </span>
@@ -121,7 +123,7 @@
                     <div
                         class="nav-item"
                         data-i18n="[title]keyboard.generic-shortcut"
-                        data-i18n-options="{ 'action': '$t(about.tooltip)', 'key': 'H' }"
+                        data-i18n-options='{ "action": "$t(about.tooltip)", "key": "H" }'
                         title="Show more information about BRouter-Web"
                     >
                         <a class="nav-link" href="#" data-toggle="modal" data-target="#about"
@@ -173,7 +175,11 @@
                             <dd data-i18n="[html]credits.boundaries">
                                 Administrative Boundaries:
                                 <a href="https://osm-boundaries.com" target="_blank">OSM-Boundaries</a>,
-                                <a href="https://overpass-api.de/" target="_blank">Overpass API</a>
+                                <a href="https://overpass-api.de/" class="overpass-url" target="_blank">Overpass API</a>
+                            </dd>
+                            <dd data-i18n="[html]credits.pois">
+                                Locations (POIs):
+                                <a href="https://overpass-api.de/" class="overpass-url" target="_blank">Overpass API</a>
                             </dd>
                             <dt data-i18n="credits.elevation-data">Elevation data</dt>
                             <dd>
@@ -210,24 +216,26 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input
-                            class="form-control"
-                            type="text"
-                            id="layer_name"
-                            spellcheck="true"
-                            wrap="off"
-                            data-i18n="[placeholder]layers.placeholder-layer-name"
-                            placeholder="Custom layer name. (ex: OpenStreetMap)"
-                        />
-                        <input
-                            class="form-control"
-                            type="text"
-                            id="layer_url"
-                            spellcheck="false"
-                            wrap="off"
-                            data-i18n="[placeholder]layers.placeholder-layer-url"
-                            placeholder="Custom layer URL. (ex: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png)"
-                        />
+                        <div class="form-group">
+                            <label for="layer_name" data-i18n="layers.custom-layer-name-label">Custom layer name</label>
+                            <input class="form-control" type="text" id="layer_name" spellcheck="true" wrap="off" />
+                            <p class="help-block" data-i18n="layers.custom-layer-name-helptext">ex: OpenStreetMap</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="layer_name" data-i18n="layers.custom-layer-url-label"
+                                >Custom layer URL/Query</label
+                            >
+                            <input class="form-control" type="text" id="layer_url" spellcheck="false" wrap="off" />
+                            <p class="help-block">
+                                <span data-i18n="layers.custom-layer-url-helptext-normal"
+                                    >URL for normal layers, ex: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</span
+                                ><br />
+                                <span data-i18n="layers.custom-layer-url-helptext-overpass"
+                                    >Overpass Query, ex: nwr[shop]['diet:vegan']['diet:vegan'!=no];</span
+                                >
+                            </p>
+                        </div>
 
                         <button
                             type="button"
@@ -244,6 +252,14 @@
                             data-i18n="layers.add-overlay"
                         >
                             Add overlay
+                        </button>
+                        <button
+                            type="button"
+                            id="custom_layers_add_overpass"
+                            class="btn btn-success"
+                            data-i18n="layers.add-overpass"
+                        >
+                            Add overpass query
                         </button>
                         <button
                             type="button"
@@ -810,11 +826,11 @@
                             href="#tab_layers_control"
                             role="tab"
                             data-i18n="[title]sidebar.tab-tooltip"
-                            data-i18n-options="{
-                                'action': '$t(sidebar.layers.tooltip)',
-                                'toggleKey': 'T',
-                                'switchKey': '$t(keyboard.shift)+T'
-                            }"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.layers.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
                             title="Select layers"
                         >
                             <!--
@@ -844,11 +860,11 @@
                             href="#tab_itinerary"
                             role="tab"
                             data-i18n="[title]sidebar.tab-tooltip"
-                            data-i18n-options="{
-                                'action': '$t(sidebar.itinerary.tooltip)',
-                                'toggleKey': 'T',
-                                'switchKey': '$t(keyboard.shift)+T'
-                            }"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.itinerary.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
                             title="Show Itinerary"
                             ><i class="fa fa-map-signs"></i
                         ></a>
@@ -858,11 +874,11 @@
                             href="#tab_profile"
                             role="tab"
                             data-i18n="[title]sidebar.tab-tooltip"
-                            data-i18n-options="{
-                                'action': '$t(sidebar.customize-profile.tooltip)',
-                                'toggleKey': 'T',
-                                'switchKey': '$t(keyboard.shift)+T'
-                            }"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.customize-profile.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
                             title="Customize profile"
                             ><i class="fa fa-wrench"></i
                         ></a>
@@ -872,11 +888,11 @@
                             href="#tab_data"
                             role="tab"
                             data-i18n="[title]sidebar.tab-tooltip"
-                            data-i18n-options="{
-                                'action': '$t(sidebar.data.tooltip)',
-                                'toggleKey': 'T',
-                                'switchKey': '$t(keyboard.shift)+T'
-                            }"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.data.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
                             title="Show detailed route data table"
                             ><i class="fa fa-table"></i
                         ></a>
@@ -886,11 +902,11 @@
                             href="#tab_analysis"
                             role="tab"
                             data-i18n="[title]sidebar.tab-tooltip"
-                            data-i18n-options="{
-                                'action': '$t(sidebar.analysis.tooltip)',
-                                'toggleKey': 'T',
-                                'switchKey': '$t(keyboard.shift)+T'
-                            }"
+                            data-i18n-options='{
+                                "action": "$t(sidebar.analysis.tooltip)",
+                                "toggleKey": "T",
+                                "switchKey": "$t(keyboard.shift)+T"
+                            }'
                             title="Analyse route"
                             ><i class="fa fa-pie-chart"></i
                         ></a>
@@ -900,7 +916,11 @@
 
             <div class="leaflet-sidebar-flex-row flexgrow">
                 <div id="map" class="leaflet-sidebar-map">
-                    <div id="message"></div>
+                    <div id="notification_jar">
+                        <div id="message"></div>
+                        <div id="whats_new_message"></div>
+                        <div id="overpass_loading_indicator"></div>
+                    </div>
                     <div id="preview" hidden data-i18n="map.preview">Preview</div>
                 </div>
 
@@ -1202,7 +1222,7 @@
                 aria-expanded="false"
                 aria-label="Toggle elevation chart"
                 data-i18n="[title]keyboard.generic-shortcut"
-                data-i18n-options="{ 'action': '$t(footer.elevation-chart)', 'key': 'E' }"
+                data-i18n-options='{ "action": "$t(footer.elevation-chart)", "key": "E" }'
                 title="Toggle elevation chart"
             >
                 <span class="fa fa-area-chart"></span>

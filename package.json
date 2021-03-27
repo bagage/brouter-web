@@ -41,7 +41,7 @@
         "@turf/turf": "^6.2.0",
         "Leaflet.vector-markers": "nrenner/Leaflet.vector-markers#2ef80c9",
         "async": "~0.9.2",
-        "bootbox": "~5.3.4",
+        "bootbox": "~5.5.2",
         "bootstrap": "4.3.1",
         "bootstrap-select": "1.13.18",
         "bootstrap-slider": "^9.8.1",
@@ -57,7 +57,7 @@
         "jquery-i18next": "^1.2.1",
         "jstree": "^3.3.8",
         "leaflet": "~1.6.0",
-        "leaflet-control-geocoder": "^1.13.0",
+        "leaflet-control-geocoder": "^2.2.0",
         "leaflet-easybutton": "*",
         "leaflet-editable": "^1.1.0",
         "leaflet-filelayer": "^1.2.0",
@@ -74,6 +74,7 @@
         "leaflet.stravasegments": "2.3.2",
         "mapbbcode": "MapBBCode/mapbbcode#v1.2.0",
         "osmtogeojson": "^3.0.0-beta.4",
+        "overpass-layer": "^3.0.0",
         "regenerator-runtime": "^0.13.7",
         "togpx": "^0.5.4",
         "topojson-client": "^3.1.0",
@@ -276,6 +277,11 @@
         "core-js-bundle": {
             "main": [
                 "minified.js"
+            ]
+        },
+        "overpass-layer": {
+            "main": [
+                "dist/overpass-layer.js"
             ]
         }
     }
