@@ -183,7 +183,27 @@ BR.LayersConfig = L.Class.extend({
         }
     },
 
-    createOverpassLayer: function (query) {
+    getOverpassIconUrl: function (icon) {
+        const iconPrefix = /^(maki|temaki|fas)-/;
+        let iconUrl = null;
+
+        if (icon && iconPrefix.test(icon)) {
+            const iconName = icon.replace(iconPrefix, '');
+            const postfix = icon.startsWith('maki-') ? '-11' : '';
+            iconUrl = `dist/images/${iconName}${postfix}.svg`;
+        }
+
+        return iconUrl;
+    },
+
+    createOverpassLayer: function (query, icon) {
+        let markerSign = '<i class="fa fa-search icon-white" style="width: 25px;"></i>';
+
+        const iconUrl = this.getOverpassIconUrl(icon);
+        if (iconUrl) {
+            markerSign = `<img class="icon-invert" src="${iconUrl}" width="11" />`;
+        }
+
         return Object.assign(
             new OverpassLayer({
                 overpassFrontend: this.overpassFrontend,
@@ -193,9 +213,19 @@ BR.LayersConfig = L.Class.extend({
                     title: '{{ tags.name }}',
                     body:
                         '<table class="overpass-tags">{% for k, v in tags %}{% if k[:5] != "addr:" %}<tr><th>{{ k }}</th><td>{% if k matches "/email/" %}<a href="mailto:{{ v }}">{{ v }}</a>{% elseif v matches "/^http/" %}<a href="{{ v }}">{{ v }}</a>{% elseif v matches "/^www/" %}<a href="http://{{ v }}">{{ v }}</a>{% else %}{{ v }}{% endif %}</td></tr>{% endif %}{% endfor %}</table>',
-                    markerSymbol: null,
+                    markerSymbol:
+                        '<svg width="25px" height="41px" anchorX="12" anchorY="41" viewBox="0 0 32 52" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M16,1 C7.7146,1 1,7.65636364 1,15.8648485 C1,24.0760606 16,51 16,51 C16,51 31,24.0760606 31,15.8648485 C31,7.65636364 24.2815,1 16,1 L16,1 Z" fill="#436978"></path></svg>',
+                    markerSign,
                     style: function (overpassObject) {
-                        return this.defaultBaseLayers?.[0] === 'cyclosm' ? { color: 'darkorange' } : {};
+                        return {
+                            // nodeFeature: 'Marker' isn't currently working well, hence use transparent circle color for nodes
+                            color:
+                                overpassObject.type === 'node'
+                                    ? '#00000000'
+                                    : this.defaultBaseLayers?.[0] === 'cyclosm'
+                                    ? 'darkorange'
+                                    : '#3388ff',
+                        };
                     }.bind(this),
                 },
             }),
@@ -289,7 +319,7 @@ BR.LayersConfig = L.Class.extend({
                 layer.subdomains = props.subdomains;
             }
         } else if (props.dataSource === 'OverpassAPI') {
-            layer = this.createOverpassLayer(props.query);
+            layer = this.createOverpassLayer(props.query, props.icon);
         } else {
             // JOSM
             var josmUrl = url;
