@@ -55,12 +55,15 @@ BR.NogoAreas = L.Control.extend({
             e.layer.toggleEdit();
         });
 
-        var editTools = (this.editTools = map.editTools = new BR.Editable(map, {
-            circleEditorClass: BR.DeletableCircleEditor,
-            // FeatureGroup instead of LayerGroup to propagate events to members
-            editLayer: new L.FeatureGroup().addTo(map),
-            featuresLayer: this.drawnItems,
-        }));
+        var editTools =
+            (this.editTools =
+            map.editTools =
+                new BR.Editable(map, {
+                    circleEditorClass: BR.DeletableCircleEditor,
+                    // FeatureGroup instead of LayerGroup to propagate events to members
+                    editLayer: new L.FeatureGroup().addTo(map),
+                    featuresLayer: this.drawnItems,
+                }));
 
         this.startDrawing = function (control) {
             // initial radius of 0 to detect click, see DeletableCircleEditor.onDrawingMouseUp
@@ -290,6 +293,11 @@ BR.NogoAreas = L.Control.extend({
                 } else {
                     self.displayUploadError(i18next.t('loadNogos.error.loading-file-unexpected'));
                 }
+                // fire a fake empty nogos before removing layers from map
+                // because it will automatically refresh the URL, and that will
+                // fail if we do not empty nogos first
+                self.fire('update', { options: { nogos: [], polygons: [], polylines: [] } });
+                self._clear();
             }
         });
         return false;
